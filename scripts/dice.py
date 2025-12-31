@@ -75,17 +75,17 @@ class RangeDice(Dice):
 # print(range_dice.roll())
 
 
-comm = {}
-comm['coin'] = CustomDice(name = "coin", values = ["Cara","Sello"]) 
-comm['d3']   = Dice(3)
-comm['d4']   = Dice(4)
-comm['d6']   = Dice(6)
-comm['d10']  = Dice(10)
-comm['d12']  = Dice(12)
-comm['d20']  = Dice(20)
-comm['d100'] = Dice(100)
-comm['card_logo_dice'] = CustomDice(values = ["♠","♣","♥","♦"], desc="♠♣♥♦")
+# throw = {}
+# throw['coin'] = CustomDice(name = "coin", values = ["Cara","Sello"]) 
+# throw['d3']   = Dice(3)
+# throw['d4']   = Dice(4)
+# throw['d6']   = Dice(6)
+# throw['d10']  = Dice(10)
+# throw['d12']  = Dice(12)
+# throw['d20']  = Dice(20)
+# throw['d100'] = Dice(100)
+# throw['card_logo_dice'] = CustomDice(values = ["♠","♣","♥","♦"], desc="♠♣♥♦")
 
 
-print(comm)
-print(comm['coin'].roll())
+# print(throw)
+# print(throw['coin'].roll())
