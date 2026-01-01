@@ -13,6 +13,22 @@ def test_correct_simple_formula(parser_instance):
     assert isinstance(rolls, list)
 
 
+def test_throw_one_dice(parser_instance):
+    """Verify that parser handles one dice"""
+    assert parser_instance.resolve("d6")
+
+
+def test_throw_multiple_dice(parser_instance):
+    """Verify that parser handles dice quantity"""
+    assert parser_instance.resolve("3d20")
+
+
+def test_throw_wrong_quantity_multiple_dice(parser_instance):
+    """Verify that parser handles dice quantity with a wrong quantity value"""
+    with pytest.raises(ParserInvalidFormulaError):
+        assert parser_instance.resolve("vwd20")
+
+
 def test_formula_sanitization(parser_instance):
     """Check if the parser handles spaces, caps and illegal chars"""
     formula_with_spaces = " ( d20 + 5 ) "
@@ -35,6 +51,7 @@ def test_parser_zero_division(parser_instance):
     formula = "10 / (5 - 5)"
     with pytest.raises(ParserZeroDivisionError):
         assert parser_instance.resolve(formula)
+
 
 def test_invalid_formula_syntax(parser_instance):
     "Check if invalid syntax generates an error." 

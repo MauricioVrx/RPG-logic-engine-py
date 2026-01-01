@@ -120,12 +120,31 @@ class FormulaProcessor:
         
         for token in rpn_list:
             # Case 1: Token is a Dice key
-            if token in self.dice_inventory:
-                valor = self.dice_inventory[token].roll()
+            if 'd' in token:
+                parts =  token.split(sep='d', maxsplit=1)
+                raw_qty = parts[0]
+                dice_name = f"d{parts[1]}"
+
+                # if roll 1 Dice
+                if raw_qty == "":
+                    quantity = 1
+                # if roll more tha one dice; the values must be whole numbers.
+                elif raw_qty.isdigit(): 
+                    quantity = int(raw_qty)
+                else:
+                    raise ParserInvalidFormulaError(f"Invalid dice quantity: '{raw_qty}'")
+
+                if dice_name not in self.dice_inventory:
+                    raise DiceNotFoundError(dice_name, self.dice_inventory)
+                
+                # Obtain results (total value and list of individual shots)
+                total_val, individual_rolls = self.dice_inventory[dice_name].multiple_rolls(quantity)
+
                 # Track rolls if they match the default dice type (for crit/botch detection)
-                if self.dice_inventory[token].sides == self.default_dice.sides:
-                    critical_or_botch.append(valor)
-                stack.append(float(valor)) 
+                if self.dice_inventory[dice_name].sides == self.default_dice.sides:
+                    critical_or_botch.extend(individual_rolls)
+
+                stack.append(float(total_val)) 
             
             # Case 2: Token is a numeric constant
             elif token.replace('.', '', 1).isdigit(): 
