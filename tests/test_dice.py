@@ -24,4 +24,4 @@ def test_non_numeric_dice_exception(color_dice):
     """Verifica que un dado no numérico lance error al intentar operarlo en múltiples"""
     # Si color_dice tiene is_numeric=True debería fallar
     with pytest.raises(NonNumericResultError):
-        color_dice.multiple_rolls(2)
+        assert color_dice.multiple_rolls(2)
