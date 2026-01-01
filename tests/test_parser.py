@@ -30,3 +30,9 @@ def test_invalid_formula_syntax(parser_instance):
     formula = "(d20 + 4" 
     with pytest.raises(ParserInvalidFormulaError):
         parser_instance.resolve(formula)
+
+# def test_test_error(parser_instance):
+#     """Verify that unbalanced parentheses or invalid syntax raises an error"""
+#     formula = "d20 % 4" 
+#     with pytest.raises(ParserInvalidFormulaError):
+#         parser_instance.resolve(formula)

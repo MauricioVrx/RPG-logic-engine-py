@@ -6,7 +6,8 @@ from scripts.exceptions import DiceNotFoundError, ParserInvalidFormulaError, Par
 class FormulaProcessor:
     """
     Mathematical expression evaluator for dice rolls.
-    Supports basic operators and custom dice inventory.
+    Implements the Shunting-yard algorithm to handle operator precedence 
+    and custom dice inventory resolution.
     """
     def __init__(self, dice_inventory, default_dice=None):
         # Dictionary mapping dice names to Dice objects
@@ -19,26 +20,35 @@ class FormulaProcessor:
             '^': 3,
             '(': 0 
         }
-        self.iterator_limit = 100
+        self.iterator_limit = 100 # Safety limit to prevent infinite loops and overflow
 
 
     def _tokenize(self, formula_text):
-        """Splits formula string into a list of tokens (numbers, dice, operators)"""
+        """
+        Deconstructs the formula string into individual tokens (operands and operators).
+        """
         f_text = formula_text.replace(" ", "")
+
+        # Validate formula length against safety limit
         if len(f_text) > self.iterator_limit:
             raise ParserTokenizeExceedIterator(self.iterator_limit, len(f_text))
         elements = []
         len_value = 1
 
         while len(f_text) > 0:
-            if len_value >= self.iterator_limit:
+            if len_value > self.iterator_limit:
                 raise ParserTokenizeExceedIterator(self.iterator_limit, len_value)
+            
+            # If the current character is a standalone operator 
             if f_text[0] in self.operators:
                 elements.append(f_text[0])
+            # If the next character is an operator, slice the current multi-char token (number or dice)
             elif len_value < len(f_text) and f_text[len_value] in self.operators:
                 elements.append(f_text[:len_value])
+            # Handle the last token in the string
             elif len(f_text) == len_value and  f_text[:len_value] not in self.operators:
                 elements.append(f_text[:len_value])
+            # Increment slice length to capture multi-character tokens
             else:
                 len_value += 1
                 continue
@@ -48,51 +58,61 @@ class FormulaProcessor:
     
 
     def to_rpn(self, formula_text):
-        """Converts infix notation to Reverse Polish Notation (RPN) using Shunting-yard"""
+        """
+        Converts infix notation to Reverse Polish Notation (RPN) using the Shunting-yard algorithm.
+        """
         tokens = self._tokenize(formula_text)
         output = []
         stack = []
         
         for token in tokens:
             try:
+                # If token is an operand (number or dice), move directly to output
                 if token not in self.precedence and token not in [')', '(']:
                     output.append(token)
                 elif token == '(':
                     stack.append(token)
+                # On closing parenthesis, pop from stack to output until an opening parenthesis is found
                 elif token == ')':
                     while stack and stack[-1] != '(':
                         output.append(stack.pop())
-                    stack.pop()
+                    stack.pop() # Discard the opening parenthesis
                 else: 
+                    # Handle operator precedence: pop higher or equal priority operators to output
                     while stack and self.precedence.get(stack[-1], 0) >= self.precedence[token]:
                         output.append(stack.pop())
                     stack.append(token)
             except IndexError:
                 raise ParserConvertRPNError(token, formula_text)
+        # Append remaining operators from stack to output
         while stack:
             output.append(stack.pop())
         return output
 
 
     def resolve(self, formula_text):
-        """Evaluates RPN expression and returns the final numerical result"""
+        """
+        Evaluates an RPN expression and returns a tuple containing:
+        (numerical_result, list_of_critical_or_botch_rolls)
+        """
         rpn_list = self.to_rpn(formula_text)
         stack = []
-        crit_fail = []
+        critical_or_botch = []
         
         for token in rpn_list:
-            # 1. if is a Dice
+            # Case 1: Token is a Dice key
             if token in self.dice_inventory:
                 valor = self.dice_inventory[token].roll()
+                # Track rolls if they match the default dice type (for crit/botch detection)
                 if self.dice_inventory[token].sides == self.default_dice.sides:
-                    crit_fail.append(valor)
+                    critical_or_botch.append(valor)
                 stack.append(float(valor)) 
             
-            # 2. if is a number
+            # Case 2: Token is a numeric constant
             elif token.replace('.', '', 1).isdigit(): 
                 stack.append(float(token))
             
-            # 3. if is a operator
+            # Case 3: Token is an operator
             elif token in self.operators:
                 try:
                     b = stack.pop()
@@ -105,13 +125,14 @@ class FormulaProcessor:
                     elif token == '^': stack.append(math.pow(a, b))
                 except ZeroDivisionError:
                     raise ParserZeroDivisionError(f"{a}/{b}") 
-                except:
+                except: 
                     raise ParserInvalidFormulaError(formula_text)
             else:
-                # ERROR only if not exist another element than Dice
+                # Token is neither an operator, number, nor recognized dice
                 raise DiceNotFoundError(token, self.dice_inventory)
 
+        # If more than one value remains, the formula was incomplete (e.g., missing operators)
         if len(stack) > 1:
             raise ParserIncompleteResultError(formula_text)
 
-        return stack[0], crit_fail
+        return stack[0], critical_or_botch
