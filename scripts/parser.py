@@ -22,13 +22,30 @@ class FormulaProcessor:
         }
         self.iterator_limit = 100 # Safety limit to prevent infinite loops and overflow
 
+    def _sanitize(self, formula_text):
+        # Limpiar espacios
+        clean_text = formula_text.lower().replace(" ", "").strip()
+
+        if not clean_text:
+            raise ParserInvalidFormulaError("The formula cannot be empty.")
+        # limitar caracteres validos 
+        allow_chart = set("abcdefghijklmnopqrstuvwxyz0123456789.+-*/^()")
+        for char in clean_text:
+            if char not in allow_chart:
+                raise ParserInvalidFormulaError(f"Illegal character found:{char}")
+        
+        # Validar igualdad de caracteres '(' y ')'
+        if clean_text.count('(') != clean_text.count(')'):
+            raise ParserInvalidFormulaError(f"Unbalanced parentheses in formular")
+        
+        return clean_text
+
 
     def _tokenize(self, formula_text):
         """
         Deconstructs the formula string into individual tokens (operands and operators).
         """
-        f_text = formula_text.replace(" ", "")
-
+        f_text = formula_text
         # Validate formula length against safety limit
         if len(f_text) > self.iterator_limit:
             raise ParserTokenizeExceedIterator(self.iterator_limit, len(f_text))
@@ -61,7 +78,9 @@ class FormulaProcessor:
         """
         Converts infix notation to Reverse Polish Notation (RPN) using the Shunting-yard algorithm.
         """
-        tokens = self._tokenize(formula_text)
+        sanitized_formula = self._sanitize(formula_text)
+
+        tokens = self._tokenize(sanitized_formula)
         output = []
         stack = []
         
@@ -83,7 +102,7 @@ class FormulaProcessor:
                         output.append(stack.pop())
                     stack.append(token)
             except IndexError:
-                raise ParserConvertRPNError(token, formula_text)
+                raise ParserConvertRPNError(token, sanitized_formula)
         # Append remaining operators from stack to output
         while stack:
             output.append(stack.pop())
