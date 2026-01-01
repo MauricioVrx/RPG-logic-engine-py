@@ -1,5 +1,8 @@
 import math
 
+from scripts.dice import Dice
+from scripts.exceptions import DiceNotFoundError, ParserInvalidFormulaError, ParserIncompleteResultError, ParserZeroDivisionError, ParserConvertRPNError, ParserTokenizeExceedIterator
+
 class FormulaProcessor:
     """
     Mathematical expression evaluator for dice rolls.
@@ -16,14 +19,20 @@ class FormulaProcessor:
             '^': 3,
             '(': 0 
         }
+        self.iterator_limit = 100
 
 
     def _tokenize(self, formula_text):
         """Splits formula string into a list of tokens (numbers, dice, operators)"""
         f_text = formula_text.replace(" ", "")
+        if len(f_text) > self.iterator_limit:
+            raise ParserTokenizeExceedIterator(self.iterator_limit, len(f_text))
         elements = []
         len_value = 1
+
         while len(f_text) > 0:
+            if len_value >= self.iterator_limit:
+                raise ParserTokenizeExceedIterator(self.iterator_limit, len_value)
             if f_text[0] in self.operators:
                 elements.append(f_text[0])
             elif len_value < len(f_text) and f_text[len_value] in self.operators:
@@ -45,19 +54,21 @@ class FormulaProcessor:
         stack = []
         
         for token in tokens:
-            if token not in self.precedence and token not in [')', '(']:
-                output.append(token)
-            elif token == '(':
-                stack.append(token)
-            elif token == ')':
-                while stack and stack[-1] != '(':
-                    output.append(stack.pop())
-                stack.pop()
-            else: 
-                while stack and self.precedence.get(stack[-1], 0) >= self.precedence[token]:
-                    output.append(stack.pop())
-                stack.append(token)
-        
+            try:
+                if token not in self.precedence and token not in [')', '(']:
+                    output.append(token)
+                elif token == '(':
+                    stack.append(token)
+                elif token == ')':
+                    while stack and stack[-1] != '(':
+                        output.append(stack.pop())
+                    stack.pop()
+                else: 
+                    while stack and self.precedence.get(stack[-1], 0) >= self.precedence[token]:
+                        output.append(stack.pop())
+                    stack.append(token)
+            except IndexError:
+                raise ParserConvertRPNError(token, formula_text)
         while stack:
             output.append(stack.pop())
         return output
@@ -68,14 +79,13 @@ class FormulaProcessor:
         rpn_list = self.to_rpn(formula_text)
         stack = []
         crit_fail = []
-
+        
         for token in rpn_list:
             # 1. if is a Dice
             if token in self.dice_inventory:
                 valor = self.dice_inventory[token].roll()
                 if self.dice_inventory[token].sides == self.default_dice.sides:
                     crit_fail.append(valor)
-                #*** MAKE TEST ***#
                 stack.append(float(valor)) 
             
             # 2. if is a number
@@ -83,14 +93,25 @@ class FormulaProcessor:
                 stack.append(float(token))
             
             # 3. if is a operator
-            else:
-                b = stack.pop()
-                a = stack.pop()
+            elif token in self.operators:
+                try:
+                    b = stack.pop()
+                    a = stack.pop()
 
-                if   token == '+': stack.append(a + b)
-                elif token == '-': stack.append(a - b)
-                elif token == '*': stack.append(a * b)
-                elif token == '/': stack.append(a / b)
-                elif token == '^': stack.append(math.pow(a, b))
-        
+                    if   token == '+': stack.append(a + b)
+                    elif token == '-': stack.append(a - b)
+                    elif token == '*': stack.append(a * b)
+                    elif token == '/': stack.append(a / b)
+                    elif token == '^': stack.append(math.pow(a, b))
+                except ZeroDivisionError:
+                    raise ParserZeroDivisionError(f"{a}/{b}") 
+                except:
+                    raise ParserInvalidFormulaError(formula_text)
+            else:
+                # ERROR only if not exist another element than Dice
+                raise DiceNotFoundError(token, self.dice_inventory)
+
+        if len(stack) > 1:
+            raise ParserIncompleteResultError(formula_text)
+
         return stack[0], crit_fail
