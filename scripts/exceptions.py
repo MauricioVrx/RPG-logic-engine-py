@@ -6,7 +6,6 @@ class DiceEngineError(GameBaseError):
     """Base class for exceptions in this module."""
     pass
 
-
 class DiceNotFoundError(DiceEngineError):
     """Exception raised when a "dice" is not in the inventory."""
     def __init__(self, dice_name, inventory_list=None):

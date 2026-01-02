@@ -5,6 +5,13 @@ from scripts.exceptions import (
     ParserInvalidFormulaError
 )
 
+def test_empty_formula_raise_error(parser_instance):
+    """Verify that an empty formula is rejected"""
+    formula = ""
+    with pytest.raises(ParserInvalidFormulaError):
+        assert parser_instance.resolve(formula)
+
+
 def test_correct_simple_formula(parser_instance):
     """Verify that resolve returns the correct tuple structure (value, list) and range"""
     result, rolls = parser_instance.resolve("(d20 - d12) + 4")
@@ -21,6 +28,18 @@ def test_throw_one_dice(parser_instance):
 def test_throw_multiple_dice(parser_instance):
     """Verify that parser handles dice quantity"""
     assert parser_instance.resolve("3d20")
+
+
+def test_decimal_dice_quantity_raises_error(parser_instance):
+    """Verify that decimal quantities such as 2.5d6 are rejected."""
+    with pytest.raises(ParserInvalidFormulaError):
+        assert parser_instance.resolve("2.5d6")
+
+
+def test_invalid_character_in_quantity_raises_error(parser_instance):
+    """Verifica que caracteres no numéricos en la cantidad fallen"""
+    with pytest.raises(ParserInvalidFormulaError, match="Invalid dice quantity"):
+        parser_instance.resolve("Ad6")
 
 
 def test_throw_wrong_quantity_multiple_dice(parser_instance):

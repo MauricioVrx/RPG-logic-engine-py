@@ -14,7 +14,8 @@ throw = {
 
 formula_procesos = FormulaProcessor(throw, MAIN_DICE)
 
-formula = "(d20 - d12) + 4"
+# formula = "(d20 - d12) + 4"
+formula = ""
 
 try:
     resultado = formula_procesos.resolve(formula)
