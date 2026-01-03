@@ -1,5 +1,4 @@
 import pandas as pd
-import pytest
 
 def test_pandas_installation():
     """Verifica que podemos crear un DataFrame básico"""
