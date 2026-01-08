@@ -113,6 +113,7 @@ class RangeDice(Dice):
 # print()
 # d6 = Dice()
 # print(d6.roll())
+# print(d6.name)
 # print(d6.multiple_rolls(2))
 # print(d6.multiple_rolls(10))
 
