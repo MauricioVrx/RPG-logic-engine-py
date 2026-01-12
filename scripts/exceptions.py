@@ -1,3 +1,5 @@
+from scripts.constants import ABILITY_NAMES
+
 # General basis of the project
 class GameBaseError(Exception): pass
 
@@ -52,7 +54,7 @@ class LowerRangeValueDiceThrowError(DiceEngineError):
 
     def to_dict(self):
         return {
-            "error"       : "LessRangeValueDiceThrowError",
+            "error"       : "LowerRangeValueDiceThrowError",
             "throw_value" : self.result,
             "dice_sides"  : self.dice_sides,
             "code"        : self.error_code
@@ -168,7 +170,7 @@ class ParserConvertRPNError(ParserError):
 class ParserTokenizeExceedIterator(ParserError):
     """Raised when the formula length or token count exceeds the safety iteration limit."""
     def __init__(self,iterator_limit, formula_size):
-        self.error_code     = 'ERR_TOKENRIZE_EXCEED_ITERATOR' 
+        self.error_code     = 'ERR_PARSER_TOKENRIZE_EXCEED_ITERATOR' 
         self.iterator_limit = iterator_limit
         self.formula_size   = formula_size
         self.message        = f"Formula length ({formula_size}) exceeds the safety limit of {iterator_limit} iterations."
@@ -180,4 +182,133 @@ class ParserTokenizeExceedIterator(ParserError):
             "iterator_limit" :  self.iterator_limit,
             "formula_size"   :  self.formula_size,
             "code"           : self.error_code
+        }
+    
+
+# ENTITY ERRORS
+class EntityEngineError(GameBaseError):
+    """Base class for exceptions in this module."""
+    pass
+
+
+class EntityParameterNotFoundError(EntityEngineError):
+    """Exception raised when a parameter not found """
+    def __init__(self, parameter, feature):
+        self.parameter  = parameter
+        self.feature    = feature
+        self.error_code = "ERR_ENTITY_PARAMETER_NOT_FOUND"
+        self.message    = f"The parameter {parameter} NOT found in {feature}'."
+        super().__init__(self.message)
+
+    def to_dict(self):
+        return {
+            "error"     : "EntityParameterNotFoundError",
+            "parameter" : self.parameter,
+            "feature"   : self.feature,
+            "code"      : self.error_code
+        }
+
+
+class EntityAbilityNotFoundError(EntityEngineError):
+    def __init__(self, ability):
+        self.ability  = ability
+        self.error_code = "ERR_ENTITY_ABILITY_NOT_FOUND"
+        self.message    = f"The ABILITY '{ability}' NOT found'."
+        super().__init__(self.message)
+
+    def to_dict(self):
+        return {
+            "error"          : "EntityAbilityNotFoundError",
+            "ability"        : self.ability,
+            "all_abilities"  : ABILITY_NAMES,
+            "code"           : self.error_code
+        }
+    
+
+class EntityProficiencyNotFoundError(EntityEngineError):
+    """Exception raised when a proficiency not found """
+    def __init__(self, proficiency):
+        self.proficiency = proficiency
+        self.error_code  = "ERR_ENTITY_PROFICIENCY_NOT_FOUND"
+        self.message     = f"The proficiency {proficiency} NOT found'."
+        super().__init__(self.message)
+
+    def to_dict(self):
+        return {
+            "error"       : "EntityProficiencyNotFoundError",
+            "proficiency" : self.proficiency,
+            "code"        : self.error_code
+        }
+
+    
+class EntityProficiencyLimitError(EntityEngineError):
+    """Exception raised try to promotion an proficiency over the limit"""
+    def __init__(self, entity_name ,parameter, max_rank):
+        self.entity_name = entity_name
+        self.parameter   = parameter
+        self.max_rank    = max_rank
+        self.error_code  = "ERR_ENTITY_PROFICIENCY_LIMIT_RANK"
+        self.message     = f"{entity_name}: '{parameter}' can NOT by higher than {max_rank}'."
+        super().__init__(self.message)
+
+    def to_dict(self):
+        return {
+            "error"     : "EntityProficiencyLimitError",
+            "parameter" : self.parameter,
+            "max_rank"  : self.max_rank,
+            "code"      : self.error_code
+        }
+
+
+class EntityLevelLimitError(EntityEngineError):
+    """Exception raised try to level up over the limit"""
+    def __init__(self, entity_name ,current_level, max_level):
+        self.entity_name   = entity_name
+        self.current_level = current_level
+        self.max_level     = max_level
+        self.error_code = "ERR_ENTITY_LEVEL_LIMIT"
+        self.message    = f"{entity_name}: level {current_level} can NOT by higher than level {max_level}'."
+        super().__init__(self.message)
+
+    def to_dict(self):
+        return {
+            "error"         : "EntityLevelLimitError",
+            "entity_name"   : self.entity_name,
+            "current_level" : self.current_level,
+            "max_level"     : self.max_level,
+            "code"          : self.error_code
+        }
+
+
+class EntityIsIntegerError(EntityEngineError):
+    """Exception raised if the value is not a integer value"""
+    def __init__(self, msg):
+        self.msg        = msg
+        self.error_code = "ERR_ENTITY_INTEGER_VALUE"
+        self.message    = f"Number error: {msg}"
+        super().__init__(self.message)
+
+    def to_dict(self):
+        return {
+            "error"         : "EntityIsIntegerError",
+            "msg"           : self.msg,
+            "code"          : self.error_code
+        }
+
+
+class EntityDataFormatError(EntityEngineError):
+    """Exception generated when an invalid data type is used."""
+    def __init__(self, used_data, valid_data_type):
+        self.valid_data_type = valid_data_type
+        self.used_data       = type(used_data)
+        self.error_code      = "ERR_ENTITY_FORMAT"
+        self.message         = f"Invalid data type: {used_data}.Data must be {valid_data_type}"
+        super().__init__(self.message)
+
+    def to_dict(self):
+        return {
+            "error"           : "EntityDataFormatError",
+            "valid_data_type" : self.valid_data_type,
+            "used_data"       : self.used_data,
+            "code"            : self.error_code
         }

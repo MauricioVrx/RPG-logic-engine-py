@@ -2,6 +2,8 @@ import pytest
 from scripts.dice import Dice, CustomDice, RangeDice
 from scripts.parser import FormulaProcessor
 
+from scripts.entity import Entity
+
 @pytest.fixture
 def d6():
     return Dice(6, name="standard_d6")
@@ -27,3 +29,10 @@ def parser_instance():
         'd6'   : Dice(6)
     }
     return FormulaProcessor(throw, Dice(20))
+
+@pytest.fixture
+def simple_entity():
+    simple_entity = Entity()
+    simple_entity.hit_points_max     = 10
+    simple_entity.hit_points_current = 5
+    return simple_entity
