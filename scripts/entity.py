@@ -40,7 +40,7 @@ class Entity:
         self.actions = DEFAULTS_ACTIONS # Type and count 3 actions, 1 reaction, 1 free action
         self.size    = 3                # Size rank
 
-        self.traits    = ['general'] # All entity tags 
+        self.trait     = ['general'] # All entity tags 
         self.condition = []          # Altered conditions 
 
         self.proficiency_rank   = PROF_RANG_BASE.copy() # Proficiency rank dict  
@@ -48,8 +48,8 @@ class Entity:
         self.skill              = self.__initial_insert_parameters_points(SKILLS_BASE.copy())     # All Skills with dependences values
         self.saving_throws      = self.__initial_insert_parameters_points(SAV_THROWS_BASE.copy()) # Saving parameters with dependences values
 
-        self.existed_feats = {} # Existed feats 
-        self.custom_feats  = {} # Feats created just for this entity
+        self.acquired_feats = [] # Feats 
+        self.custom_feats   = {} # Feats created just for this entity
         
         self.hit_points_max      = self.core_ability_score["CON"] # Maximum health points of the entity 
         self.hit_points_current  = self.hit_points_max            # Current health points of the entity 
@@ -262,3 +262,4 @@ class Entity:
             self.update_saving_throw(save_name)
             
         return self.core_ability_score[name]
+
