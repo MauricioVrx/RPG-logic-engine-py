@@ -54,7 +54,6 @@ CHARACTER_CLASSES = {
         "trait"             : ['Rogue'],
         "magical_aptitude"  : [],
     },
-
     'Ranger' : {
         "hit_points_max"    : 10,
         "main_ability"      : ["STR", "DEX"],
@@ -171,8 +170,6 @@ class Character(Entity):
         base_boosts = {k: v for k, v in info["ability_boosts"].items() if k != 'FREE'}
         final_boost_map = base_boosts | {ability: 1 for ability in extra_abilities}
 
-        # self.ancestry_ability_points = info['ability_score'] | {ability:1 for ability in extra_abilities}
-        # self.ancestry_ability_points = {ability: value*2 for ability , value in self.ancestry_ability_points.items()}
         self.ancestry_boosts = {ability: val * 2 for ability, val in final_boost_map.items()}
 
         return True
