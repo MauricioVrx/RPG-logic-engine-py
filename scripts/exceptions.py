@@ -3,7 +3,10 @@ from scripts.constants import ABILITY_NAMES
 # General basis of the project
 class GameBaseError(Exception): pass
 
+# =============================================================================
 # DICE ERRORS
+# =============================================================================
+
 class DiceEngineError(GameBaseError):
     """Base class for exceptions in this module."""
     pass
@@ -18,7 +21,7 @@ class DiceNotFoundError(DiceEngineError):
     
     def to_dict(self):
         return {
-            "error"         : "DiceNotFoundError",
+            "error"         : self.__class__.__name__,
             "missing_token" : self.dice_name,
             "suggestions"   : self.available_options,
             "code"          : self.error_code
@@ -36,12 +39,11 @@ class HigherRangeValueError(DiceEngineError):
 
     def to_dict(self):
         return {
-            "error"       : "HigherRangeValueError",
+            "error"       : self.__class__.__name__,
             "throw_value" : self.result,
             "dice_sides"  : self.dice_sides,
             "code"        : self.error_code
         }
-
 
 class LowerRangeValueDiceThrowError(DiceEngineError):
     """Exception raised when a throw result less or equal to 0"""
@@ -54,12 +56,11 @@ class LowerRangeValueDiceThrowError(DiceEngineError):
 
     def to_dict(self):
         return {
-            "error"       : "LowerRangeValueDiceThrowError",
+            "error"       : self.__class__.__name__,
             "throw_value" : self.result,
             "dice_sides"  : self.dice_sides,
             "code"        : self.error_code
         }
-
 
 class MultipleDiceQuantityError(DiceEngineError):
     """Exception generated when the count of multiple "dice" does not match the quantity request"""
@@ -72,12 +73,11 @@ class MultipleDiceQuantityError(DiceEngineError):
 
     def to_dict(self):
         return {
-            "error"       : "MultipleDiceQuantityError",
+            "error"       : self.__class__.__name__,
             "n_rolls"     : self.n_rolls,
             "rolled_dice" : self.rolled_dice,
             "code"        : self.error_code
         }
-
 
 class NonNumericResultError(DiceEngineError):
     """Exception raised when a calculation is attempted on non-numeric "dice" results"""
@@ -89,17 +89,20 @@ class NonNumericResultError(DiceEngineError):
 
     def to_dict(self):
         return {
-            "error"       : "NonNumericResultError",
+            "error"       : self.__class__.__name__,
             "rolled_dice" : self.rolled_dice,
             "code"        : self.error_code
         }
     
 
-# Specific errors in mathematical logic
+
+# =============================================================================
+# SPECIFIC ERRORS IN MATHEMATICAL LOGIC ERRORS
+# =============================================================================
+
 class ParserError(GameBaseError): 
     """Base class for errors occurring during formula parsing and evaluation."""
     pass
-
 
 class ParserInvalidFormulaError(ParserError): 
     """Raised when the formula string contains invalid syntax."""
@@ -111,11 +114,10 @@ class ParserInvalidFormulaError(ParserError):
 
     def to_dict(self):
         return {
-            "error"   : "ParserInvalidFormulaError",
+            "error"   : self.__class__.__name__,
             "formula" : self.formula,
             "code"    : self.error_code
         }
-
 
 class ParserIncompleteResultError(ParserError): 
     """Raised when an expression cannot be fully resolved (e.g., missing operators)."""
@@ -127,11 +129,10 @@ class ParserIncompleteResultError(ParserError):
 
     def to_dict(self):
         return {
-            "error"   : "ParserIncompleteResultError",
+            "error"   : self.__class__.__name__,
             "formula" : self.formula,
             "code"    : self.error_code
         }
-
 
 class ParserZeroDivisionError(ParserError):
     """Raised when a division by zero occurs during evaluation."""
@@ -143,12 +144,11 @@ class ParserZeroDivisionError(ParserError):
 
     def to_dict(self):
         return {
-            "error"           : "ParserZeroDivisirorError",
+            "error"           : self.__class__.__name__,
             "formula_segment" : self.formula_segment,
             "code"            : self.error_code
         }
     
-
 class ParserConvertRPNError(ParserError):
     """Raised when the Shunting-yard algorithm encounters a logical inconsistency."""
     def __init__(self, token_error, formula):
@@ -160,12 +160,11 @@ class ParserConvertRPNError(ParserError):
 
     def to_dict(self):
         return {
-            "error"       : "ParserConvertRPNError",
+            "error"       : self.__class__.__name__,
             "token_error" : self.token_error,
             "formula"     : self.formula,
             "code"        : self.error_code
         }
-
 
 class ParserTokenizeExceedIterator(ParserError):
     """Raised when the formula length or token count exceeds the safety iteration limit."""
@@ -178,18 +177,19 @@ class ParserTokenizeExceedIterator(ParserError):
 
     def to_dict(self):
         return {
-            "error"          : "ParserTokenizeExceedIterator",
-            "iterator_limit" :  self.iterator_limit,
-            "formula_size"   :  self.formula_size,
+            "error"          : self.__class__.__name__,
+            "iterator_limit" : self.iterator_limit,
+            "formula_size"   : self.formula_size,
             "code"           : self.error_code
         }
     
 
+# =============================================================================
 # ENTITY ERRORS
+# =============================================================================
 class EntityEngineError(GameBaseError):
     """Base class for exceptions in this module."""
     pass
-
 
 class EntityParameterNotFoundError(EntityEngineError):
     """Exception raised when a parameter not found """
@@ -197,49 +197,46 @@ class EntityParameterNotFoundError(EntityEngineError):
         self.parameter  = parameter
         self.feature    = feature
         self.error_code = "ERR_ENTITY_PARAMETER_NOT_FOUND"
-        self.message    = f"The parameter {parameter} NOT found in {feature}'."
+        self.message    = f"Parameter {parameter} NOT found in {feature}'." 
         super().__init__(self.message)
 
     def to_dict(self):
         return {
-            "error"     : "EntityParameterNotFoundError",
+            "error"     : self.__class__.__name__,
             "parameter" : self.parameter,
             "feature"   : self.feature,
             "code"      : self.error_code
         }
 
-
 class EntityAbilityNotFoundError(EntityEngineError):
     def __init__(self, ability):
         self.ability  = ability
         self.error_code = "ERR_ENTITY_ABILITY_NOT_FOUND"
-        self.message    = f"The ABILITY '{ability}' NOT found'."
+        self.message    = f"Ability '{ability}' not found."
         super().__init__(self.message)
 
     def to_dict(self):
         return {
-            "error"          : "EntityAbilityNotFoundError",
+            "error"          : self.__class__.__name__,
             "ability"        : self.ability,
             "all_abilities"  : ABILITY_NAMES,
             "code"           : self.error_code
         }
-    
 
 class EntityProficiencyNotFoundError(EntityEngineError):
     """Exception raised when a proficiency not found """
     def __init__(self, proficiency):
         self.proficiency = proficiency
         self.error_code  = "ERR_ENTITY_PROFICIENCY_NOT_FOUND"
-        self.message     = f"The proficiency {proficiency} NOT found'."
+        self.message     = f"Proficiency '{proficiency}' not found."
         super().__init__(self.message)
 
     def to_dict(self):
         return {
-            "error"       : "EntityProficiencyNotFoundError",
+            "error"       : self.__class__.__name__,
             "proficiency" : self.proficiency,
             "code"        : self.error_code
         }
-
     
 class EntityProficiencyLimitError(EntityEngineError):
     """Exception raised try to promotion an proficiency over the limit"""
@@ -253,12 +250,11 @@ class EntityProficiencyLimitError(EntityEngineError):
 
     def to_dict(self):
         return {
-            "error"     : "EntityProficiencyLimitError",
+            "error"     : self.__class__.__name__,
             "parameter" : self.parameter,
             "max_rank"  : self.max_rank,
             "code"      : self.error_code
         }
-
 
 class EntityLevelLimitError(EntityEngineError):
     """Exception raised try to level up over the limit"""
@@ -272,13 +268,12 @@ class EntityLevelLimitError(EntityEngineError):
 
     def to_dict(self):
         return {
-            "error"         : "EntityLevelLimitError",
+            "error"         : self.__class__.__name__,
             "entity_name"   : self.entity_name,
             "current_level" : self.current_level,
             "max_level"     : self.max_level,
             "code"          : self.error_code
         }
-
 
 class EntityIsIntegerError(EntityEngineError):
     """Exception raised if the value is not a integer value"""
@@ -290,11 +285,10 @@ class EntityIsIntegerError(EntityEngineError):
 
     def to_dict(self):
         return {
-            "error"         : "EntityIsIntegerError",
+            "error"         : self.__class__.__name__,
             "msg"           : self.msg,
             "code"          : self.error_code
         }
-
 
 class EntityDataFormatError(EntityEngineError):
     """Exception generated when an invalid data type is used."""
@@ -307,8 +301,173 @@ class EntityDataFormatError(EntityEngineError):
 
     def to_dict(self):
         return {
-            "error"           : "EntityDataFormatError",
+            "error"           : self.__class__.__name__,
             "valid_data_type" : self.valid_data_type,
             "used_data"       : self.used_data,
             "code"            : self.error_code
         }
+
+# =============================================================================
+# CHARACTER EXCEPTIONS
+# =============================================================================
+class CharacterEngineError(GameBaseError):
+    """Base class for exceptions in this module."""
+    pass
+
+class CharacterDisabledParameterError(CharacterEngineError):
+    """Raised when attempting to use a disabled Ancestry, Class, or Background."""
+    def __init__(self, name, param_type):
+        self.name         = name 
+        self.param_type   = param_type 
+        self.error_code   = "ERR_DISABLED_PARAMETER"
+        self.message      = f"{param_type} '{name}' is currently disabled."
+        super().__init__(self.message)
+
+    def to_dict(self):
+        return {
+            "error"          : self.__class__.__name__,
+            "name"           : self.name ,
+            "type"           : self.param_type ,
+            "code"           : self.error_code
+        }
+
+class CharacterAbilityLimitExceededError(CharacterEngineError):
+    """Raised when the number of selected abilities exceeds the allowed limit."""
+    def __init__(self, count_abilities, max_limit):
+        self.count_abilities = count_abilities
+        self.max_limit       = max_limit
+        self.error_code = "ERR_ABILITY_LIMIT_EXCEEDED"
+        self.message    = f"Ability limit exceeded. Max: {max_limit}, Provided: {count_abilities}."
+        super().__init__(self.message)
+
+    def to_dict(self):
+        return {
+            "error"           : self.__class__.__name__,
+            "count_abilities" : self.count_abilities ,
+            "max_limit"       : self.max_limit ,
+            "code"            : self.error_code
+        }
+
+class CharacterDuplicateAbilityError(CharacterEngineError):
+    """Exception generated when asign a free ability, but its already activate by the parameter"""
+    def __init__(self, name, type, fixed_boost):
+        self.name        = name
+        self.type        = type
+        self.fixed_boost = fixed_boost
+        self.error_code = "ERR_CHARACTER_ABILITY_DUPLICATED"
+        self.message    = f"Ability '{name}' is already a fixed boost({fixed_boost}) for this {type}."
+        super().__init__(self.message)
+
+    def to_dict(self):
+        return {
+            "error"          : self.__class__.__name__,
+            "name"           : self.name,
+            "type"           : self.type,
+            "fixed_boost"    : self.fixed_boost,
+            "code"           : self.error_code
+        }
+    
+class CharacterInvalidDistributionError(CharacterEngineError):
+    """Raised when the provided ability distribution contains non-unique parameters."""
+    def __init__(self, abilities):
+        self.abilities  = abilities
+        self.error_code = "ERR_CHARACTER_INVALID_DISTRIBUTION"
+        self.message    = f"Ability distribution must be unique. Received: {abilities}."
+        super().__init__(self.message)
+
+    def to_dict(self):
+        return {
+            "error"          : self.__class__.__name__,
+            "abilities"      : self.abilities ,
+            "code"           : self.error_code
+        }
+
+
+# =============================================================================
+# ANCESTRY EXCEPTIONS
+# =============================================================================
+class AncestryNotFoundError(CharacterEngineError):
+    """Raised when the specified Ancestry does not exist in the database."""
+    def __init__(self, name):
+        self.name       = name
+        self.error_code = "ERR_ANCESTRY_NOT_FOUND"
+        self.message    = f"Ancestry '{name}' not found."
+        super().__init__(self.message)
+
+    def to_dict(self):
+        return {
+            "error"          : self.__class__.__name__,
+            "name"           : self.name ,
+            "code"           : self.error_code
+        }
+    
+# =============================================================================
+# CLASS EXCEPTIONS
+# =============================================================================
+class ClassNotFoundError(CharacterEngineError):
+    """Raised when the specified Class does not found"""
+    def __init__(self, name):
+        self.name       = name
+        self.error_code = "ERR_CLASS_NOT_FOUND"
+        self.message    = f"Class '{name}' not found."
+        super().__init__(self.message)
+
+    def to_dict(self):
+        return {
+            "error" : self.__class__.__name__,
+            "name"  : self.name ,
+            "code"  : self.error_code
+        }
+    
+class ClassMainAbilityRequiredError(CharacterEngineError):
+    """Raised when the selection does not satisfy the class's mandatory ability option."""
+    def __init__(self, name, ability_options):
+        self.name            = name
+        self.ability_options = ability_options
+        self.error_code      = "ERR_CLASS_MAIN_ABILITY_REQUIRED"
+        self.message         = f"ERROR: Class '{name}' required 1 point boosts on '{ability_options}'."
+        super().__init__(self.message)
+
+    def to_dict(self):
+        return {
+            "error"           : self.__class__.__name__,
+            "class"           : self.name ,
+            "ability_options" : self.ability_options ,
+            "code"            : self.error_code
+        }
+
+# =============================================================================
+# BACKGROUND EXCEPTIONS
+# =============================================================================
+class BackgroundNotFoundError(CharacterEngineError):
+    """Raised when the specified Background does not found"""
+    def __init__(self, name):
+        self.name       = name
+        self.error_code = "ERR_BACKGROUND_NOT_FOUND"
+        self.message    = f"Background '{name}' not found."
+        super().__init__(self.message)
+
+    def to_dict(self):
+        return {
+            "error"          : self.__class__.__name__,
+            "name"           : self.name ,
+            "code"           : self.error_code
+        }
+
+class BackgroundMinAbilityRequiredError(CharacterEngineError):
+    """Raised when the selection does not satisfy the background's mandatory ability options."""
+    def __init__(self, background, ability_options):
+        self.background      = background
+        self.ability_options = ability_options
+        self.error_code      = "ERR_MIN_ABILITY_REQUIRED"
+        self.message         = f"ERROR: Background '{background}' required 1 point boosts on '{ability_options}'."
+        super().__init__(self.message)
+
+    def to_dict(self):
+        return {
+            "error"           : self.__class__.__name__,
+            "background"      : self.background ,
+            "ability_options" : self.ability_options ,
+            "code"            : self.error_code
+        }
+    

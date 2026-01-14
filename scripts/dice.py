@@ -9,8 +9,8 @@ class Dice:
     """
     def __init__(self, sides=6, name="dice", desc = None, is_numeric = True):
         self.sides = sides
-        self.name = name
-        self.desc = desc
+        self.name  = name
+        self.desc  = desc
         self.is_numeric = is_numeric
 
     def __str__(self):
