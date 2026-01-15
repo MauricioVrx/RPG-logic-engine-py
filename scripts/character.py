@@ -18,7 +18,7 @@ from scripts.exceptions import (
 
 # Data structures (To be moved to JSON/Database in future sprints)
 ANCESTRIES = {
-    "Gnomo" :{
+    "Gnome" :{
         "hit_points_max" : 8,
         "speed"          : 25, 
         "size"           : 1, # Small
@@ -147,6 +147,8 @@ class Character(Entity):
         self.background_boosts = {}
         self.free_boosts       = {}
 
+    # /---/ validate empty ancestry
+    # /---/ validate empty background
 
     def set_ancestry(self, name, extra_abilities = []):
         """Sets the character's ancestry and applies related boosts and stats."""
@@ -278,4 +280,7 @@ class Character(Entity):
     
 
     def set_character_points(self, ancestry, character_class, free_ability_points ,free_points):
+        pass
+
+    def calculate_points(self):
         pass

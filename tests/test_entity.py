@@ -122,7 +122,8 @@ def test_dying_by_sum_hit_points(simple_entity):
     simple_entity.dying = 0
     simple_entity.state = "Stable"
     simple_entity.hit_points_current = 1
-    # Damage exceeding CON score
+
+    # 5. Damage exceeding CON score
     simple_entity.sum_hit_points((simple_entity.core_ability_score["CON"] * -1) -100)
     assert simple_entity.state == "Death"
     
