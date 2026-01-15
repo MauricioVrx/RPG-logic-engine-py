@@ -122,8 +122,9 @@ def test_dying_by_sum_hit_points(simple_entity):
     simple_entity.dying = 0
     simple_entity.state = "Stable"
     simple_entity.hit_points_current = 1
-    # Damage exceeding CON score
-    simple_entity.sum_hit_points((simple_entity.core_ability_score["CON"] * -1) -100)
+
+    # 5. Damage exceeding CON score
+    simple_entity.sum_hit_points((simple_entity.get_ability_value("CON") * -1) -100)
     assert simple_entity.state == "Death"
     
 
@@ -146,7 +147,7 @@ def test_set_ability_score(simple_entity):
     """Verify proficiency rank progression and limit constraints, including forced promotion."""
     ability = next(iter(ABILITY_SCORE))
 
-    assert simple_entity.set_ability_score(ability, 14)
+    assert simple_entity.update_extra_ability_score(ability, 4)
 
     dependencies = PARAMETER_DEPENDENCE.get(ability, [[], []])
     for skill_name in dependencies[0]:
@@ -155,7 +156,7 @@ def test_set_ability_score(simple_entity):
         assert simple_entity.saving_throws[save_name]['mod'] == 2
 
     with pytest.raises(EntityAbilityNotFoundError):
-        assert simple_entity.set_ability_score("Wrong_name", 2)
+        assert simple_entity.update_extra_ability_score("Wrong_name", 2)
 
 
 def test_update_and_sum_skill(simple_entity):

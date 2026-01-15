@@ -6,7 +6,7 @@ SIZE_NAME  = ['Tiny', 'Small', 'Medium', 'Large', 'Huge', 'Gargantuan']
 
 # ENTITY 
 ABILITY_NAMES = ["STR", "DEX", "CON", "INT", "WIS", "CHA"]
-ABILITY_SCORE = {name: 10 for name in ABILITY_NAMES} # ABILITY_SCORE = {"STR": 10, "DEX": 10, "CON": 10, "INT": 10, "WIS": 10, "CHA": 10}
+ABILITY_SCORE = {name: 10 for name in ABILITY_NAMES} 
 
 SKILLS       = {'Acrobatics':'DEX','Arcana':'INT','Athletics':'STR','Crafting':'INT','Deception':'CHA','Diplomacy':'CHA','Eterology':'WIS','Intimidation':'CHA','Lore':'INT','Medicine':'WIS','Nature':'WIS','Occultism':'INT','Performance':'CHA','Society':'INT','Stealth':'DEX','Survival':'WIS','Thievery':'DEX'}
 SKILLS_BASE  = [(key, value, 0) for key, value in SKILLS.items()]

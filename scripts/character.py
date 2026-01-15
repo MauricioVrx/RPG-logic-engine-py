@@ -2,11 +2,26 @@ from collections import Counter
 from scripts.entity import Entity
 from scripts.constants import SIZE_NAME, ABILITY_NAMES
 from scripts.config import FREE_ABILITY_POINTS
-from scripts.exceptions import EntityParameterNotFoundError
+from scripts.exceptions import (
+    EntityAbilityNotFoundError,
+    EntityParameterNotFoundError, 
+    CharacterDisabledParameterError,
+    CharacterAbilityLimitExceededError,
+    CharacterDuplicateAbilityError,
+    CharacterInvalidDistributionError,
+    CharacterChangePastError,
+    AncestryNotFoundError,
+    ClassNotFoundError,
+    ClassMainAbilityRequiredError,
+    BackgroundNotFoundError,
+    BackgroundMinAbilityRequiredError,
+)
+
+from scripts.constants import ABILITY_SCORE
 
 # Data structures (To be moved to JSON/Database in future sprints)
 ANCESTRIES = {
-    "Gnomo" :{
+    "Gnome" :{
         "hit_points_max" : 8,
         "speed"          : 25, 
         "size"           : 1, # Small
@@ -45,6 +60,7 @@ CHARACTER_CLASSES = {
         "trained_skills"    : 3, 
         "trait"             : ['Fighter'],
         "magical_aptitude"  : [],
+        "status"            : 1, 
     },
     'Rogue' : {
         "hit_points_max"    : 8,
@@ -53,6 +69,7 @@ CHARACTER_CLASSES = {
         "trained_skills"    : 7, 
         "trait"             : ['Rogue'],
         "magical_aptitude"  : [],
+        "status"            : 1, 
     },
     'Ranger' : {
         "hit_points_max"    : 10,
@@ -61,6 +78,7 @@ CHARACTER_CLASSES = {
         "trained_skills"    : 4,
         "trait"             : ['Ranger'],
         "magical_aptitude"  : ["WIS"],
+        "status"            : 1, 
     },
 }
 
@@ -70,30 +88,33 @@ BACKGROUND = {
         "boosts_count" : 2,
         "description"  : "In a circus or on the streets, you earned your pay by performing as an acrobat. You might have turned to adventuring when the money dried up, or simply decided to put your skills to better use.",
         "rarity"       : "Common",
-        "skills"        : ["Acrobatics"],
+        "skills"       : ["Acrobatics"],
         "lore"         : ["Circus"],
         "feat"         : ["Steady Balance"],
-        "extra"        : {}
+        "extra"        : {},
+        "status"       : 1, 
     },
     "Hunter" : {
         "ability"      : ["DEX", "WIS"],
         "boosts_count" : 2,
         "description"  : "You stalked and took down animals and other creatures of the wild. Skinning animals, harvesting their flesh, and cooking them were also part of your training, all of which can give you useful resources while you adventure.",
         "rarity"       : "Common",
-        "skills"        : ["Survival"],
+        "skills"       : ["Survival"],
         "lore"         : ["Tanning"],
         "feat"         : ["Survey Wildlife"],
-        "extra"        : {}
+        "extra"        : {},
+        "status"       : 1, 
     },
     "Merchant" : {
         "ability"      : ["INT", "CHA"],
         "boosts_count" : 2,
         "description"  : "In a dusty shop, market stall, or merchant caravan, you bartered wares for coin and trade goods. The skills you picked up still apply in the adventuring life, in which a good deal on a suit of armor could prevent your death.",
         "rarity"       : "Common",
-        "skills"        : ["Diplomacy"],
+        "skills"       : ["Diplomacy"],
         "lore"         : ["Mercantile"],
         "feat"         : ["Bargain Hunter"],
-        "extra"        : {}
+        "extra"        : {},
+        "status"       : 1, 
     },
 }
 
@@ -124,41 +145,45 @@ class Character(Entity):
         self.secondary_ability = []
 
         # Points for the 4-step boost process
-        self.ancestry_boosts   = {}
-        self.class_boosts      = {}
-        self.background_boosts = {}
-        self.free_boosts       = {}
+        self._ancestry_boosts   = {}
+        self._class_boosts      = {}
+        self._background_boosts = {}
+        self._free_boosts       = {}
 
 
+
+    # ==============================================================
+    # ANCESTRY / CLASS / BACKGROUND / FREE - POINTS FUNCTIONS
+    # ==============================================================
     def set_ancestry(self, name, extra_abilities = []):
-        """Sets the character's ancestry and applies related boosts and stats."""
+        """
+        Sets the character's ancestry and applies related boosts and stats.
+        """
+        if self.ancestry != None:
+            raise CharacterChangePastError(self.name, 'ancestry')
+
         if name not in ANCESTRIES:
-            print("error : Ancestry not found") # /---/
-            return False
+            raise AncestryNotFoundError(name)
         
         info = ANCESTRIES[name].copy() 
 
         if info.get("status") == 0:
-            print(f"Error: Ancestry '{name}' is currently disabled.") # /---/ Ancestry not found 
-            return False
+            raise CharacterDisabledParameterError(name, 'Ancestry')
 
         # Validate Free Boosts limit
         max_free = info["ability_boosts"].get('FREE', 0)
         if len(extra_abilities) > max_free:
-            print(f"Error: Selected extra abilities exceed limit for {name}.") 
-            return False
+            raise CharacterAbilityLimitExceededError(len(extra_abilities), max_free)
 
         # Validate against duplicates and existence
         for ability in extra_abilities:
             if ability not in ABILITY_NAMES:
-                print(f"Error: Ability '{ability}' does not exist.") # /---/
-                return False
+                raise EntityAbilityNotFoundError(ability)
             if ability in info["ability_boosts"]:
-                print(f"Error: '{ability}' is already a fixed boost for this ancestry.") # /---/
-                return False
+                del info["ability_boosts"]['FREE']
+                raise CharacterDuplicateAbilityError(ability, 'Ancestry', info["ability_boosts"])
        
         # Assign core stats
-        self.ancestry = name
         self.hit_points_max += info['hit_points_max']
         self.speed          += info['speed']
         self.size            = info['size']
@@ -170,26 +195,32 @@ class Character(Entity):
         base_boosts = {k: v for k, v in info["ability_boosts"].items() if k != 'FREE'}
         final_boost_map = base_boosts | {ability: 1 for ability in extra_abilities}
 
-        self.ancestry_boosts = {ability: val * 2 for ability, val in final_boost_map.items()}
+        self._ancestry_boosts = {ability: val * 2 for ability, val in final_boost_map.items()}
+        self.ancestry         = name 
 
         return True
-
+    
 
     def set_class(self, name, main_ability):
-        """Sets the character class and the key ability boost."""
+        """
+        Sets the character's class and the key ability boost.
+        """
+        if self.character_class != None:
+            raise CharacterChangePastError(self.name, 'class')
+        
         if name not in CHARACTER_CLASSES:
-            print(f"Error: Class '{name}' not found.") # /---/ Class not found
-            return False
+            raise ClassNotFoundError(name)
 
         if main_ability not in ABILITY_NAMES:
-            print(f"Error: Main ability '{main_ability}' not found.") # /---/
-            return False
+            raise EntityAbilityNotFoundError(main_ability)
         
         info = CHARACTER_CLASSES[name].copy() 
 
+        if info.get("status") == 0:
+            raise CharacterDisabledParameterError(name, 'Class')
+
         if main_ability not in info['main_ability']:
-            print(f"Error: {main_ability} is not a valid key ability for {name}.") # /---/
-            return False
+            raise ClassMainAbilityRequiredError(main_ability, info['main_ability'])
 
         self.character_class   = name 
         self.hit_points_max    += info['hit_points_max']
@@ -198,21 +229,34 @@ class Character(Entity):
         self.trait             += info['trait']
         self.magical_aptitude  += info['magical_aptitude']
 
-        self.class_boosts = {main_ability:2}
+        self._class_boosts   = {main_ability:2}
+        self.character_class = name 
+
         return True
 
 
     def set_background(self, name, chosen_boosts):
-        """Sets background and applies proficiency in skills/lore."""
+        """
+        Sets background and applies proficiency in skills/lore.
+        """
+        if self.background != None:
+            raise CharacterChangePastError(self.name, 'background')
+        
         if name not in BACKGROUND:
-            print(f"Error: Background '{name}' not found.") # /---/
-            return False
+            raise BackgroundNotFoundError(name)
 
         info = BACKGROUND[name].copy() 
 
+        if info.get("status") == 0:
+            raise CharacterDisabledParameterError(name, 'Background')
+
         if len(chosen_boosts) > info['boosts_count']:
-            print(f"Error: Background {name} requires exactly {info['boosts_count']} boosts.")
-            return False
+            raise CharacterAbilityLimitExceededError(len(chosen_boosts), info['boosts_count'])
+
+        # Validate against duplicates and existence
+        for ability in chosen_boosts:
+            if ability not in ABILITY_NAMES:
+                raise EntityAbilityNotFoundError(ability)
 
         # Validate proficiency
         for skill in info['skills']:
@@ -221,14 +265,18 @@ class Character(Entity):
             self.proficiency_promotion(skill) 
 
         min_ability_count = 0
-        for ability in chosen_boosts: # /---/ Validate if ability exist
+        for ability in chosen_boosts: 
             if ability in info['ability']:
                 min_ability_count += 1
         if min_ability_count < 1:
-            print(f"error : Required 1 point boosts on {info['ability']}.'") # /---/
-          
-        self.background_boosts = {ability: 2 for ability in chosen_boosts}
-        self.background = name
+            raise BackgroundMinAbilityRequiredError(name, info['ability'])
+        sum_ability =  {ability: 2 for ability in chosen_boosts}
+        if sum(sum_ability.values()) != len(chosen_boosts) * 2:
+            raise CharacterInvalidDistributionError(chosen_boosts)
+
+
+        self._background_boosts = sum_ability
+        self.background         = name
         self.lore           += info['lore']
         self.acquired_feats += info['feat']
 
@@ -238,20 +286,37 @@ class Character(Entity):
     def set_free_ability_points(self, ability_points):
         for ability in ability_points:
             if ability not in ABILITY_NAMES:
-                print(f"error : Ability '{ability}' not found")
+                raise EntityAbilityNotFoundError(ability)
 
         if len(ability_points) > FREE_ABILITY_POINTS:
-            print(f"error : Max Free ability points: {FREE_ABILITY_POINTS}'") # /---/
+            raise CharacterAbilityLimitExceededError(len(ability_points), FREE_ABILITY_POINTS)
 
         sum_ability = {ability:2 for ability in ability_points}
 
         if sum(sum_ability.values()) != len(ability_points) * 2:
-            print(f"error : Invalid boost distribution") # /---/
+            raise CharacterInvalidDistributionError(ability_points)
 
-        self.free_boosts = {ability:2 for ability in ability_points}
+        self._free_boosts = sum_ability
 
         return True
     
+    # ==============================================================
+    # UPDATE FUNCTIONS
+    # ==============================================================
 
-    def set_character_points(self, ancestry, character_class, free_ability_points ,free_points):
-        pass
+    def update_character_ability_points(self):
+        """
+        Sum of base, ancestry, class and background and free abilities points on core ability 
+        """
+        self.core_ability_score = dict(
+            Counter(ABILITY_SCORE) + 
+            Counter(self._ancestry_boosts)  + 
+            Counter(self._class_boosts)  + 
+            Counter(self._background_boosts) + 
+            Counter(self._free_boosts)
+        )
+
+        # Update dependency values by ability points
+        self.update_parameters_by_ability()
+        
+        return True
