@@ -1,7 +1,8 @@
-from scripts.constants  import ABILITY_SCORE, PROF_NAMES, PROF_RANG_BASE, SKILLS_BASE, SAV_THROWS_BASE, SKILLS, SAV_THROWS, PARAMETER_DEPENDENCE
+from scripts.constants  import ABILITY_SCORE, PROF_NAMES, PROF_RANG_BASE, SKILLS_BASE, SAV_THROWS_BASE, SKILLS, SAV_THROWS, PARAMETER_DEPENDENCE, SKILLS_NAMES, SAV_THROWS_NAMES
 from scripts.config     import MAX_LEVEL, DEFAULTS_ACTIONS, MAX_DYING_COUNT
 from scripts.mechanics  import calculate_ability_modifier, calculate_proficiency_bonus
 from scripts.exceptions import EntityParameterNotFoundError, EntityAbilityNotFoundError, EntityProficiencyNotFoundError, EntityProficiencyLimitError, EntityLevelLimitError, EntityIsIntegerError, EntityDataFormatError
+from collections import Counter
 
 class Entity:
     """
@@ -43,10 +44,11 @@ class Entity:
         self.trait     = ['general'] # All entity tags 
         self.condition = []          # Altered conditions 
 
-        self.proficiency_rank   = PROF_RANG_BASE.copy() # Proficiency rank dict  
-        self.core_ability_score = ABILITY_SCORE    # Ability
-        self.skill              = self.__initial_insert_parameters_points(SKILLS_BASE.copy())     # All Skills with dependences values
-        self.saving_throws      = self.__initial_insert_parameters_points(SAV_THROWS_BASE.copy()) # Saving parameters with dependences values
+        self.proficiency_rank    = PROF_RANG_BASE.copy() # Proficiency rank dict  
+        self.core_ability_score  = ABILITY_SCORE    # Ability
+        self.extra_ability_score = {name: 0 for name, _ in self.core_ability_score.items()} 
+        self.skill               = self.__initial_insert_parameters_points(SKILLS_BASE.copy())     # All Skills with dependences values
+        self.saving_throws       = self.__initial_insert_parameters_points(SAV_THROWS_BASE.copy()) # Saving parameters with dependences values
 
         self.acquired_feats = [] # Feats 
         self.custom_feats   = {} # Feats created just for this entity
@@ -64,6 +66,24 @@ class Entity:
     def __str__(self): 
         return f"{self.name} Lv: {self.level} - HP: {self.hit_points_current}/{self.hit_points_max}"
 
+
+    # ==============================================================
+    # INIT FUNCTIONS 
+    # ==============================================================
+
+    def __initial_insert_parameters_points(self, parameters):  
+        """
+        insert the parameter points when it's created
+        """
+        parameters_dict = {}
+        for parameter in parameters:
+            parameters_dict[parameter[0]] =  self.update_parameter_point(parameter[1], parameter[0], parameter[2])
+        return parameters_dict
+    
+
+    # ==============================================================
+    # ABILITY / SKILLS / SAVING THROWS / PROFICIENCY - FUNCTIONS
+    # ==============================================================
     def __sum_parameters_points(self, parameters):
         """
         Sum all points for a parameter
@@ -71,7 +91,27 @@ class Entity:
         if not isinstance(parameters, dict):
             raise EntityDataFormatError(parameters, dict)
         return sum(parameters.values())
+    
+    def ability_calculation(self, name): 
+        """
+        Convert ability base points into modifier value
+        """
+        ability_value = self.get_ability_value(name) 
+        return calculate_ability_modifier(ability_value)
 
+    def get_ability_value(self, name):
+        """
+        Sum entity a base value ability with the extra ability value
+        """
+        if name not in self.core_ability_score:
+            raise EntityAbilityNotFoundError(name)
+        return self.core_ability_score[name] + self.extra_ability_score[name]
+
+    def get_ability_score(self):
+        """
+        Sum entity all bases values abilities with the extras abilities values
+        """
+        return dict(Counter(self.core_ability_score) + Counter(self.extra_ability_score))
 
     def get_skill_value(self, name):
         """
@@ -80,21 +120,31 @@ class Entity:
         if name not in self.skill:
             raise EntityParameterNotFoundError(name, "skill")
         return self.__sum_parameters_points(self.skill[name])
-    
+
     def get_saving_throws_value(self, name): 
         """
         Obtain single saving throw value
         """
         if name not in self.saving_throws:
             raise EntityParameterNotFoundError(name, "saving_throws")
-        return self.__sum_parameters_points(self.saving_throws[name])
+        return self.__sum_parameters_points(self.saving_throws[name])   
+
+
+    def proficiency_value(self, name):
+        """
+        Get proficiency bonus value, by proficiency rank and entity level
+        """
+        if name not in self.proficiency_rank:
+            raise EntityProficiencyNotFoundError(name)
+        rank = self.proficiency_rank[name]
+        sum_points = calculate_proficiency_bonus(self.level, rank)
+        return sum_points
 
 
     def proficiency_promotion(self, proficiency_name, force_promotion = False): 
         """
         Ascend one entity's proficiency rank
         """
-
         if proficiency_name not in self.proficiency_rank:
             raise EntityProficiencyNotFoundError(proficiency_name)
         if self.proficiency_rank[proficiency_name] < len(PROF_NAMES) or force_promotion == True:
@@ -108,17 +158,96 @@ class Entity:
             raise EntityProficiencyLimitError(self.name, proficiency_name, PROF_NAMES[-1])
 
 
+    # ==============================================================
+    # UPDATES FUNCTIONS
+    # ==============================================================
+    def update_parameter_point(self, ability, proficiency, custom): 
+        """
+        Update the parameter points
+        """
+        parameter = {'mod': self.ability_calculation(ability),'proficiency': self.proficiency_value(proficiency), 'custom' : custom}
+        return parameter
+
+    def _update_sub_parameter(self, param_dict, name, custom=None, source_label="parameter"):
+        """
+        Internal helper to update proficiency and custom bonuses for any parameter dictionary.
+        """
+        if name not in param_dict:
+            raise EntityParameterNotFoundError(name, source_label)
+        if name not in self.proficiency_rank:
+            raise EntityProficiencyNotFoundError(name)
+        
+        # Validation
+        if custom is not None and not isinstance(custom, int):
+            raise EntityIsIntegerError("Custom bonus value must be an integer.")
+        
+        param_dict[name]['proficiency'] = calculate_proficiency_bonus(self.level, self.proficiency_rank[name])
+
+        # Update values if provided
+        if custom is not None:
+            param_dict[name]['custom'] = custom
+
+    def update_skill(self, name, custom=None):
+        """
+        Updates a specific skill's bonuses and recalculates its ability modifier dependency.
+        """
+        self._update_sub_parameter(self.skill, name, custom, "skill")
+        related_ability = SKILLS[name]
+        self.skill[name]['mod'] = self.ability_calculation(related_ability)  
+
+    def update_saving_throw(self, name, custom=None):
+        """
+        Updates a specific saving throw's bonuses and recalculates its modifier.
+        """
+        self._update_sub_parameter(self.saving_throws, name, custom, "saving_throw")
+        related_ability = SAV_THROWS[name]
+        self.saving_throws[name]['mod'] = self.ability_calculation(related_ability)
+
+    def update_extra_ability_score(self, name, value):
+        """
+        Update a new extra ability score and triggers a cascading update for all dependent parameters.
+        """
+        if name not in self.extra_ability_score:
+            raise EntityAbilityNotFoundError(name)
+        if not isinstance(value, int):
+            raise EntityIsIntegerError(f"Ability score for {name} must be an integer.")
+        
+        self.extra_ability_score[name] = value
+
+        # Cascading update using the dependency map
+        # idx 0: Skills, idx 1: Saving Throws
+        dependencies = PARAMETER_DEPENDENCE.get(name, [[], []])
+
+        self.update_parameters_by_ability(skills = dependencies[0], saving_throws = dependencies[1])
+            
+        return self.extra_ability_score[name]
+
+    def update_parameters_by_ability(self, skills = SKILLS_NAMES, saving_throws = SAV_THROWS_NAMES): 
+        """
+        Update skills/saving_throw mods values by its ability 
+        """
+        for skill_name in skills:
+            self.update_skill(skill_name)
+            
+        for save_name in saving_throws:
+            self.update_saving_throw(save_name)
+
+        return True
+
+
+    # ==============================================================
+    # HIT POINTS / LEVEL / ARMOR CLASS / CLASS CD - FUNCTIONS
+    # ==============================================================
     def level_up(self, force_lvl = False): 
         """
         Arise the entity's level by one
         """
-        if self.level < MAX_LEVEL or force_lvl == True:
+        if self.level < MAX_LEVEL or force_lvl == True: # /---/  + hit points
             self.level += 1
             self.exp    = 0
         else:
             raise EntityLevelLimitError(self.name, self.level, MAX_LEVEL)
         return self.level
-
 
     def sum_exp(self, value):
         """
@@ -128,7 +257,6 @@ class Entity:
             raise EntityIsIntegerError("The experience points must be a integer.")
         self.exp = 0 if self.exp + value < 0 else self.exp + value
         return (self.exp)
-
 
     def sum_hit_points(self, value): 
         """
@@ -157,109 +285,18 @@ class Entity:
             self.state = "Stable"
         elif self.state == "Dying" and value < 0:
             self.dying += 1
-        if self.hit_points_current < self.core_ability_score["CON"] * -1:
+        if self.hit_points_current < self.get_ability_value("CON") * -1:
             self.state = "Death"
 
         return previous_hp, self.hit_points_current, self.state
 
+    def calculate_armor_class(self): # /---/
+        pass
 
-    def ability_calculation(self, name): 
-        """
-        Convert ability base points into modifier value
-        """
-        if name not in self.core_ability_score:
-            raise EntityAbilityNotFoundError(name)
-        ability_value = self.core_ability_score[name]
-        return calculate_ability_modifier(ability_value)
+    def calculate_class_cd(self): # /---/
+        pass
 
+    def claculate_perception(self): # /---/
+        pass
 
-    def proficiency_value(self, name):
-        """
-        Get proficiency bonus value, by proficiency rank and entity level
-        """
-        if name not in self.proficiency_rank:
-            raise EntityProficiencyNotFoundError(name)
-        rank = self.proficiency_rank[name]
-        sum_points = calculate_proficiency_bonus(self.level, rank)
-        return sum_points
-    
-    
-    def insert_parameter_point(self, ability, proficiency, custom): 
-        """
-        Insert the parameter points
-        """
-        parameter = {'mod': self.ability_calculation(ability),'proficiency': self.proficiency_value(proficiency), 'custom' : custom}
-        return parameter
-
-
-    def __initial_insert_parameters_points(self, parameters):  
-        """
-        insert the parameter points when it's created
-        """
-        parameters_dict = {}
-        for parameter in parameters:
-            parameters_dict[parameter[0]] =  self.insert_parameter_point(parameter[1], parameter[0], parameter[2])
-        return parameters_dict
-
-
-    def _update_sub_parameter(self, param_dict, name, custom=None, source_label="parameter"):
-        """
-        Internal helper to update proficiency and custom bonuses for any parameter dictionary.
-        """
-        if name not in param_dict:
-            raise EntityParameterNotFoundError(name, source_label)
-        if name not in self.proficiency_rank:
-            raise EntityProficiencyNotFoundError(name)
-        
-        # Validation
-        if custom is not None and not isinstance(custom, int):
-            raise EntityIsIntegerError("Custom bonus value must be an integer.")
-        
-        param_dict[name]['proficiency'] = calculate_proficiency_bonus(self.level, self.proficiency_rank[name])
-
-        # Update values if provided
-        if custom is not None:
-            param_dict[name]['custom'] = custom
-
-
-    def update_skill(self, name, custom=None):
-        """
-        Updates a specific skill's bonuses and recalculates its ability modifier dependency.
-        """
-        self._update_sub_parameter(self.skill, name, custom, "skill")
-        related_ability = SKILLS[name]
-        self.skill[name]['mod'] = self.ability_calculation(related_ability)  
-
-
-    def update_saving_throw(self, name, custom=None):
-        """
-        Updates a specific saving throw's bonuses and recalculates its modifier.
-        """
-        self._update_sub_parameter(self.saving_throws, name, custom, "saving_throw")
-        related_ability = SAV_THROWS[name]
-        self.saving_throws[name]['mod'] = self.ability_calculation(related_ability)
-
-
-    def set_ability_score(self, name, value):
-        """
-        Sets a new core ability score and triggers a cascading update for all dependent parameters.
-        """
-        if name not in self.core_ability_score:
-            raise EntityAbilityNotFoundError(name)
-        if not isinstance(value, int):
-            raise EntityIsIntegerError(f"Ability score for {name} must be an integer.")
-        
-        self.core_ability_score[name] = value
-
-        # Cascading update using the dependency map
-        # idx 0: Skills, idx 1: Saving Throws
-        dependencies = PARAMETER_DEPENDENCE.get(name, [[], []])
-
-        for skill_name in dependencies[0]:
-            self.update_skill(skill_name)
-            
-        for save_name in dependencies[1]:
-            self.update_saving_throw(save_name)
-            
-        return self.core_ability_score[name]
 

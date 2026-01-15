@@ -382,6 +382,23 @@ class CharacterInvalidDistributionError(CharacterEngineError):
             "code"           : self.error_code
         }
 
+class CharacterChangePastError(CharacterEngineError):
+    """Raised when the try to change the character's ancestry, class or background."""
+    def __init__(self,char_name, past_type):
+        self.char_name  = char_name
+        self.past_type  = past_type
+        self.error_code = "ERR_CHARACTER_CHANGE_PAST"
+        self.message    = f"You cannot change the {past_type} from {char_name}."
+        super().__init__(self.message)
+
+    def to_dict(self):
+        return {
+            "error"          : self.__class__.__name__,
+            "char_name"      : self.char_name,
+            "past_type"      : self.past_type,
+            "code"           : self.error_code
+        }
+
 
 # =============================================================================
 # ANCESTRY EXCEPTIONS

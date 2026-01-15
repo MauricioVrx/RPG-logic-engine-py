@@ -9,7 +9,8 @@ from scripts.exceptions import (
     ClassNotFoundError,
     ClassMainAbilityRequiredError,
     BackgroundNotFoundError,
-    BackgroundMinAbilityRequiredError
+    BackgroundMinAbilityRequiredError,
+    CharacterChangePastError
 )
 
 def test_assign_ancestry_valid(simple_char):
@@ -35,6 +36,11 @@ def test_asign_ancestry(simple_char):
     with pytest.raises(CharacterDuplicateAbilityError):
         simple_char.set_ancestry('Gnome', ["CON"])
 
+    # 5. Duplicate ancestry instance
+    with pytest.raises(CharacterChangePastError):
+        simple_char.set_ancestry('Human', ["INT", "DEX"])
+        simple_char.set_ancestry('Gnome', ["INT"])
+
 
 def test_assign_class_valid(simple_char):
     """Test successful class assignment."""
@@ -55,6 +61,11 @@ def test_assign_class_exceptions(simple_char):
     # 3. Use an invalid key ability for the class
     with pytest.raises(ClassMainAbilityRequiredError):
         simple_char.set_class('Fighter', "WIS")
+
+    # 4. Duplicate class instance
+    with pytest.raises(CharacterChangePastError):
+        simple_char.set_class('Fighter', "STR")
+        simple_char.set_class('Ranger', "DEX")
 
 
 def test_assign_background_valid(simple_char):
@@ -84,6 +95,11 @@ def test_assign_background_exceptions(simple_char):
     # 5. Duplicate ability selection in background
     with pytest.raises(CharacterInvalidDistributionError):
         simple_char.set_background('Merchant', ["INT", "INT"])
+
+    # 6. Duplicate background instance
+    with pytest.raises(CharacterChangePastError):
+        simple_char.set_background('Merchant', ["CHA","WIS"])
+        simple_char.set_background('Acrobat', ["STR", "WIS"])
 
 
 def test_assign_free_ability_points_valid(simple_char):
