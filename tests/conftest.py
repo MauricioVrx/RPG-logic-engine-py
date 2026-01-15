@@ -3,6 +3,11 @@ from scripts.dice import Dice, CustomDice, RangeDice
 from scripts.parser import FormulaProcessor
 
 from scripts.entity import Entity
+from scripts.character import Character
+
+# ===============================
+# DICE 
+# ===============================
 
 @pytest.fixture
 def d6():
@@ -20,6 +25,10 @@ def coin():
 def color_dice():
     return RangeDice(values=((2, "Rojo"), (3, "Verde")), is_numeric=True) 
 
+# ===============================
+# PARSER 
+# ===============================
+
 @pytest.fixture
 def parser_instance():
     throw = {
@@ -30,9 +39,23 @@ def parser_instance():
     }
     return FormulaProcessor(throw, Dice(20))
 
+# ===============================
+# ENTITY 
+# ===============================
+
 @pytest.fixture
 def simple_entity():
     simple_entity = Entity()
     simple_entity.hit_points_max     = 10
     simple_entity.hit_points_current = 5
     return simple_entity
+
+
+# ===============================
+# CHARACTER 
+# ===============================
+
+@pytest.fixture
+def simple_char():
+    simple_char = Character()
+    return simple_char
