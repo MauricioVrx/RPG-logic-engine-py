@@ -9,12 +9,15 @@ from scripts.exceptions import (
     CharacterAbilityLimitExceededError,
     CharacterDuplicateAbilityError,
     CharacterInvalidDistributionError,
+    CharacterChangePastError,
     AncestryNotFoundError,
     ClassNotFoundError,
     ClassMainAbilityRequiredError,
     BackgroundNotFoundError,
-    BackgroundMinAbilityRequiredError
+    BackgroundMinAbilityRequiredError,
 )
+
+from scripts.constants import ABILITY_SCORE
 
 # Data structures (To be moved to JSON/Database in future sprints)
 ANCESTRIES = {
@@ -142,16 +145,23 @@ class Character(Entity):
         self.secondary_ability = []
 
         # Points for the 4-step boost process
-        self.ancestry_boosts   = {}
-        self.class_boosts      = {}
-        self.background_boosts = {}
-        self.free_boosts       = {}
+        self._ancestry_boosts   = {}
+        self._class_boosts      = {}
+        self._background_boosts = {}
+        self._free_boosts       = {}
 
-    # /---/ validate empty ancestry
-    # /---/ validate empty background
 
+
+    # ==============================================================
+    # ANCESTRY / CLASS / BACKGROUND / FREE - POINTS FUNCTIONS
+    # ==============================================================
     def set_ancestry(self, name, extra_abilities = []):
-        """Sets the character's ancestry and applies related boosts and stats."""
+        """
+        Sets the character's ancestry and applies related boosts and stats.
+        """
+        if self.ancestry != None:
+            raise CharacterChangePastError(self.name, 'ancestry')
+
         if name not in ANCESTRIES:
             raise AncestryNotFoundError(name)
         
@@ -174,7 +184,6 @@ class Character(Entity):
                 raise CharacterDuplicateAbilityError(ability, 'Ancestry', info["ability_boosts"])
        
         # Assign core stats
-        self.ancestry = name
         self.hit_points_max += info['hit_points_max']
         self.speed          += info['speed']
         self.size            = info['size']
@@ -186,13 +195,19 @@ class Character(Entity):
         base_boosts = {k: v for k, v in info["ability_boosts"].items() if k != 'FREE'}
         final_boost_map = base_boosts | {ability: 1 for ability in extra_abilities}
 
-        self.ancestry_boosts = {ability: val * 2 for ability, val in final_boost_map.items()}
+        self._ancestry_boosts = {ability: val * 2 for ability, val in final_boost_map.items()}
+        self.ancestry         = name 
 
         return True
     
 
     def set_class(self, name, main_ability):
-        """Sets the character class and the key ability boost."""
+        """
+        Sets the character's class and the key ability boost.
+        """
+        if self.character_class != None:
+            raise CharacterChangePastError(self.name, 'class')
+        
         if name not in CHARACTER_CLASSES:
             raise ClassNotFoundError(name)
 
@@ -214,12 +229,19 @@ class Character(Entity):
         self.trait             += info['trait']
         self.magical_aptitude  += info['magical_aptitude']
 
-        self.class_boosts = {main_ability:2}
+        self._class_boosts   = {main_ability:2}
+        self.character_class = name 
+
         return True
 
 
     def set_background(self, name, chosen_boosts):
-        """Sets background and applies proficiency in skills/lore."""
+        """
+        Sets background and applies proficiency in skills/lore.
+        """
+        if self.background != None:
+            raise CharacterChangePastError(self.name, 'background')
+        
         if name not in BACKGROUND:
             raise BackgroundNotFoundError(name)
 
@@ -253,8 +275,8 @@ class Character(Entity):
             raise CharacterInvalidDistributionError(chosen_boosts)
 
 
-        self.background_boosts = sum_ability
-        self.background = name
+        self._background_boosts = sum_ability
+        self.background         = name
         self.lore           += info['lore']
         self.acquired_feats += info['feat']
 
@@ -274,13 +296,27 @@ class Character(Entity):
         if sum(sum_ability.values()) != len(ability_points) * 2:
             raise CharacterInvalidDistributionError(ability_points)
 
-        self.free_boosts = sum_ability
+        self._free_boosts = sum_ability
 
         return True
     
+    # ==============================================================
+    # UPDATE FUNCTIONS
+    # ==============================================================
 
-    def set_character_points(self, ancestry, character_class, free_ability_points ,free_points):
-        pass
+    def update_character_ability_points(self):
+        """
+        Sum of base, ancestry, class and background and free abilities points on core ability 
+        """
+        self.core_ability_score = dict(
+            Counter(ABILITY_SCORE) + 
+            Counter(self._ancestry_boosts)  + 
+            Counter(self._class_boosts)  + 
+            Counter(self._background_boosts) + 
+            Counter(self._free_boosts)
+        )
 
-    def calculate_points(self):
-        pass
+        # Update dependency values by ability points
+        self.update_parameters_by_ability()
+        
+        return True
