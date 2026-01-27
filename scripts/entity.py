@@ -15,12 +15,16 @@ class Entity:
         self.alias       = ""   # Alias of entity
         self.age         = None # Count of ages
         self.appearance  = ""   # physical appearance
+        self.years_old   = ""   # Years old
+        self.gender      = 0    # 0 = None, 1 = Male, 2 = Female, 3 = Other
+        self.location    = ""   # id o description
+
         self.level       = 1 # Current level
         self.exp         = 0 # Total current exp
         self.dying       = 0 # Counts 
         self.speed       = 0 # movement in mts
 
-        self.state = "Stable" # State if is alive, dead or another 
+        self.state     = "Stable" # State if is alive, dead or another 
 
         self.backstory = "" # Previous and start history
         self.alignment = "" # Alignment preferences
@@ -60,7 +64,8 @@ class Entity:
         self.armor_class = 0 # Difficult a character is to hit in combat
         self.class_cd    = 0 # Specific abilities(from class or creatures) that force other creatures to attempt a saving throw
 
-        self.inventory = [] # temporal - Inventory of objects
+        self.inventory = []                                                        # temporal - Inventory of objects
+        self.equipment = {'armor' : None, "accesory" : [], "hand" : [None, None]}  # Humanoid template
 
 
     def __str__(self): 
@@ -157,7 +162,6 @@ class Entity:
         else:
             raise EntityProficiencyLimitError(self.name, proficiency_name, PROF_NAMES[-1])
 
-
     # ==============================================================
     # UPDATES FUNCTIONS
     # ==============================================================
@@ -234,9 +238,8 @@ class Entity:
 
         return True
 
-
     # ==============================================================
-    # HIT POINTS / LEVEL / ARMOR CLASS / CLASS CD - FUNCTIONS
+    # HIT POINTS / LEVEL / ARMOR CLASS / CLASS CD / PERCEPTION - FUNCTIONS
     # ==============================================================
     def level_up(self, force_lvl = False): 
         """
@@ -290,13 +293,37 @@ class Entity:
 
         return previous_hp, self.hit_points_current, self.state
 
-    def calculate_armor_class(self): # /---/
-        pass
+
+    def calculate_armor_class(self): 
+        """
+        Get armor class result
+        """
+        ac = self.ability_calculation('DEX')
+        
+        if 'armor' in self.equipment:
+            if self.equipment['armor'] != None:
+                if ac > self.equipment['armor']['DEX_cap']:
+                    ac = self.equipment['armor']['DEX_cap']
+                
+                # Bonus CA 
+                ac += self.equipment['armor']['AC_bonus']
+                
+                # Armor actegory proficiency
+                ac += self.proficiency_value(self.equipment['armor']['armor_category'])
+            else:
+                ac += self.proficiency_value('armor_unarmored')
+
+        ac += 10  
+        return ac
+
 
     def calculate_class_cd(self): # /---/
         pass
 
-    def claculate_perception(self): # /---/
-        pass
 
-
+    def calculate_perception(self): 
+        perception = self.ability_calculation('WIS')
+        if 'perception' in self.proficiency_rank :
+            perception += self.proficiency_value('perception')
+        return perception
+        

@@ -197,3 +197,8 @@ def test_calculate_saving_throws_proficiency_bonus(simple_entity):
     assert simple_entity.proficiency_rank[first_prof_rank] == 1
 
     simple_entity.saving_throws[first_prof_rank]['proficiency'] == 2
+
+
+def test_simple_calculate_armor_class(simple_entity):
+    """Verify a simple calculation of the armor class."""
+    simple_entity.calculate_armor_class() == 10

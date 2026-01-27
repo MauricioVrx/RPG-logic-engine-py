@@ -20,5 +20,7 @@ PARAMETER_DEPENDENCE = {ability:[[],[]] for ability in ABILITY_NAMES}
 {PARAMETER_DEPENDENCE[value][0].append(key) for key, value in SKILLS.items()}
 {PARAMETER_DEPENDENCE[value][1].append(key) for key, value in SAV_THROWS.items()}
 
-PROF_RANG_BASE = {"class_cd" : 0 , "armor_class" : 0, "perception" : 0} | {'weapon_simple' : 0, 'weapon_martial' : 0, 'weapon_advanced' : 0} | {'armor_unarmored': 0, 'armor_light' : 0, 'armor_medium' : 0 , 'armor_heavy' : 0} | {skill:0 for skill in SKILLS_NAMES} | {st:0 for st in SAV_THROWS_NAMES}
+ARMOR_CLASS = ['armor_unarmored', 'armor_light', 'armor_medium', 'armor_heavy']
+
+PROF_RANG_BASE = {"class_cd" : 0 , "armor_class" : 0, "perception" : 0} | {'weapon_simple' : 0, 'weapon_martial' : 0, 'weapon_advanced' : 0} | {ac :0 for ac in  ARMOR_CLASS} | {skill:0 for skill in SKILLS_NAMES} | {st:0 for st in SAV_THROWS_NAMES}
 
