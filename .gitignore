@@ -15,5 +15,6 @@ notebooks/*
 
 # Data and Config
 .env
-data/*.csv
+# data/*.csv
 data/*.xlsx
+data/dtf.ipynb

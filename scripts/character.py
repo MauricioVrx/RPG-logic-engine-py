@@ -16,122 +16,18 @@ from scripts.exceptions import (
     BackgroundNotFoundError,
     BackgroundMinAbilityRequiredError,
 )
+from data.dataframes import (
+    df_ancestry  as ancestry, 
+    df_char_class as character_class,
+    df_background as background, 
+)
 
 from scripts.constants import ABILITY_SCORE
 
+from scripts.mechanics import get_name_df
+import json
+
 # Data structures (To be moved to JSON/Database in future sprints)
-ANCESTRIES = {
-    "Gnome" :{
-        "hit_points_max" : 8,
-        "speed"          : 25, 
-        "size"           : 1, # Small
-        "ability_boosts" : {"CON" : 1, "CHA" : 1 , "STR" : -1, "FREE" : 1},
-        "trait"          : ['Gnome' , 'Humanoid'],
-        "language"       : ['Common', 'Gnomish', 'Fey'],
-        "sense"          : ['Low-Light Vision'],
-        "status"         : 1 
-    },
-    "Human" :{
-        "hit_points_max" : 8,
-        "speed"          : 25, 
-        "size"           : 2, # Medium
-        "ability_boosts" : {"FREE" : 2},
-        "trait"          : ['Human' , 'Humanoid'],
-        "language"       : ['Common', 'FREE'],
-        "status"         : 1,
-    },
-    "Elf" :{
-        "hit_points_max" : 6,
-        "speed"          : 30, 
-        "size"           : 2,
-        "ability_boosts" : {"DEX" : 1, "INT" : 1 , "CON" : -1, "FREE" : 1},
-        "trait"          : ['Elf' , 'Humanoid'],
-        "language"       : ['Common', 'Elven'],
-        "sense"          : ['Low-Light Vision'],
-        "status"         : 1, 
-    },
-}
-
-CHARACTER_CLASSES = {
-    'Fighter' : {
-        "hit_points_max"    : 10,
-        "main_ability"      : ["STR", "DEX"],
-        "secondary_ability" : ["CON"],
-        "trained_skills"    : 3, 
-        "trait"             : ['Fighter'],
-        "magical_aptitude"  : [],
-        "status"            : 1, 
-    },
-    'Rogue' : {
-        "hit_points_max"    : 8,
-        "main_ability"      : ["DEX"],
-        "secondary_ability" : ["CON", "CHA"],
-        "trained_skills"    : 7, 
-        "trait"             : ['Rogue'],
-        "magical_aptitude"  : [],
-        "status"            : 1, 
-    },
-    'Ranger' : {
-        "hit_points_max"    : 10,
-        "main_ability"      : ["STR", "DEX"],
-        "secondary_ability" : ["CON", "WIS"],
-        "trained_skills"    : 4,
-        "trait"             : ['Ranger'],
-        "magical_aptitude"  : ["WIS"],
-        "status"            : 1, 
-    },
-}
-
-BACKGROUND = {
-    "Acrobat" : {
-        "ability"      : ["STR", "DEX"], # almost 1 of list + 1 porint free = 2 points
-        "boosts_count" : 2,
-        "description"  : "In a circus or on the streets, you earned your pay by performing as an acrobat. You might have turned to adventuring when the money dried up, or simply decided to put your skills to better use.",
-        "rarity"       : "Common",
-        "skills"       : ["Acrobatics"],
-        "lore"         : ["Circus"],
-        "feat"         : ["Steady Balance"],
-        "extra"        : {},
-        "status"       : 1, 
-    },
-    "Hunter" : {
-        "ability"      : ["DEX", "WIS"],
-        "boosts_count" : 2,
-        "description"  : "You stalked and took down animals and other creatures of the wild. Skinning animals, harvesting their flesh, and cooking them were also part of your training, all of which can give you useful resources while you adventure.",
-        "rarity"       : "Common",
-        "skills"       : ["Survival"],
-        "lore"         : ["Tanning"],
-        "feat"         : ["Survey Wildlife"],
-        "extra"        : {},
-        "status"       : 1, 
-    },
-    "Merchant" : {
-        "ability"      : ["INT", "CHA"],
-        "boosts_count" : 2,
-        "description"  : "In a dusty shop, market stall, or merchant caravan, you bartered wares for coin and trade goods. The skills you picked up still apply in the adventuring life, in which a good deal on a suit of armor could prevent your death.",
-        "rarity"       : "Common",
-        "skills"       : ["Diplomacy"],
-        "lore"         : ["Mercantile"],
-        "feat"         : ["Bargain Hunter"],
-        "extra"        : {},
-        "status"       : 1, 
-    },
-}
-
-TRAIT = {
-    'Gnome'    : {'type' : 'Ancestry', 'description' : 'A creature with this trait is a member of the gnome ancestry. Gnomes are small people skilled at magic who seek out new experiences and usually have low-light vision. An ability with this trait can be used or selected only by gnomes. A weapon with this trait is created and used by gnomes.'},
-    'Human'    : {'type' : 'Ancestry', 'description' : 'A creature with this trait is a member of the human ancestry. Humans are a diverse array of people known for their adaptability. An ability with this trait can be used or selected only by humans.'},
-    'Elf  '    : {'type' : 'Ancestry', 'description' : 'A creature with this trait is a member of the elf ancestry. Elves are mysterious people with rich traditions of magic and scholarship who typically have low-light vision. An ability with this trait can be used or selected only by elves. A weapon with this trait is created and used by elves.'},
-    'Humanoid' : {'type' : 'Creature Type', 'description' : 'Humanoid creatures reason and act much like humans. They typically stand upright and have two arms and two legs.'},
-
-    'Fighter' : {'type' : 'Class', 'description' : 'This indicates abilities from the fighter class.'},
-    'Rogue'   : {'type' : 'Class', 'description' : 'This indicates abilities from the rogue class.'},
-    'Ranger'  : {'type' : 'Class', 'description' : 'This indicates abilities from the ranger class.'},
-}
-
-SENSE = {
-    'Low-Light Vision' : {'type' : 'eyes', 'description' : 'A creature with low-light vision can see in dim light as though it were bright light, so it ignores the concealed condition due to dim light.'},
-}
 
 class Character(Entity):
     def __init__(self):
@@ -151,7 +47,6 @@ class Character(Entity):
         self._free_boosts       = {}
 
 
-
     # ==============================================================
     # ANCESTRY / CLASS / BACKGROUND / FREE - POINTS FUNCTIONS
     # ==============================================================
@@ -162,16 +57,17 @@ class Character(Entity):
         if self.ancestry != None:
             raise CharacterChangePastError(self.name, 'ancestry')
 
-        if name not in ANCESTRIES:
+        info = get_name_df(ancestry, name)
+
+        if len(info) == 0: 
             raise AncestryNotFoundError(name)
-        
-        info = ANCESTRIES[name].copy() 
 
         if info.get("status") == 0:
             raise CharacterDisabledParameterError(name, 'Ancestry')
-
+        
         # Validate Free Boosts limit
-        max_free = info["ability_boosts"].get('FREE', 0)
+        ability_boosts = json.loads(info["ability_boosts"])
+        max_free = ability_boosts.get('FREE', 0)
         if len(extra_abilities) > max_free:
             raise CharacterAbilityLimitExceededError(len(extra_abilities), max_free)
 
@@ -179,9 +75,9 @@ class Character(Entity):
         for ability in extra_abilities:
             if ability not in ABILITY_NAMES:
                 raise EntityAbilityNotFoundError(ability)
-            if ability in info["ability_boosts"]:
-                del info["ability_boosts"]['FREE']
-                raise CharacterDuplicateAbilityError(ability, 'Ancestry', info["ability_boosts"])
+            if ability in ability_boosts:
+                del ability_boosts['FREE']
+                raise CharacterDuplicateAbilityError(ability, 'Ancestry', ability_boosts)
        
         # Assign core stats
         self.hit_points_max += info['hit_points_max']
@@ -192,7 +88,7 @@ class Character(Entity):
         self.language       += info.get('language', []) 
 
         # Process boosts (1 boost = 2 points)
-        base_boosts = {k: v for k, v in info["ability_boosts"].items() if k != 'FREE'}
+        base_boosts = {k: v for k, v in ability_boosts.items() if k != 'FREE'}
         final_boost_map = base_boosts | {ability: 1 for ability in extra_abilities}
 
         self._ancestry_boosts = {ability: val * 2 for ability, val in final_boost_map.items()}
@@ -205,19 +101,20 @@ class Character(Entity):
         """
         Sets the character's class and the key ability boost.
         """
+        
         if self.character_class != None:
             raise CharacterChangePastError(self.name, 'class')
-        
-        if name not in CHARACTER_CLASSES:
-            raise ClassNotFoundError(name)
 
+        info = get_name_df(character_class, name)
+
+        if len(info) == 0: 
+            raise ClassNotFoundError(name)
+        
         if main_ability not in ABILITY_NAMES:
             raise EntityAbilityNotFoundError(main_ability)
-        
-        info = CHARACTER_CLASSES[name].copy() 
 
         if info.get("status") == 0:
-            raise CharacterDisabledParameterError(name, 'Class')
+            raise CharacterDisabledParameterError(name, 'class')
 
         if main_ability not in info['main_ability']:
             raise ClassMainAbilityRequiredError(main_ability, info['main_ability'])
@@ -239,13 +136,14 @@ class Character(Entity):
         """
         Sets background and applies proficiency in skills/lore.
         """
+
         if self.background != None:
             raise CharacterChangePastError(self.name, 'background')
-        
-        if name not in BACKGROUND:
-            raise BackgroundNotFoundError(name)
 
-        info = BACKGROUND[name].copy() 
+        info = get_name_df(background, name)
+
+        if len(info) == 0: 
+            raise BackgroundNotFoundError(name)
 
         if info.get("status") == 0:
             raise CharacterDisabledParameterError(name, 'Background')
@@ -259,7 +157,7 @@ class Character(Entity):
                 raise EntityAbilityNotFoundError(ability)
 
         # Validate proficiency
-        for skill in info['skills']:
+        for skill in info['skills'].split(','):
             if skill not in self.proficiency_rank: 
                 raise EntityParameterNotFoundError(skill, "skill")
             self.proficiency_promotion(skill) 
@@ -273,7 +171,6 @@ class Character(Entity):
         sum_ability =  {ability: 2 for ability in chosen_boosts}
         if sum(sum_ability.values()) != len(chosen_boosts) * 2:
             raise CharacterInvalidDistributionError(chosen_boosts)
-
 
         self._background_boosts = sum_ability
         self.background         = name

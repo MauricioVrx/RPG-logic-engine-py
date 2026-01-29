@@ -301,7 +301,7 @@ class Entity:
         ac = self.ability_calculation('DEX')
         
         if 'armor' in self.equipment:
-            if self.equipment['armor'] != None:
+            if type(self.equipment['armor']) != type(None):
                 if ac > self.equipment['armor']['DEX_cap']:
                     ac = self.equipment['armor']['DEX_cap']
                 

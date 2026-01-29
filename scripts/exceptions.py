@@ -488,3 +488,49 @@ class BackgroundMinAbilityRequiredError(CharacterEngineError):
             "code"            : self.error_code
         }
     
+
+# =============================================================================
+# DATAFRAMES EXCEPTIONS
+# =============================================================================
+class DataFrameError(GameBaseError): 
+    """Base class for DataFrame errors."""
+    pass
+
+
+class DataFrameMultipleRowsError(DataFrameError):
+    """Raised when the DataFrame does multiple rows."""
+    def __init__(self, name, column, df_name):
+        self.name    = name
+        self.column  = column
+        self.df_name = df_name
+        self.error_code = "ERR_DATAFRAME_FOUND_MULTIPLE_ROWS"
+        self.message    = f"DATAFRAME ERROR: '{name}' name have more than one rows on '{df_name}'."
+        super().__init__(self.message)
+
+    def to_dict(self):
+        return {
+            "error"          : self.__class__.__name__,
+            "name"           : self.name ,
+            "column"         : self.column ,
+            "dataframe_name" : self.df_name ,
+            "code"           : self.error_code
+        }
+
+class DataFrameRowNotFoundError(DataFrameError):
+    """Raised when the DataFrame does multiple rows."""
+    def __init__(self, name, column, df_name):
+        self.name    = name
+        self.column  = column
+        self.df_name = df_name
+        self.error_code = "ERR_DATAFRAME_VALUE_NOT_FOUND"
+        self.message    = f"Background '{name}' not found on '{df_name}."
+        super().__init__(self.message)
+
+    def to_dict(self):
+        return {
+            "error"          : self.__class__.__name__,
+            "name"           : self.name ,
+            "column"         : self.column ,
+            "dataframe_name" : self.df_name ,
+            "code"           : self.error_code
+        }
