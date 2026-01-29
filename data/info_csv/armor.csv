@@ -1,0 +1,14 @@
+name;rarity;trait;armor_category;AC_bonus;DEX_cap;check_penalty;speed_penalty;STR_req;price;level;bulk;armor_group;from
+Unarmored;Common;;armor_unarmored;0;None;None;None;None;None;0;None;None;base
+Explorer's Clothing;Common;Comfort;armor_unarmored;0;5;None;None;None;10;0;L;Cloth;base
+Padded Armor;Common;Comfort;armor_light;1;3;None;None;0;20;0;L;Cloth;base
+Leather Armor;Common;;armor_light;1;4;-1;None;0;200;0;1;Leather;base
+Studded Leather Armor;Common;;armor_light;2;3;-1;None;1;300;0;1;Leather;base
+Chain Shirt;Common;Flexible, Noisy;armor_light;2;3;-1;None;1;500;0;1;Chain;base
+Hide Armor;Common;;armor_medium;3;2;-2;-5;2;200;0;2;Leather;base
+Scale Mail;Common;;armor_medium;3;2;-2;-5;2;400;0;2;Composite;base
+Chain Mail;Common;Flexible, Noisy;armor_medium;4;1;-2;-5;3;600;0;2;Chain;base
+Breastplate;Common;;armor_medium;4;1;-2;-5;3;800;0;2;Plate;base
+Splint Mail;Common;;armor_heavy;5;1;-3;-10;3;1300;1;3;Composite;base
+Half Plate;Common;;armor_heavy;5;1;-3;-10;3;1800;1;3;Plate;base
+Full Plate;Common;Bulwark;armor_heavy;6;0;-3;-10;4;3000;2;4;Plate;base

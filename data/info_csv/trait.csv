@@ -1,0 +1,12 @@
+name;type;description;from
+Gnome;Ancestry;A creature with this trait is a member of the gnome ancestry. Gnomes are small people skilled at magic who seek out new experiences and usually have low-light vision. An ability with this trait can be used or selected only by gnomes. A weapon with this trait is created and used by gnomes.;base
+Human;Ancestry;A creature with this trait is a member of the human ancestry. Humans are a diverse array of people known for their adaptability. An ability with this trait can be used or selected only by humans.;base
+Elf;Ancestry;A creature with this trait is a member of the elf ancestry. Elves are mysterious people with rich traditions of magic and scholarship who typically have low-light vision. An ability with this trait can be used or selected only by elves. A weapon with this trait is created and used by elves.;base
+Humanoid;Creature Type;Humanoid creatures reason and act much like humans. They typically stand upright and have two arms and two legs.;base
+Fighter;Class;This indicates abilities from the fighter class.;base
+Rogue;Class;This indicates abilities from the rogue class.;base
+Ranger;Class;This indicates abilities from the ranger class.;base
+Comfort;Armor;The armor is so comfortable that you can rest normally while wearing it.;base
+Flexible;Armor;The armor is pliable and doesn’t hinder most actions. You don’t apply its check penalty to Acrobatics or Athletics checks.;base
+Noisy;Armor;This armor is loud and likely to alert others to your presence. The armor’s check penalty applies to Stealth checks even if you have the required Strength modifier.;base
+Bulwark;Armor;The armor covers you so completely that it provides benefits against some damaging effects. On Reflex saves to avoid a damaging effect, such as a fireball, you add a +3 modifier instead of your Dexterity modifier;base
