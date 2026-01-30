@@ -1,0 +1,5 @@
+Name;Source;Trait;Bulk;AC;Speed Penalty;Hardness;HP;Price;Level;from;description
+Buckler;Player Core pg. 274 2.0;;L;1;;3;6 (3);100;0;base;
+Wooden Shield;Player Core pg. 274 2.0;;1;2;;3;12 (6);100;0;base;
+Steel Shield;Player Core pg. 274 2.0;;1;2;;5;20 (10);200;0;base;
+Tower Shield;Player Core pg. 274 2.0;;4;2;-5;5;20 (10);1000;0;base;

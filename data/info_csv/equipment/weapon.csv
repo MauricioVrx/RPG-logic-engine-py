@@ -1,0 +1,105 @@
+Name;Weapon Type;Weapon Category;Weapon Group;Trait;Damage;Damage_Type;Hands;Range;Reload;Bulk;Price;Level;from
+Fist;Melee;weapon_unarmed;Brawling;Agile, Finesse, Nonlethal, Unarmed;1d4;Bludgeoning;1;;;;;0;base
+Clan Dagger;Melee;weapon_simple;Knife;Agile, Dwarf, Parry, Uncommon, Versatile B;1d4;Piercing;1;;;L;200;0;base
+Club;Melee;weapon_simple;Club;Thrown 10 ft.;1d6;Bludgeoning;1;;;1;;0;base
+Dagger;Melee;weapon_simple;Knife;Agile, Finesse, Thrown 10 ft., Versatile S;1d4;Piercing;1;;;L;20;0;base
+Gauntlet;Melee;weapon_simple;Brawling;Agile, Free-Hand;1d4;Bludgeoning;1;;;L;20;0;base
+Katar;Melee;weapon_simple;Knife;Agile, Deadly d6, Monk, Uncommon;1d4;Piercing;1;;;L;30;0;base
+Light Mace;Melee;weapon_simple;Club;Agile, Finesse, Shove;1d4;Bludgeoning;1;;;L;40;0;base
+Longspear;Melee;weapon_simple;Spear;Reach;1d8;Piercing;2;;;2;50;0;base
+Mace;Melee;weapon_simple;Club;Shove;1d6;Bludgeoning;1;;;1;100;0;base
+Morningstar;Melee;weapon_simple;Club;Versatile P;1d6;Bludgeoning;1;;;1;100;0;base
+Sickle;Melee;weapon_simple;Knife;Agile, Finesse, Trip;1d4;Slashing;1;;;L;20;0;base
+Spear;Melee;weapon_simple;Spear;Monk, Thrown 20 ft.;1d6;Piercing;1;;;1;10;0;base
+Spiked Gauntlet;Melee;weapon_simple;Brawling;Agile, Free-Hand;1d4;Piercing;1;;;L;30;0;base
+Staff;Melee;weapon_simple;Club;Monk, Two-Hand 1d8;1d4;Bludgeoning;1;;;1;;0;base
+Adze;Melee;weapon_martial;Axe;Forceful, Sweep, Tripkee;1d10;Slashing;2;;;2;100;0;base
+Bastard Sword;Melee;weapon_martial;Sword;Two-Hand 1d12;1d8;Slashing;1;;;1;400;0;base
+Battle Axe;Melee;weapon_martial;Axe;Sweep;1d8;Slashing;1;;;1;100;0;base
+Bo Staff;Melee;weapon_martial;Club;Monk, Parry, Reach, Trip;1d8;Bludgeoning;2;;;2;20;0;base
+Breaching Pike;Melee;weapon_martial;Spear;Hobgoblin, Razing, Reach, Uncommon;1d6;Piercing;1;;;1;800;0;base
+Claw Blade;Melee;weapon_martial;Knife;Agile, Catfolk, Deadly d8, Disarm, Finesse, Uncommon, Versatile P;1d4;Slashing;1;;;L;200;0;base
+Cruuk;Melee;weapon_martial;Club;Shove, thrown 30 ft., Tripkee;1d6;Bludgeoning;1;;;L;40;0;base
+Dogslicer;Melee;weapon_martial;Sword;Agile, Backstabber, Finesse, Goblin, Uncommon;1d6;Slashing;1;;;L;10;0;base
+Elven Curve Blade;Melee;weapon_martial;Sword;Elf, Finesse, Forceful, Uncommon;1d8;Slashing;2;;;2;400;0;base
+Falchion;Melee;weapon_martial;Sword;Forceful, Sweep;1d10;Slashing;2;;;2;300;0;base
+Fangwire;Melee;weapon_martial;Brawling;Agile, Backstabber, Deadly d8, Finesse, Grapple, Kobold, Uncommon;1d4;Slashing;1;;;L;400;0;base
+Filcher's Fork;Melee;weapon_martial;Spear;Agile, Backstabber, Deadly d6, Finesse, Halfling, Thrown 20 ft., Uncommon;1d4;Piercing;1;;;L;100;0;base
+Flail;Melee;weapon_martial;Flail;Disarm, Sweep, Trip;1d6;Bludgeoning;1;;;1;80;0;base
+Glaive;Melee;weapon_martial;Polearm;Deadly d8, Forceful, Reach;1d8;Slashing;2;;;2;100;0;base
+Gnome Hooked Hammer;Melee;weapon_martial;Hammer;Gnome, Trip, Two-Hand 1d10, Uncommon, Versatile P;1d6;Bludgeoning;1;;;1;200;0;base
+Greataxe;Melee;weapon_martial;Axe;Sweep;1d12;Slashing;2;;;2;200;0;base
+Greatclub;Melee;weapon_martial;Club;Backswing, Shove;1d10;Bludgeoning;2;;;2;100;0;base
+Greatpick;Melee;weapon_martial;Pick;Fatal 1d12;1d10;Piercing;2;;;2;100;0;base
+Greatsword;Melee;weapon_martial;Sword;Versatile P;1d12;Slashing;2;;;2;200;0;base
+Guisarme;Melee;weapon_martial;Polearm;Reach, Trip;1d10;Slashing;2;;;2;200;0;base
+Halberd;Melee;weapon_martial;Polearm;Reach, Versatile S;1d10;Piercing;2;;;2;200;0;base
+Hand Adze;Melee;weapon_martial;Axe;Agile, Finesse, Sweep, Thrown 10 ft., Tripkee;1d4;Slashing;1;;;L;50;0;base
+Hatchet;Melee;weapon_martial;Axe;Agile, Sweep, Thrown 10 ft.;1d6;Slashing;1;;;L;40;0;base
+Horsechopper;Melee;weapon_martial;Polearm;Goblin, Reach, Trip, Uncommon, Versatile P;1d8;Slashing;2;;;2;90;0;base
+Kama;Melee;weapon_martial;Knife;Agile, Monk, Trip, Uncommon;1d6;Slashing;1;;;L;100;0;base
+Katana;Melee;weapon_martial;Sword;Deadly d8, Two-Hand 1d10, Uncommon, Versatile P;1d6;Slashing;1;;;1;200;0;base
+Khakkhara;Melee;weapon_martial;Club;Monk, Shove, Two-Hand d10, Uncommon, Versatile P;1d6;Bludgeoning;1;;;1;200;0;base
+Khopesh;Melee;weapon_martial;Sword;Trip, Uncommon;1d8;Slashing;1;;;1;200;0;base
+Kukri;Melee;weapon_martial;Knife;Agile, Finesse, Trip, Uncommon;1d6;Slashing;1;;;L;60;0;base
+Lance;Melee;weapon_martial;Spear;Deadly d8, Jousting 1d6, Reach;1d8;Piercing;2;;;2;100;0;base
+Light Hammer;Melee;weapon_martial;Hammer;Agile, Thrown 20 ft.;1d6;Bludgeoning;1;;;L;30;0;base
+Light Pick;Melee;weapon_martial;Pick;Agile, Fatal 1d8;1d4;Piercing;1;;;L;40;0;base
+Longsword;Melee;weapon_martial;Sword;Versatile P;1d8;Slashing;1;;;1;100;0;base
+Main-gauche;Melee;weapon_martial;Knife;Agile, Disarm, Finesse, Parry, Versatile S;1d4;Piercing;1;;;L;50;0;base
+Mambele;Melee;weapon_martial;Axe;Deadly d8, Disarm, Thrown 20 ft., Uncommon;1d6;Slashing;1;;;1;60;0;base
+Maul;Melee;weapon_martial;Hammer;Shove;1d12;Bludgeoning;2;;;2;300;0;base
+Nunchaku;Melee;weapon_martial;Club;Backswing, Disarm, Finesse, Monk, Uncommon;1d6;Bludgeoning;1;;;L;20;0;base
+Orc Knuckle Dagger;Melee;weapon_martial;Knife;Agile, Disarm, Orc, Uncommon;1d6;Piercing;1;;;L;70;0;base
+Pick;Melee;weapon_martial;Pick;Fatal 1d10;1d6;Piercing;1;;;1;70;0;base
+Ranseur;Melee;weapon_martial;Polearm;Disarm, Reach;1d10;Piercing;2;;;2;200;0;base
+Rapier;Melee;weapon_martial;Sword;Deadly d8, Disarm, Finesse;1d6;Piercing;1;;;1;200;0;base
+Sai;Melee;weapon_martial;Knife;Agile, Disarm, Finesse, Monk, Uncommon, Versatile B;1d4;Piercing;1;;;L;60;0;base
+Sap;Melee;weapon_martial;Club;Agile, Nonlethal;1d6;Bludgeoning;1;;;L;10;0;base
+Scimitar;Melee;weapon_martial;Sword;Forceful, Sweep;1d6;Slashing;1;;;1;100;0;base
+Scythe;Melee;weapon_martial;Polearm;Deadly d10, Trip;1d10;Slashing;2;;;2;200;0;base
+Shield Bash;Melee;weapon_martial;Shield;;1d4;Bludgeoning;1;;;;;0;base
+Shield Boss;Melee;weapon_martial;Shield;Attached to Shield;1d6;Bludgeoning;1;;;;50;0;base
+Shield Spikes;Melee;weapon_martial;Shield;Attached to Shield;1d6;Piercing;1;;;;50;0;base
+Shortsword;Melee;weapon_martial;Sword;Agile, Finesse, Versatile S;1d6;Piercing;1;;;L;90;0;base
+Spiked Chain;Melee;weapon_martial;Flail;Disarm, Finesse, Trip, Uncommon;1d8;Slashing;2;;;1;300;0;base
+Starknife;Melee;weapon_martial;Knife;Agile, Deadly d6, Finesse, Thrown 20 ft., Versatile S;1d4;Piercing;1;;;L;200;0;base
+Sword Cane;Melee;weapon_martial;Sword;Agile, Concealable, Finesse;1d6;Piercing;1;;;1;500;0;base
+Temple Sword;Melee;weapon_martial;Sword;Monk, Trip, Uncommon;1d8;Slashing;1;;;1;200;0;base
+Tengu Gale Blade;Melee;weapon_martial;Sword;Agile, Disarm, Finesse, Tengu, Uncommon;1d6;Slashing;1;;;L;400;0;base
+Trident;Melee;weapon_martial;Spear;Thrown 20 ft.;1d8;Piercing;1;;;1;100;0;base
+Wakizashi;Melee;weapon_martial;Sword;Agile, Deadly d8, Finesse, Uncommon, Versatile P;1d4;Slashing;1;;;L;100;0;base
+War Flail;Melee;weapon_martial;Flail;Disarm, Sweep, Trip;1d10;Bludgeoning;2;;;2;200;0;base
+Warhammer;Melee;weapon_martial;Hammer;Shove;1d8;Bludgeoning;1;;;1;100;0;base
+Whip;Melee;weapon_martial;Flail;Disarm, Finesse, Nonlethal, Reach, Trip;1d4;Slashing;1;;;1;10;0;base
+Capturing Spetum;Melee;weapon_advanced;Polearm;Hampering, Hobgoblin, Reach, Trip, Uncommon;1d10;Piercing;2;;;2;900;0;base
+Dwarven Waraxe;Melee;weapon_advanced;Axe;Dwarf, Sweep, Two-Hand 1d12, Uncommon;1d8;Slashing;1;;;2;300;0;base
+Flying Talon;Melee;weapon_advanced;Flail;Agile, Finesse, Kobold, Ranged Trip, Tethered, Thrown 10 ft., Trip, Uncommon;1d4;Piercing;1;;;1;600;0;base
+Gnome Flickmace;Melee;weapon_advanced;Flail;Gnome, Reach, Sweep, Uncommon;1d6;Bludgeoning;1;;;1;300;0;base
+Orc Necksplitter;Melee;weapon_advanced;Axe;Forceful, Orc, Sweep, Uncommon;1d8;Slashing;1;;;1;200;0;base
+Sawtooth Saber;Melee;weapon_advanced;Sword;Agile, Finesse, Twin, Uncommon;1d6;Slashing;1;;;L;500;0;base
+Spirit Thresher;Melee;weapon_advanced;Flail;Kholo, Sweep, Uncommon, Versatile S;1d12;Bludgeoning;2;;;2;200;0;base
+Tricky Pick;Melee;weapon_advanced;Pick;Backstabber, Fatal d10, Kobold, Modular (B, P, or S), Uncommon;1d6;modular;1;;;1;1000;0;base
+Whip Claw;Melee;weapon_advanced;Flail;Catfolk, Finesse, Hampering, Reach, Uncommon;1d6;Slashing;2;;;1;500;0;base
+Blowgun;Ranged;weapon_simple;Dart;Agile, Nonlethal;1;Piercing;1;20;1;L;10;0;base
+Crossbow;Ranged;weapon_simple;Crossbow;;1d8;Piercing;2;120;1;1;300;0;base
+Dart;Ranged;weapon_simple;Dart;Agile, Thrown;1d4;Piercing;1;20;;L;1;0;base
+Hand Crossbow;Ranged;weapon_simple;Crossbow;;1d6;Piercing;1;60;1;L;300;0;base
+Heavy Crossbow;Ranged;weapon_simple;Crossbow;;1d10;Piercing;2;120;2;2;400;0;base
+Javelin;Ranged;weapon_simple;Dart;Thrown;1d6;Piercing;1;30;;L;10;0;base
+Sling;Ranged;weapon_simple;Sling;Propulsive;1d6;Bludgeoning;1;50;1;L;;0;base
+Alchemical Bomb;Ranged;weapon_martial;Bomb;;Varies;Varies;1;20;;L;;0;base
+Arbalest;Ranged;weapon_martial;Crossbow;Backstabber;1d10;Piercing;2;110;1;2;800;0;base
+Bola;Ranged;weapon_martial;Sling;Nonlethal, Ranged Trip, Thrown;1d6;Bludgeoning;1;20;;L;50;0;base
+Composite Longbow;Ranged;weapon_martial;Bow;Deadly d10, Propulsive, Volley 30 ft.;1d8;Piercing;2;100;0;2;2000;1;base
+Composite Shortbow;Ranged;weapon_martial;Bow;Deadly d10, Propulsive;1d6;Piercing;2;60;0;1;1400;1;base
+Halfling Sling Staff;Ranged;weapon_martial;Sling;Halfling, Propulsive, Uncommon;1d10;Bludgeoning;2;80;1;1;500;0;base
+Longbow;Ranged;weapon_martial;Bow;Deadly d10, Volley 30 ft.;1d8;Piercing;2;100;0;2;600;0;base
+Shortbow;Ranged;weapon_martial;Bow;Deadly d10;1d6;Piercing;2;60;0;1;300;0;base
+Shuriken;Ranged;weapon_martial;Dart;Agile, Monk, Thrown, Uncommon;1d4;Piercing;1;20;0;;1;0;base
+Thunder Sling;Ranged;weapon_martial;Sling;Agile, Propulsive, Tengu, Uncommon;1d6;Piercing;1;50;1;L;500;0;base
+Arrows;Ranged;Ammunition;Bow;;;;;;;L;10;0;base
+Blowgun Darts;Ranged;Ammunition;Dart;;;;;;;L;5;0;base
+Bolts;Ranged;Ammunition;Bow;;;;;;;L;10;0;base
+Sling Bullets;Ranged;Ammunition;Sling;;;;;;;L;1;0;base
+Daikyu;Ranged;weapon_advanced;Bow;Forceful, Propulsive, Uncommon;1d8;Piercing;1+;80;0;2;800;0;base
