@@ -1,4 +1,4 @@
-Name;Rarity;Trait;Item Subcategory;Level;Price;Bulk;Usage;from;description;common_use
+name;rarity;trait;item_subcategory;level;price;bulk;usage;from;description;common_use
 Marvelous Miniature (Campfire);Common;Consumable, Expandable, Magical;Other Consumables;1;10;;1 hand;base;;
 Gecko Potion;Common;Consumable, Magical, Potion;Potions;1;30;L;1 hand;base;;
 Holy Water;Common;Consumable, Divine, Holy, Splash;Other Consumables;1;30;L;1 hand;base;;

@@ -1,4 +1,4 @@
-Name;Weapon Type;Weapon Category;Weapon Group;Trait;Damage;Damage_Type;Hands;Range;Reload;Bulk;Price;Level;from
+name;weapon_type;weapon_category;weapon_group;trait;damage;damage_type;hands;range;reload;bulk;price;level;from
 Fist;Melee;weapon_unarmed;Brawling;Agile, Finesse, Nonlethal, Unarmed;1d4;Bludgeoning;1;;;;;0;base
 Clan Dagger;Melee;weapon_simple;Knife;Agile, Dwarf, Parry, Uncommon, Versatile B;1d4;Piercing;1;;;L;200;0;base
 Club;Melee;weapon_simple;Club;Thrown 10 ft.;1d6;Bludgeoning;1;;;1;;0;base

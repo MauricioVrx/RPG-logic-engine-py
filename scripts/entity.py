@@ -326,4 +326,16 @@ class Entity:
         if 'perception' in self.proficiency_rank :
             perception += self.proficiency_value('perception')
         return perception
-        
+    
+
+    # ==============================================================
+    # ITEMS / EQUIPMENT / INVENTORY - FUNCTIONS
+    # ==============================================================
+    def pick_up_item(self, item_instance):
+        if item_instance:
+            self.inventory.append(item_instance)
+            return True
+        return False
+
+    def get_inventory_desc(self):
+        return ", ".join([item.name for item in self.inventory]) or "Empty"

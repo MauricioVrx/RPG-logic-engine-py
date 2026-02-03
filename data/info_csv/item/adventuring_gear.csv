@@ -1,4 +1,4 @@
-Name;Rarity;Trait;Level;Price;Bulk;Usage;from;description
+name;rarity;trait;level;price;bulk;usage;from;description
 Primal Symbol;Common;;0;;;;base;
 Candle;Common;;0;1 cp;;;base;
 Chalk;Common;;0;1 cp (10 pieces);;;base;
