@@ -7,3 +7,10 @@ MAX_DYING_COUNT = 3
 DEFAULTS_ACTIONS = [3, 1, 1]
 
 FREE_ABILITY_POINTS = 4
+
+# Items CSV files
+# {folder:[csv_files]}
+ITEMS_CSV_FILES = {
+    "equipment": ["armor", "weapon", "shield"],
+    "item": ["adventuring_gear", "consumables"]
+}

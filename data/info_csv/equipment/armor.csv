@@ -1,4 +1,4 @@
-name;rarity;trait;armor_category;AC_bonus;DEX_cap;check_penalty;speed_penalty;STR_req;price;level;bulk;armor_group;from
+name;rarity;trait;armor_category;ac_bonus;dex_cap;check_penalty;speed_penalty;str_req;price;level;bulk;armor_group;from
 Unarmored;Common;;armor_unarmored;0;None;None;None;None;None;0;None;None;base
 Explorer's Clothing;Common;Comfort;armor_unarmored;0;5;None;None;None;10;0;L;Cloth;base
 Padded Armor;Common;Comfort;armor_light;1;3;None;None;0;20;0;L;Cloth;base

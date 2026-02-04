@@ -1,0 +1,4 @@
+name;hit_points_max;speed;size;ability_boosts;trait;language;sense;status;from;description
+Gnome;8;25;1;{"CON": 1, "CHA": 1, "STR": -1, "FREE": 1};Gnome,Humanoid;Common,Gnomish,Fey;Low-Light Vision;1;base;
+Human;8;25;2;{"FREE": 2};Human,Humanoid;Common,FREE;[];1;base;
+Elf;6;30;2;{"DEX": 1, "INT": 1, "CON": -1, "FREE": 1};Elf,Humanoid;Common,Elven;Low-Light Vision;1;base;
