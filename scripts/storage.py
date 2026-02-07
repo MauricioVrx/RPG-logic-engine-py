@@ -1,4 +1,8 @@
-import json
+# import json
+from scripts.exceptions import (
+    ItemNotFoundError,
+    StorageLimitItemsError
+)
 
 class Container:
     def __init__(self, container_id, name, category="chest", capacity=20, is_locked=False):
@@ -14,12 +18,12 @@ class Container:
         if len(self.inventory) < self.capacity:
             self.inventory.append(item_instance)
             return True
-        return False # /---/ not space 
+        raise StorageLimitItemsError(self.name, self.capacity)
     
 
     def remove_item(self, item_name):
         for i, item in enumerate(self.inventory):
             if item.name == item_name:
                 return self.inventory.pop(i)
-        return None # /---/ ITEM NOT FOUND
+        raise ItemNotFoundError(item_name)
     

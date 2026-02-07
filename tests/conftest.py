@@ -5,6 +5,9 @@ from scripts.parser import FormulaProcessor
 from scripts.entity import Entity
 from scripts.character import Character
 
+from scripts.item import ItemManager
+from scripts.storage import Container
+
 # ===============================
 # DICE 
 # ===============================
@@ -59,3 +62,41 @@ def simple_entity():
 def simple_char():
     simple_char = Character()
     return simple_char
+
+
+# ===============================
+# ITEMS AND STORAGE
+# ===============================
+
+# 1. Import items from CSV
+@pytest.fixture
+def item_factory():
+    return ItemManager()
+
+
+factory = ItemManager()
+factory.load_all_items()
+
+
+# 2. Create items
+@pytest.fixture
+def simple_dagger():
+    simple_dagger = factory.spawn("Clan Dagger")
+    return simple_dagger
+
+@pytest.fixture
+def simple_armor():
+    simple_armor  = factory.spawn("Padded Armor")
+    return simple_armor
+
+# 3. Create containers
+@pytest.fixture
+def simple_chest():
+    simple_chest = Container("chest_01", "Simple Chest", capacity=2)
+    return simple_chest
+
+@pytest.fixture
+def normal_chest():
+    normal_chest = Container("chest_02", "Normal Chest", capacity=3)
+    return normal_chest
+

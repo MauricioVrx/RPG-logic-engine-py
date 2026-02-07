@@ -534,3 +534,72 @@ class DataFrameRowNotFoundError(DataFrameError):
             "dataframe_name" : self.df_name ,
             "code"           : self.error_code
         }
+
+
+# =============================================================================
+# ITEMS EXCEPTIONS
+# =============================================================================
+class ItemError(GameBaseError): 
+    """Base class for errors occurring during Items usage, equip and tranfer."""
+    pass
+
+
+class ItemFileNotFoundError(ItemError):
+    """Raised when the specified Background does not found"""
+    def __init__(self, name, folder):
+        self.name       = name
+        self.folder   = folder
+        self.error_code = "ERR_ITEM_FILE_NOT_FOUND"
+        self.message    = f"{folder} Folder: '{name}' file not found."
+        super().__init__(self.message)
+
+    def to_dict(self):
+        return {
+            "error"          : self.__class__.__name__,
+            "name"           : self.name ,
+            "folder"         : self.folder ,
+            "code"           : self.error_code
+        }
+    
+
+class ItemNotFoundError(ItemError):
+    """Raised when the specified Background does not found"""
+    def __init__(self, item_name):
+        self.item_name  = item_name
+        self.error_code = "ERR_ITEM_NOT_FOUND"
+        self.message    = f"Item : '{item_name}' not found."
+        super().__init__(self.message)
+
+    def to_dict(self):
+        return {
+            "error"          : self.__class__.__name__,
+            "item_name"      : self.item_name ,
+            "code"           : self.error_code
+        }
+    
+
+# =============================================================================
+# STORAGE EXCEPTIONS
+# =============================================================================
+
+class StorageError(GameBaseError): 
+    """Base class for exceptions in this module."""
+    pass
+
+
+class StorageLimitItemsError(StorageError):
+    """Raised when the specified Background does not found"""
+    def __init__(self, name, limit):
+        self.name    = name
+        self.limit   = limit
+        self.error_code = "ERR_STORAGE_LIMIT_ITEM"
+        self.message    = f"The storage '{name}' exceed items quantity ({limit})."
+        super().__init__(self.message)
+
+    def to_dict(self):
+        return {
+            "error"          : self.__class__.__name__,
+            "name"           : self.name ,
+            "limit"          : self.limit ,
+            "code"           : self.error_code
+        }
