@@ -16,9 +16,12 @@ class Item:
         self.category = category
         # Stores all CSV columns (Price, Weight, Damage, etc.) filtering out NaN values
         self.stats = {k: v for k, v in kwargs.items() if pd.notna(v)}
-        
+        self.status = None
+
+
     def __repr__(self):
         return f"<{self.category.upper()}: {self.name}>"
+
 
     def get_stat(self, key, default=None):
         """Safely retrieves a stat from the item."""
@@ -33,19 +36,18 @@ class ItemManager:
         self.base_path = base_path
         self.library = {}
 
-    def load_all_items(self):
+    def load_all_items(self, structure = ITEMS_CSV_FILES):
         """
         Iterates through specific folders to load all game items.
         """
-        structure = ITEMS_CSV_FILES
-
+        
         for folder, files in structure.items():
                 for file in files:
                     path = os.path.join(self.base_path, folder, f"{file}.csv")
                     if os.path.exists(path):
                         self._load_csv(path, category=file)
                     else:
-                        raise ItemFileNotFoundError(folder, file)
+                        raise ItemFileNotFoundError(file, folder)
 
 
     def _load_csv(self, path, category):

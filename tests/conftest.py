@@ -69,14 +69,16 @@ def simple_char():
 # ===============================
 
 # 1. Import items from CSV
+
+factory = ItemManager(base_path = "tests/schemas/data/info_csv")
+factory.load_all_items(structure = {
+    "equipment": ["armor", "weapon"],
+    "item": ["consumables"]
+})
+
 @pytest.fixture
-def item_factory():
-    return ItemManager()
-
-
-factory = ItemManager()
-factory.load_all_items()
-
+def test_item_factory():
+    return factory
 
 # 2. Create items
 @pytest.fixture
@@ -88,6 +90,16 @@ def simple_dagger():
 def simple_armor():
     simple_armor  = factory.spawn("Padded Armor")
     return simple_armor
+
+@pytest.fixture
+def explorer_armor():
+    explorer_armor  = factory.spawn("Explorer's Clothing")
+    return explorer_armor
+
+@pytest.fixture
+def heavy_armor():
+    heavy_armor  = factory.spawn("Full Plate")
+    return heavy_armor
 
 # 3. Create containers
 @pytest.fixture

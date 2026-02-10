@@ -543,9 +543,21 @@ class ItemError(GameBaseError):
     """Base class for errors occurring during Items usage, equip and tranfer."""
     pass
 
+# class ItemGenerationError(ItemError):
+#     """Raised when attempting to create an incorrect object or one without the correct format."""
+#     def __init__(self):
+#         self.error_code = "ERR_ITEM_GENERATION"
+#         self.message    = f"Error creating item"
+#         super().__init__(self.message)
+
+#     def to_dict(self):
+#         return {
+#             "error"          : self.__class__.__name__,
+#             "code"           : self.error_code
+#         }
 
 class ItemFileNotFoundError(ItemError):
-    """Raised when the specified Background does not found"""
+    """Raised when the specified File does not found"""
     def __init__(self, name, folder):
         self.name       = name
         self.folder   = folder
@@ -563,7 +575,7 @@ class ItemFileNotFoundError(ItemError):
     
 
 class ItemNotFoundError(ItemError):
-    """Raised when the specified Background does not found"""
+    """Raised when the specified Item does not found"""
     def __init__(self, item_name):
         self.item_name  = item_name
         self.error_code = "ERR_ITEM_NOT_FOUND"
@@ -576,7 +588,72 @@ class ItemNotFoundError(ItemError):
             "item_name"      : self.item_name ,
             "code"           : self.error_code
         }
-    
+
+# =============================================================================
+# EQUIPMENT EXCEPTIONS
+# =============================================================================
+
+class EquipmentError(GameBaseError): 
+    """Base class for exceptions in this module."""
+    pass
+
+# not armor / not inventory /  entity.STR lowerthan necesary 
+
+class ArmorNonEquippableItemError(EquipmentError):
+    """Raised when try to equip an incorrect items"""
+    def __init__(self, name):
+        self.name    = name
+        self.error_code = "ERR_ARMOR_NON_EQUIPPABLE_ITEM"
+        self.message    = f"'{name}' is not an equipable armor."
+        super().__init__(self.message)
+
+    def to_dict(self):
+        return {
+            "error"          : self.__class__.__name__,
+            "name"           : self.name ,
+            "code"           : self.error_code
+        }
+
+class ArmorNotFoundInInventoryError(EquipmentError): # /---/
+    """Raised when try to equip an items who is not in it's own inventory"""
+    def __init__(self, entity_name, armor_name):
+        self.armor_name    = armor_name
+        self.entity_name    = entity_name
+        self.error_code = "ERR_ARMOR_NOT_FOUND_IN_INVENTORY"
+        self.message    = f"'{armor_name}' is not an in {entity_name} inventory."
+        super().__init__(self.message)
+
+    def to_dict(self):
+        return {
+            "error"          : self.__class__.__name__,
+            "armor_name"     : self.armor_name ,
+            "entity_name"    : self.entity_name ,
+            "code"           : self.error_code
+        }
+
+class ArmorInsufficientParameterError(EquipmentError): # /---/
+    """Raised when an entity attempts to equip armor whose parameters are insufficient"""
+    def __init__(self, entity_name, entity_value, armor_name ,parameter_name , parameter_required_value):
+        self.entity_name    = entity_name
+        self.entity_value   = entity_value
+        self.armor_name     = armor_name
+        self.parameter_name = parameter_name
+        self.parameter_required_value = parameter_required_value
+        self.error_code = "ERR_ARMOR_INSUFFICIENT_PARAMETER"
+        self.message    = f"'{entity_name}'({parameter_name} : {entity_value}) attempted to equip '{armor_name} but requires {parameter_required_value} {parameter_name}."
+        super().__init__(self.message)
+
+    def to_dict(self):
+        return {
+            "error"              : self.__class__.__name__,
+            "entity_name"        : self.entity_name ,
+            "entity_value"       : self.entity_value ,
+            "armor_name"         : self.armor_name ,
+            "parameter_name"     : self.parameter_name ,
+            "parameter_required_value" : self.parameter_required_value ,
+            "code"               : self.error_code
+        }
+
 
 # =============================================================================
 # STORAGE EXCEPTIONS
@@ -588,7 +665,7 @@ class StorageError(GameBaseError):
 
 
 class StorageLimitItemsError(StorageError):
-    """Raised when the specified Background does not found"""
+    """Raised when the items storage exceed limit"""
     def __init__(self, name, limit):
         self.name    = name
         self.limit   = limit

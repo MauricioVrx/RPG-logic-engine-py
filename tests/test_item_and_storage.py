@@ -1,9 +1,174 @@
 import pytest
+from scripts.item import Item, ItemManager
+from scripts.mechanics import attempt_transfer
 
 from scripts.exceptions import (
     ItemNotFoundError,
     StorageLimitItemsError,
     ItemFileNotFoundError,
+    ArmorNonEquippableItemError,
+    ArmorNotFoundInInventoryError,
+    ArmorInsufficientParameterError
 ) 
 
-# simple_dagger, simple_armor, simple_chest, normal_chest, simple_char
+# ===============================
+# ITEMS AND STORAGE
+# ===============================
+
+def test_generate_item():
+    """
+    Gererate a simple item
+    """
+    Item(name = "Next City ticket", category = "obligatory" , kwargs=  { "from" : "custom", "common_use" : "required to enter city X"} )
+
+
+def test_read_csv_files():
+    """
+    Make the item library
+    """
+    item_factory = ItemManager()
+    item_factory.load_all_items()
+
+
+def test_format_read_csv_files():
+    """
+    Make the item library
+    """
+    factory = ItemManager(base_path = "tests/schemas/data/info_csv")
+    factory.load_all_items(structure = {
+        "equipment": ["armor", "weapon"],
+        "item": ["consumables"]
+    })
+
+
+def test_read_wrong_csv_files():
+    """
+    Try to make item library with wrongs values
+    """
+    item_factory = ItemManager()
+    with pytest.raises(ItemFileNotFoundError):
+       item_factory.load_all_items(structure = {"Wrong_csv": ["WrongFile1", "WrongFile2"]})
+
+
+def test_spawn_item(test_item_factory):
+    """
+    Spawn a correct item
+    """
+    test_item_factory.spawn("Clan Dagger")
+
+
+def test_spawn_wrong_item(test_item_factory):
+    """
+    error when exporting a non-existent item
+    """
+    with pytest.raises(ItemNotFoundError):
+        test_item_factory.spawn("wrong_item")
+
+
+def test_storage_items(test_item_factory, simple_dagger, normal_chest):
+    """
+    Add and remove items in a storage
+    """
+    normal_chest.add_item(test_item_factory.spawn("Padded Armor"))
+    normal_chest.add_item(simple_dagger)
+
+    normal_chest.remove_item("Clan Dagger")
+    normal_chest.remove_item("Padded Armor")
+
+
+def test_bad_storage(simple_dagger, simple_chest):
+    """
+    Test add and remove wrong items, more items than storage limit.
+    """
+    # 1. Add wrong item
+    with pytest.raises(ItemNotFoundError):
+        simple_chest.add_item("WrongItem")
+
+    # 2. Remove non-existent item
+    with pytest.raises(ItemNotFoundError):
+        simple_chest.remove_item("WrongItem")
+
+    # 3. Exceed storage limit
+    simple_chest.add_item(simple_dagger)
+    simple_chest.add_item(simple_dagger)
+
+    with pytest.raises(StorageLimitItemsError):
+        simple_chest.add_item(simple_dagger)
+
+    
+def test_transfer_items(simple_entity, simple_char, simple_dagger, simple_chest, normal_chest):
+    """
+    Transfer objects between two storages and two entities
+    """
+    simple_entity.add_item(simple_dagger)
+
+    attempt_transfer(simple_entity , simple_char   , simple_dagger.name)
+    attempt_transfer(simple_char   , simple_chest  , simple_dagger)
+    attempt_transfer(simple_chest  , normal_chest  , simple_dagger)
+    attempt_transfer(normal_chest  , simple_entity , simple_dagger.name)
+
+    assert len(simple_entity.inventory) == 1
+    assert len(simple_char.inventory)   == 0
+    assert len(simple_chest.inventory)  == 0
+    assert len(normal_chest.inventory)  == 0
+
+
+def test_bad_transfer_items(simple_entity, simple_dagger, simple_chest):
+    """
+    Transfer objects between two storages and two entities
+    """
+    with pytest.raises(StorageLimitItemsError):
+        for _ in range(simple_chest.capacity+1):
+            simple_entity.add_item(simple_dagger)
+            attempt_transfer(simple_entity , simple_chest, simple_dagger)
+
+    with pytest.raises(ItemNotFoundError):
+        attempt_transfer(simple_entity , simple_chest, "Wrong Item")
+
+    # The last item return
+    assert len(simple_entity.inventory) == 1
+
+
+# ===============================
+# EQUIPMENT
+# ===============================
+def test_equip_armor(simple_entity, simple_armor, explorer_armor):
+    """
+    Add and equip armors to a entity.
+    """
+    # Check armor and entity status
+    assert simple_entity.equipment['armor'] == None
+    assert simple_armor.status   == None
+    assert explorer_armor.status == None
+
+    # Add and equip armor to entity
+    simple_entity.add_item(simple_armor)
+    simple_entity.add_item(explorer_armor)
+    simple_entity.equip_armor(explorer_armor)
+    simple_entity.equip_armor(simple_armor)
+
+    # Check armor and entity status
+    assert simple_entity.equipment['armor'] == simple_armor
+    assert explorer_armor.status == None
+    assert simple_armor.status   == "equiped"
+
+
+def test_equip_armor(simple_entity, simple_armor, heavy_armor,simple_dagger):
+    """
+    Trying to equip armor and weapons incorrectly .
+    """
+    with pytest.raises(ArmorNotFoundInInventoryError):
+        simple_entity.equip_armor(simple_armor)
+
+    with pytest.raises(ArmorNotFoundInInventoryError):
+        simple_entity.equip_armor("some armor name")
+    
+    # Add items to entity
+    simple_entity.add_item(heavy_armor)
+    simple_entity.add_item(simple_dagger)
+
+    with pytest.raises(ArmorNonEquippableItemError):
+        simple_entity.equip_armor(simple_dagger)
+    
+    with pytest.raises(ArmorInsufficientParameterError):
+        simple_entity.equip_armor(heavy_armor)
