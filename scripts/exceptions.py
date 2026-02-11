@@ -589,6 +589,23 @@ class ItemNotFoundError(ItemError):
             "code"           : self.error_code
         }
 
+
+class ItemNotRemovedError(ItemError):
+    """Raised when try to remove an equiped Item"""
+    def __init__(self, item_name):
+        self.item_name  = item_name
+        self.error_code = "ERR_ITEM_NOT_REMOVED"
+        self.message    = f"Item : '{item_name}' could not be deleted."
+        super().__init__(self.message)
+
+    def to_dict(self):
+        return {
+            "error"          : self.__class__.__name__,
+            "item_name"      : self.item_name ,
+            "code"           : self.error_code
+        }
+    
+
 # =============================================================================
 # EQUIPMENT EXCEPTIONS
 # =============================================================================
@@ -596,8 +613,6 @@ class ItemNotFoundError(ItemError):
 class EquipmentError(GameBaseError): 
     """Base class for exceptions in this module."""
     pass
-
-# not armor / not inventory /  entity.STR lowerthan necesary 
 
 class ArmorNonEquippableItemError(EquipmentError):
     """Raised when try to equip an incorrect items"""
@@ -614,7 +629,7 @@ class ArmorNonEquippableItemError(EquipmentError):
             "code"           : self.error_code
         }
 
-class ArmorNotFoundInInventoryError(EquipmentError): # /---/
+class ArmorNotFoundInInventoryError(EquipmentError):
     """Raised when try to equip an items who is not in it's own inventory"""
     def __init__(self, entity_name, armor_name):
         self.armor_name    = armor_name
@@ -631,7 +646,7 @@ class ArmorNotFoundInInventoryError(EquipmentError): # /---/
             "code"           : self.error_code
         }
 
-class ArmorInsufficientParameterError(EquipmentError): # /---/
+class ArmorInsufficientParameterError(EquipmentError): 
     """Raised when an entity attempts to equip armor whose parameters are insufficient"""
     def __init__(self, entity_name, entity_value, armor_name ,parameter_name , parameter_required_value):
         self.entity_name    = entity_name
@@ -652,6 +667,74 @@ class ArmorInsufficientParameterError(EquipmentError): # /---/
             "parameter_name"     : self.parameter_name ,
             "parameter_required_value" : self.parameter_required_value ,
             "code"               : self.error_code
+        }
+    
+
+class WeaponNonEquippableItemError(EquipmentError):
+    """Raised when try to equip an incorrect items"""
+    def __init__(self, name):
+        self.name    = name
+        self.error_code = "ERR_WEAPON_NON_EQUIPPABLE_ITEM"
+        self.message    = f"'{name}' is not an equipable WEAPON."
+        super().__init__(self.message)
+
+    def to_dict(self):
+        return {
+            "error"          : self.__class__.__name__,
+            "name"           : self.name ,
+            "code"           : self.error_code
+        } 
+    
+class WeaponNotFoundInInventoryError(EquipmentError):
+    """Raised when try to equip an items who is not in it's own inventory"""
+    def __init__(self, entity_name, weapon_name):
+        self.weapon_name    = weapon_name
+        self.entity_name    = entity_name
+        self.error_code = "ERR_WEAPON_NOT_FOUND_IN_INVENTORY"
+        self.message    = f"'{weapon_name}' is not an in {entity_name} inventory."
+        super().__init__(self.message)
+
+    def to_dict(self):
+        return {
+            "error"          : self.__class__.__name__,
+            "weapon_name"    : self.weapon_name ,
+            "entity_name"    : self.entity_name ,
+            "code"           : self.error_code
+        }
+    
+class WeaponNotAvailableHandsError(EquipmentError):
+    """Raised when try to equip an items with busy hands"""
+    def __init__(self, entity_name, weapon_name):
+        self.weapon_name    = weapon_name
+        self.entity_name    = entity_name
+        self.error_code = "ERR_WEAPON_NOT_FOUND_IN_INVENTORY"
+        self.message    = f"'{weapon_name}' is not in '{entity_name}' inventory."
+        super().__init__(self.message)
+
+    def to_dict(self):
+        return {
+            "error"          : self.__class__.__name__,
+            "weapon_name"    : self.weapon_name ,
+            "entity_name"    : self.entity_name ,
+            "code"           : self.error_code
+        }
+    
+
+class WeaponNotEquipedError(EquipmentError):
+    """Raised when try to equip an items with busy hands"""
+    def __init__(self, entity_name, weapon_name):
+        self.weapon_name    = weapon_name
+        self.entity_name    = entity_name
+        self.error_code = "ERR_WEAPON_NOT_EQUIPED"
+        self.message    = f"'{weapon_name}' is not equipped by '{entity_name}'."
+        super().__init__(self.message)
+
+    def to_dict(self):
+        return {
+            "error"          : self.__class__.__name__,
+            "weapon_name"    : self.weapon_name ,
+            "entity_name"    : self.entity_name ,
+            "code"           : self.error_code
         }
 
 

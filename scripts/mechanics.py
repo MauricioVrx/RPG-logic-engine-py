@@ -4,7 +4,8 @@ from scripts.exceptions import (
     DataFrameMultipleRowsError,
     DataFrameRowNotFoundError,
     ItemNotFoundError,
-    StorageLimitItemsError
+    StorageLimitItemsError,
+    ItemNotRemovedError
     )
 
 def calculate_ability_modifier(score: int) -> int:
@@ -49,8 +50,12 @@ def remove_item(inventory, item_name):
     """
     Remove an object from inventory.
     """
+    if  hasattr(item_name, 'status') and item_name.status == 'equiped' :
+        raise ItemNotRemovedError(item_name)
+
     for i, item in enumerate(inventory.inventory):
-        if item.name == item_name:
+        # if item.name == item_name:
+        if item == item_name or item.name == item_name:
             return inventory.inventory.pop(i)
     raise ItemNotFoundError(item_name)
 

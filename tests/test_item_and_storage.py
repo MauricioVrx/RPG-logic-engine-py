@@ -8,7 +8,8 @@ from scripts.exceptions import (
     ItemFileNotFoundError,
     ArmorNonEquippableItemError,
     ArmorNotFoundInInventoryError,
-    ArmorInsufficientParameterError
+    ArmorInsufficientParameterError,
+    WeaponNotAvailableHandsError
 ) 
 
 # ===============================
@@ -153,7 +154,7 @@ def test_equip_armor(simple_entity, simple_armor, explorer_armor):
     assert simple_armor.status   == "equiped"
 
 
-def test_equip_armor(simple_entity, simple_armor, heavy_armor,simple_dagger):
+def test_equip_wrong_armor(simple_entity, simple_armor, heavy_armor,simple_dagger):
     """
     Trying to equip armor and weapons incorrectly .
     """

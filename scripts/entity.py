@@ -11,7 +11,11 @@ from scripts.exceptions import (
     EntityDataFormatError,
     ArmorNonEquippableItemError,
     ArmorNotFoundInInventoryError,
-    ArmorInsufficientParameterError
+    ArmorInsufficientParameterError,
+    WeaponNonEquippableItemError, 
+    WeaponNotFoundInInventoryError,
+    WeaponNotAvailableHandsError,
+    WeaponNotEquipedError
     )
 from scripts.mechanics import add_item as add_it, remove_item as rem_it
 from collections import Counter
@@ -382,40 +386,58 @@ class Entity:
         return True
     
 
-    def desequip_armor(self): 
+    def unequip_armor(self): 
         if self.equipment['armor'] != None:
             self.equipment['armor'].status = None
+            self.equipment['armor'] = None
+            return True
+        return False
 
 
     def equip_weapon_on_hand(self, weapon_instance):
         if hasattr(weapon_instance, 'stats') and 'weapon_category' not in weapon_instance.stats:
-            # print("WeaponNonEquippableItemError")
-            pass # /---/ WeaponNonEquippableItemError
+            raise WeaponNonEquippableItemError(weapon_instance)
 
         if weapon_instance not in self.inventory:
-            # print("WeaponNotFoundInInventoryError")
-            pass # /---/ WeaponNotFoundInInventoryError
+            raise WeaponNotFoundInInventoryError(self.name, weapon_instance)
 
         available_hands = self.equipment['hands'].count("weapon_unarmed") + self.equipment['hands'].count(None)
 
         if not available_hands >= weapon_instance.stats['hands']:
-            # print("WeaponNotAvailableHandsError")
-            pass # /---/ WeaponNotAvailableHandsError
+            raise WeaponNotAvailableHandsError(self.name, weapon_instance)
 
         equipable_slots = [weapon_instance] + ["holding_weapon" for _ in range(weapon_instance.stats['hands']-1)]
-
-        # print(equipable_slots)
-        # print(len(equipable_slots))
 
         for idx, hand in enumerate(self.equipment['hands']):
             if hand == "weapon_unarmed" or hand == None:
                 self.equipment['hands'][idx] = equipable_slots.pop(0)
             if len(equipable_slots) == 0:
                 break
+        
+        weapon_instance.status = "equiped"
 
-        # print(len(equipable_slots))
-        # print(self.equipment['hands'])
+        return True
+    
 
+    def unequip_weapon_on_hand(self, weapon_instance):
+        # check inventory item, 
+        if weapon_instance not in self.inventory:
+            raise WeaponNotFoundInInventoryError(self.name, weapon_instance)
+        
+        if weapon_instance not in self.equipment['hands']:
+            raise WeaponNotEquipedError(self.name, weapon_instance)
 
-    def desquip_weapon_on_hand(self, weapon_instance):
-        pass
+        # count of hands
+        equipable_slots = ["weapon_unarmed" for _ in range(weapon_instance.stats['hands'])]
+
+        # remove weapon and "holding_weapon" to "weapon_unarmed"
+        for idx, hand in enumerate(self.equipment['hands']):
+            if hand == weapon_instance or hand == "holding_weapon":
+                self.equipment['hands'][idx] = equipable_slots.pop(0)
+            if len(equipable_slots) == 0:
+                break
+
+        # change status weapon
+        weapon_instance.status = None
+
+        return True

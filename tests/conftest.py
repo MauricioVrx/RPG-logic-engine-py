@@ -87,6 +87,11 @@ def simple_dagger():
     return simple_dagger
 
 @pytest.fixture
+def imposible_weapon():
+    imposible_weapon = factory.spawn("Clan Dagger")
+    return imposible_weapon
+
+@pytest.fixture
 def simple_armor():
     simple_armor  = factory.spawn("Padded Armor")
     return simple_armor
