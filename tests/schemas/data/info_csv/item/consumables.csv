@@ -1,0 +1,4 @@
+name;rarity;trait;item_subcategory;level;price;bulk;usage;from;description;common_use
+Healing Potion (Lesser);Common;Consumable, Healing, Magical, Potion, Vitality;Potions;3;120;L;1 hand;base;;
+Salve of Antiparalysis;Common;Consumable, Healing, Magical, Oil;Oils;6;400;L;2 hands;base;;
+Healing Potion (Moderate);Common;Consumable, Healing, Magical, Potion, Vitality;Potions;6;500;L;1 hand;base;;

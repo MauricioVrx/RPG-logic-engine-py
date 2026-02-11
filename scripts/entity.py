@@ -1,7 +1,24 @@
 from scripts.constants  import ABILITY_SCORE, PROF_NAMES, PROF_RANG_BASE, SKILLS_BASE, SAV_THROWS_BASE, SKILLS, SAV_THROWS, PARAMETER_DEPENDENCE, SKILLS_NAMES, SAV_THROWS_NAMES
 from scripts.config     import MAX_LEVEL, DEFAULTS_ACTIONS, MAX_DYING_COUNT
 from scripts.mechanics  import calculate_ability_modifier, calculate_proficiency_bonus
-from scripts.exceptions import EntityParameterNotFoundError, EntityAbilityNotFoundError, EntityProficiencyNotFoundError, EntityProficiencyLimitError, EntityLevelLimitError, EntityIsIntegerError, EntityDataFormatError
+from scripts.exceptions import (
+    EntityParameterNotFoundError, 
+    EntityAbilityNotFoundError, 
+    EntityProficiencyNotFoundError, 
+    EntityProficiencyLimitError, 
+    EntityLevelLimitError, 
+    EntityIsIntegerError, 
+    EntityDataFormatError,
+    ArmorNonEquippableItemError,
+    ArmorNotFoundInInventoryError,
+    ArmorInsufficientParameterError,
+    WeaponNonEquippableItemError, 
+    WeaponNotFoundInInventoryError,
+    WeaponNotAvailableHandsError,
+    WeaponNotEquipedError,
+    EquipmentError
+    )
+from scripts.mechanics import add_item as add_it, remove_item as rem_it
 from collections import Counter
 
 class Entity:
@@ -64,8 +81,9 @@ class Entity:
         self.armor_class = 0 # Difficult a character is to hit in combat
         self.class_cd    = 0 # Specific abilities(from class or creatures) that force other creatures to attempt a saving throw
 
-        self.inventory = []                                                        # temporal - Inventory of objects
-        self.equipment = {'armor' : None, "accesory" : [], "hand" : [None, None]}  # Humanoid template
+        self.inventory = [] 
+        self.capacity  = 30                                                       # temporal - Inventory of objects
+        self.equipment = {'armor' : None, "accesory" : [], "hands" : [None, None]}  # Humanoid template
 
 
     def __str__(self): 
@@ -337,5 +355,93 @@ class Entity:
             return True
         return False
 
+
+    def add_item(self, item_instance):
+        return add_it(self, item_instance)
+    
+
+    def remove_item(self, item_instance):
+        return rem_it(self, item_instance)
+
+
     def get_inventory_desc(self):
         return ", ".join([item.name for item in self.inventory]) or "Empty"
+    
+
+    def equip_armor(self, armor_instance): 
+        if hasattr(armor_instance, 'stats') and 'armor_category' not in armor_instance.stats:
+            raise ArmorNonEquippableItemError(armor_instance)
+
+        if armor_instance not in self.inventory:
+            raise ArmorNotFoundInInventoryError(self.name, armor_instance)
+        
+        if not self.ability_calculation('STR') >= armor_instance.stats.get('str_req', 0):
+            raise ArmorInsufficientParameterError(self.name, self.ability_calculation('STR'), armor_instance.name, 'STR', armor_instance.stats['str_req'])
+
+        if self.equipment['armor'] != None:
+            self.equipment['armor'].status = None
+      
+        self.equipment['armor'] = armor_instance
+        armor_instance.status = "equiped"
+
+        return True
+    
+
+    def unequip_armor(self): 
+        if self.equipment['armor'] != None:
+            self.equipment['armor'].status = None
+            self.equipment['armor'] = None
+            return True
+        return False
+
+
+    def equip_weapon_on_hand(self, weapon_instance):
+        if hasattr(weapon_instance, 'stats') and 'weapon_category' not in weapon_instance.stats:
+            raise WeaponNonEquippableItemError(weapon_instance)
+
+        if weapon_instance not in self.inventory:
+            raise WeaponNotFoundInInventoryError(self.name, weapon_instance)
+        
+        if weapon_instance.status == "equiped":
+            raise EquipmentError()
+
+        available_hands = self.equipment['hands'].count("weapon_unarmed") + self.equipment['hands'].count(None)
+
+        if not available_hands >= weapon_instance.stats['hands']:
+            raise WeaponNotAvailableHandsError(self.name, weapon_instance)
+
+        equipable_slots = [weapon_instance] + ["holding_weapon" for _ in range(weapon_instance.stats['hands']-1)]
+
+        for idx, hand in enumerate(self.equipment['hands']):
+            if hand == "weapon_unarmed" or hand == None:
+                self.equipment['hands'][idx] = equipable_slots.pop(0)
+            if len(equipable_slots) == 0:
+                break
+        
+        weapon_instance.status = "equiped"
+
+        return True
+    
+
+    def unequip_weapon_on_hand(self, weapon_instance):
+        # check inventory item, 
+        if weapon_instance not in self.inventory:
+            raise WeaponNotFoundInInventoryError(self.name, weapon_instance)
+        
+        if weapon_instance not in self.equipment['hands']:
+            raise WeaponNotEquipedError(self.name, weapon_instance)
+
+        # count of hands
+        equipable_slots = ["weapon_unarmed" for _ in range(weapon_instance.stats['hands'])]
+
+        # remove weapon and "holding_weapon" to "weapon_unarmed"
+        for idx, hand in enumerate(self.equipment['hands']):
+            if hand == weapon_instance or hand == "holding_weapon":
+                self.equipment['hands'][idx] = equipable_slots.pop(0)
+            if len(equipable_slots) == 0:
+                break
+
+        # change status weapon
+        weapon_instance.status = None
+
+        return True
