@@ -1,3 +1,4 @@
+import copy
 import pytest
 from scripts.item import Item, ItemManager
 from scripts.mechanics import attempt_transfer
@@ -9,7 +10,11 @@ from scripts.exceptions import (
     ArmorNonEquippableItemError,
     ArmorNotFoundInInventoryError,
     ArmorInsufficientParameterError,
-    WeaponNotAvailableHandsError
+    WeaponNonEquippableItemError, 
+    WeaponNotFoundInInventoryError,
+    WeaponNotAvailableHandsError,
+    WeaponNotEquipedError,
+    EquipmentError
 ) 
 
 # ===============================
@@ -173,3 +178,85 @@ def test_equip_wrong_armor(simple_entity, simple_armor, heavy_armor,simple_dagge
     
     with pytest.raises(ArmorInsufficientParameterError):
         simple_entity.equip_armor(heavy_armor)
+
+
+def test_equip_weapon(simple_entity, simple_dagger, longspear):
+    """
+    Add and equip weapon to a entity.
+    """
+    simple_dagger_copy = copy.deepcopy(simple_dagger)
+
+    # Check armor and entity status
+    assert simple_dagger.status      == None
+    assert simple_dagger_copy.status == None
+    assert longspear.status          == None
+
+    # Add, equip, check weapons to entity
+    simple_entity.add_item(simple_dagger)
+    simple_entity.add_item(simple_dagger_copy)
+    simple_entity.add_item(longspear)
+    simple_entity.equip_weapon_on_hand(simple_dagger)
+
+    assert simple_entity.equipment['hands'] == [simple_dagger, None]
+    assert simple_dagger.status   == "equiped"
+
+    simple_entity.equip_weapon_on_hand(simple_dagger_copy)
+    assert simple_entity.equipment['hands'] == [simple_dagger, simple_dagger_copy]
+    assert simple_dagger_copy.status        == "equiped"
+
+    simple_entity.unequip_weapon_on_hand(simple_dagger)
+    assert simple_entity.equipment['hands'] == ["weapon_unarmed" or None, simple_dagger_copy]
+    assert simple_dagger.status             == None
+
+    simple_entity.unequip_weapon_on_hand(simple_dagger_copy)
+    assert simple_entity.equipment['hands'] == ["weapon_unarmed" or None, "weapon_unarmed" or None]
+    assert simple_dagger_copy.status        == None
+
+    simple_entity.equip_weapon_on_hand(longspear)
+    assert simple_entity.equipment['hands'] == [longspear, "holding_weapon"]
+    assert longspear.status                 == "equiped"
+
+    simple_entity.unequip_weapon_on_hand(longspear)
+
+     # Check armor and entity status
+    assert simple_entity.equipment['hands'] == ["weapon_unarmed" or None, "weapon_unarmed" or None]
+    assert simple_dagger.status      == None
+    assert simple_dagger_copy.status == None
+    assert longspear.status          == None
+
+
+def test_equip_wrong_weapon(simple_entity, simple_dagger, longspear, imposible_weapon, simple_armor):
+    """
+    Trying to equip armor and weapons incorrectly .
+    """
+    simple_dagger_copy = copy.deepcopy(simple_dagger)
+    equiped_dagger = copy.deepcopy(simple_dagger)
+    equiped_dagger.status = "equiped"
+    
+    with pytest.raises(WeaponNotFoundInInventoryError):
+        simple_entity.equip_weapon_on_hand(simple_dagger)
+
+    # Add and equip weapons to entity
+    simple_entity.add_item(simple_dagger)
+    simple_entity.add_item(longspear)
+    simple_entity.add_item(imposible_weapon)
+    simple_entity.add_item(equiped_dagger)
+    simple_entity.add_item(simple_armor)
+    simple_entity.equip_weapon_on_hand(simple_dagger)
+
+    # Equip Errors
+    with pytest.raises(WeaponNonEquippableItemError):
+        simple_entity.equip_weapon_on_hand(simple_armor)
+
+    with pytest.raises(EquipmentError):
+        simple_entity.equip_weapon_on_hand(equiped_dagger)
+
+    with pytest.raises(WeaponNotAvailableHandsError):
+        simple_entity.equip_weapon_on_hand(imposible_weapon)
+
+    # Unequip errrors
+    with pytest.raises(WeaponNotFoundInInventoryError):
+        simple_entity.unequip_weapon_on_hand(simple_dagger_copy)
+    
+    with pytest.raises(WeaponNotEquipedError):
+        simple_entity.unequip_weapon_on_hand(longspear)

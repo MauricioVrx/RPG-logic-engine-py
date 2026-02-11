@@ -15,7 +15,8 @@ from scripts.exceptions import (
     WeaponNonEquippableItemError, 
     WeaponNotFoundInInventoryError,
     WeaponNotAvailableHandsError,
-    WeaponNotEquipedError
+    WeaponNotEquipedError,
+    EquipmentError
     )
 from scripts.mechanics import add_item as add_it, remove_item as rem_it
 from collections import Counter
@@ -400,6 +401,9 @@ class Entity:
 
         if weapon_instance not in self.inventory:
             raise WeaponNotFoundInInventoryError(self.name, weapon_instance)
+        
+        if weapon_instance.status == "equiped":
+            raise EquipmentError()
 
         available_hands = self.equipment['hands'].count("weapon_unarmed") + self.equipment['hands'].count(None)
 

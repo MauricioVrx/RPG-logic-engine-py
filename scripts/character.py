@@ -84,7 +84,11 @@ class Character(Entity):
         self.speed          += info['speed']
         self.size            = info['size']
         self.trait          += info['trait']
-        self.sense          += info.get('sense', [])    
+   
+        if isinstance(info['sense'], list):
+            self.sense      += info.get('sense', [])    
+        else:
+            self.sense = []
         self.language       += info.get('language', []) 
 
         # Process boosts (1 boost = 2 points)
@@ -124,7 +128,11 @@ class Character(Entity):
         self.main_ability       = main_ability 
         self.secondary_ability += info['secondary_ability']
         self.trait             += info['trait']
-        self.magical_aptitude  += info['magical_aptitude']
+        # self.magical_aptitude  += info['magical_aptitude']
+        if isinstance(info['magical_aptitude'], list):
+            self.magical_aptitude  += info.get('magical_aptitude', [])
+        else:
+            self.magical_aptitude = []
 
         self._class_boosts   = {main_ability:2}
         self.character_class = name 

@@ -87,8 +87,13 @@ def simple_dagger():
     return simple_dagger
 
 @pytest.fixture
+def longspear():
+    longspear = factory.spawn("Longspear")
+    return longspear
+
+@pytest.fixture
 def imposible_weapon():
-    imposible_weapon = factory.spawn("Clan Dagger")
+    imposible_weapon = factory.spawn("imposible_weapon")
     return imposible_weapon
 
 @pytest.fixture
@@ -116,4 +121,3 @@ def simple_chest():
 def normal_chest():
     normal_chest = Container("chest_02", "Normal Chest", capacity=3)
     return normal_chest
-
