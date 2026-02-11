@@ -543,19 +543,6 @@ class ItemError(GameBaseError):
     """Base class for errors occurring during Items usage, equip and tranfer."""
     pass
 
-# class ItemGenerationError(ItemError):
-#     """Raised when attempting to create an incorrect object or one without the correct format."""
-#     def __init__(self):
-#         self.error_code = "ERR_ITEM_GENERATION"
-#         self.message    = f"Error creating item"
-#         super().__init__(self.message)
-
-#     def to_dict(self):
-#         return {
-#             "error"          : self.__class__.__name__,
-#             "code"           : self.error_code
-#         }
-
 class ItemFileNotFoundError(ItemError):
     """Raised when the specified File does not found"""
     def __init__(self, name, folder):
