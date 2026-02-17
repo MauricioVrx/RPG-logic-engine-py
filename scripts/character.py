@@ -137,6 +137,8 @@ class Character(Entity):
         self._class_boosts   = {main_ability:2}
         self.character_class = name 
 
+        self.calculate_class_cd()
+
         return True
 
 
@@ -225,3 +227,13 @@ class Character(Entity):
         self.update_parameters_by_ability()
         
         return True
+
+
+    # ==============================================================
+    # CLASS CD - FUNCTIONS
+    # ==============================================================
+  
+    def calculate_class_cd(self): 
+        self.class_cd =  10 + self.core_ability_score[self.main_ability] + self.proficiency_value('class_cd')
+        return self.class_cd
+        

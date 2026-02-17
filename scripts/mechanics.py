@@ -5,8 +5,12 @@ from scripts.exceptions import (
     DataFrameRowNotFoundError,
     ItemNotFoundError,
     StorageLimitItemsError,
-    ItemNotRemovedError
+    ItemNotRemovedError,
+    WeaponNotFoundInInventoryError,
+    EquipmentError
     )
+
+from scripts.dice   import Dice
 
 def calculate_ability_modifier(score: int) -> int:
     """Fórmula estándar de Pathfinder 2e para modificadores de atributo."""
@@ -95,3 +99,76 @@ def attempt_transfer(source, target, item):
     else:
         source.inventory.append(item_instance)
         raise StorageLimitItemsError(target.name, target.capacity)
+
+
+# ==============================================================
+# ENTITY THROWS - FUNCTIONS 
+# ==============================================================
+
+throw_d20 = Dice(20)
+
+def _parameter_checks(parameter_name, parameter_list , parameter_type="parameter" ,extra = 0):
+    result = 0
+    d20_value = throw_d20.roll()
+    result += d20_value
+    result += extra
+
+    if not parameter_name in parameter_list:
+        pass # /---/ Error
+
+    return d20_value , result
+
+
+def skill_checks(entity, parameter_name, extra = 0):
+    return _parameter_checks(parameter_name, entity.skill, "Skill", extra)
+
+
+def saving_throw_checks(entity, parameter_name, extra = 0):
+    return _parameter_checks(parameter_name, entity.saving_throws, "Saving Throws", extra)
+
+
+def attack_roll_checks(entity, weapon, n_attack, distance=False, ):
+    if hasattr(weapon, 'stats') and 'weapon_category' not in weapon.stats:
+        print("Error") # /---/
+
+    if weapon not in entity.inventory:
+        raise WeaponNotFoundInInventoryError(entity.name, weapon)
+    
+    if weapon.status != "equiped":
+        raise EquipmentError()
+
+    result = 0
+    result += entity.proficiency_value(weapon.stats["weapon_category"]) 
+
+    mod = 0
+    if distance:
+        mod += entity.core_ability_score["DEX"]
+    elif "Finesse" in weapon.stats['trait'].split(", "):
+        mod += max(entity.core_ability_score["DEX"] , entity.core_ability_score["STR"])
+    else: 
+        mod += entity.core_ability_score["STR"]
+
+    if "Agile" in weapon.stats['trait'].split(", "):
+        penalized_value = 4
+    else:
+        penalized_value = 5
+    penalized_value *= (n_attack - 1)
+
+    result += (mod + throw_d20.roll()) * penalized_value
+
+    return throw_d20 , result
+
+
+def perception_check(entity):
+    return throw_d20.roll(), entity.calculate_perception() + throw_d20.roll()
+
+
+def armor_class_check(entity):
+    return entity.calculate_armor_class()
+
+# ==============================================================
+# CHARACTER THROWS - FUNCTIONS 
+# ==============================================================
+
+def class_cd_check(character):
+    return throw_d20.roll(), character.calculate_class_cd() + throw_d20.roll()

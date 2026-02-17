@@ -113,7 +113,10 @@ class Entity:
         """
         if not isinstance(parameters, dict):
             raise EntityDataFormatError(parameters, dict)
-        return sum(parameters.values())
+        if  parameters['custom'] == 0:
+            return parameters['mod'] + parameters['proficiency']
+        else:
+            return parameters['mod'] + parameters['custom']
     
     def ability_calculation(self, name): 
         """
@@ -158,7 +161,7 @@ class Entity:
         Get proficiency bonus value, by proficiency rank and entity level
         """
         if name not in self.proficiency_rank:
-            raise EntityProficiencyNotFoundError(name)
+            return 0
         rank = self.proficiency_rank[name]
         sum_points = calculate_proficiency_bonus(self.level, rank)
         return sum_points
@@ -257,7 +260,7 @@ class Entity:
         return True
 
     # ==============================================================
-    # HIT POINTS / LEVEL / ARMOR CLASS / CLASS CD / PERCEPTION - FUNCTIONS
+    # HIT POINTS / LEVEL / ARMOR CLASS / PERCEPTION - FUNCTIONS
     # ==============================================================
     def level_up(self, force_lvl = False): 
         """
@@ -318,7 +321,7 @@ class Entity:
         """
         ac = self.ability_calculation('DEX')
         
-        if 'armor' in self.equipment:
+        if self.equipment['armor'] in [None, "armor_unarmored"]:
             if type(self.equipment['armor']) != type(None):
                 if ac > self.equipment['armor']['DEX_cap']:
                     ac = self.equipment['armor']['DEX_cap']
@@ -332,12 +335,8 @@ class Entity:
                 ac += self.proficiency_value('armor_unarmored')
 
         ac += 10  
+        self.armor_class = ac
         return ac
-
-
-    def calculate_class_cd(self): # /---/
-        pass
-
 
     def calculate_perception(self): 
         perception = self.ability_calculation('WIS')
@@ -445,3 +444,4 @@ class Entity:
         weapon_instance.status = None
 
         return True
+
