@@ -63,6 +63,15 @@ def simple_char():
     simple_char = Character()
     return simple_char
 
+@pytest.fixture
+def full_char():
+    full_char = Character()
+    full_char.set_ancestry('Elf', ["STR"])
+    full_char.set_class('Ranger', "DEX")
+    full_char.set_background('Acrobat', ["DEX", "WIS"])
+    full_char.set_free_ability_points(["STR", "DEX", "WIS", "INT"])
+    full_char.update_character_ability_points()
+    return full_char
 
 # ===============================
 # ITEMS AND STORAGE

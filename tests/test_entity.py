@@ -140,8 +140,6 @@ def test_proficiency_value(simple_entity):
     """Check proficiency bonus calculation based on rank and level."""
     first_prof_rank = next(iter(PROF_RANG_BASE))
     assert simple_entity.proficiency_value(first_prof_rank) == 0
-    with pytest.raises(EntityProficiencyNotFoundError):
-        assert simple_entity.proficiency_value("Wrong_name")
 
 
 def test_set_ability_score(simple_entity):
@@ -165,13 +163,16 @@ def test_update_and_sum_skill(simple_entity):
 
     simple_entity.level = 1
     simple_entity.proficiency_rank[first_prof_rank] = 2
-    simple_entity.update_skill(first_prof_rank, custom=3)
-    assert simple_entity.skill[first_prof_rank]['custom']  == 3
+    simple_entity.update_skill(first_prof_rank)
+    assert simple_entity.skill[first_prof_rank]['custom']  == 0
 
     with pytest.raises(EntityIsIntegerError):
         assert simple_entity.update_skill(first_prof_rank, custom = "3") == 3
 
-    assert simple_entity.get_skill_value(first_prof_rank) == 8
+    assert simple_entity.get_skill_value(first_prof_rank) == 5
+
+    simple_entity.update_skill(first_prof_rank, custom=3)
+    assert simple_entity.skill[first_prof_rank]['custom']  == 3
 
 
 def test_update_and_sum_saving_throws(simple_entity):
@@ -179,13 +180,17 @@ def test_update_and_sum_saving_throws(simple_entity):
 
     simple_entity.level = 2
     simple_entity.proficiency_rank[first_prof_rank] = 3
-    simple_entity.update_saving_throw(first_prof_rank, custom=1)
-    assert simple_entity.saving_throws[first_prof_rank]['custom']  == 1
+    
+    simple_entity.update_saving_throw(first_prof_rank)
+    assert simple_entity.saving_throws[first_prof_rank]['custom']  == 0
 
     with pytest.raises(EntityIsIntegerError):
         assert simple_entity.update_saving_throw(first_prof_rank, custom = "3") == 3
 
-    assert simple_entity.get_saving_throws_value(first_prof_rank) == 9
+    assert simple_entity.get_saving_throws_value(first_prof_rank) == 8
+
+    simple_entity.update_saving_throw(first_prof_rank, custom=1)
+    assert simple_entity.saving_throws[first_prof_rank]['custom']  == 1
 
 
 def test_calculate_saving_throws_proficiency_bonus(simple_entity):

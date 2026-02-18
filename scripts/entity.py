@@ -113,7 +113,10 @@ class Entity:
         """
         if not isinstance(parameters, dict):
             raise EntityDataFormatError(parameters, dict)
-        return sum(parameters.values())
+        if  parameters['custom'] == 0:
+            return parameters['mod'] + parameters['proficiency']
+        else:
+            return parameters['mod'] + parameters['custom']
     
     def ability_calculation(self, name): 
         """
@@ -158,7 +161,7 @@ class Entity:
         Get proficiency bonus value, by proficiency rank and entity level
         """
         if name not in self.proficiency_rank:
-            raise EntityProficiencyNotFoundError(name)
+            return 0
         rank = self.proficiency_rank[name]
         sum_points = calculate_proficiency_bonus(self.level, rank)
         return sum_points
@@ -257,7 +260,7 @@ class Entity:
         return True
 
     # ==============================================================
-    # HIT POINTS / LEVEL / ARMOR CLASS / CLASS CD / PERCEPTION - FUNCTIONS
+    # HIT POINTS / LEVEL / ARMOR CLASS / PERCEPTION - FUNCTIONS
     # ==============================================================
     def level_up(self, force_lvl = False): 
         """
@@ -318,7 +321,7 @@ class Entity:
         """
         ac = self.ability_calculation('DEX')
         
-        if 'armor' in self.equipment:
+        if self.equipment['armor'] in [None, "armor_unarmored"]:
             if type(self.equipment['armor']) != type(None):
                 if ac > self.equipment['armor']['DEX_cap']:
                     ac = self.equipment['armor']['DEX_cap']
@@ -332,12 +335,8 @@ class Entity:
                 ac += self.proficiency_value('armor_unarmored')
 
         ac += 10  
+        self.armor_class = ac
         return ac
-
-
-    def calculate_class_cd(self): # /---/
-        pass
-
 
     def calculate_perception(self): 
         perception = self.ability_calculation('WIS')
@@ -350,6 +349,9 @@ class Entity:
     # ITEMS / EQUIPMENT / INVENTORY - FUNCTIONS
     # ==============================================================
     def pick_up_item(self, item_instance):
+        """
+        Add an object to inventory.
+        """
         if item_instance:
             self.inventory.append(item_instance)
             return True
@@ -357,37 +359,57 @@ class Entity:
 
 
     def add_item(self, item_instance):
+        """
+        Add an object to inventory.
+        """
         return add_it(self, item_instance)
     
 
     def remove_item(self, item_instance):
+        """
+        Remove an object from inventory.
+        """
         return rem_it(self, item_instance)
 
 
     def get_inventory_desc(self):
+        """
+        Return a inventory object list from entity  
+        """
         return ", ".join([item.name for item in self.inventory]) or "Empty"
     
 
     def equip_armor(self, armor_instance): 
+        """
+        Equip an armor to entity.
+        """
+        # Check instance params 
         if hasattr(armor_instance, 'stats') and 'armor_category' not in armor_instance.stats:
             raise ArmorNonEquippableItemError(armor_instance)
 
+        # Check if armor not in inventory
         if armor_instance not in self.inventory:
             raise ArmorNotFoundInInventoryError(self.name, armor_instance)
         
+        # Check if the minimum STR required to use the equipment is available.
         if not self.ability_calculation('STR') >= armor_instance.stats.get('str_req', 0):
             raise ArmorInsufficientParameterError(self.name, self.ability_calculation('STR'), armor_instance.name, 'STR', armor_instance.stats['str_req'])
 
+        # Check if a the armor is already equiped, this will be unequip
         if self.equipment['armor'] != None:
-            self.equipment['armor'].status = None
+            self.unequip_armor()
       
+        # Equip armor
         self.equipment['armor'] = armor_instance
-        armor_instance.status = "equiped"
+        armor_instance.status = "equiped" # Change armor status 
 
         return True
     
 
-    def unequip_armor(self): 
+    def unequip_armor(self):
+        """
+        Equip the equiped armor to entity.
+        """ 
         if self.equipment['armor'] != None:
             self.equipment['armor'].status = None
             self.equipment['armor'] = None
@@ -396,22 +418,31 @@ class Entity:
 
 
     def equip_weapon_on_hand(self, weapon_instance):
+        """
+        Equip an weapon to entity. The entity must have hands available to equip the weapon.
+        """
+        # Check instance params 
         if hasattr(weapon_instance, 'stats') and 'weapon_category' not in weapon_instance.stats:
             raise WeaponNonEquippableItemError(weapon_instance)
 
+        # Check if weapon not in inventory
         if weapon_instance not in self.inventory:
             raise WeaponNotFoundInInventoryError(self.name, weapon_instance)
         
+        # Check if a the weapon is already equiped
         if weapon_instance.status == "equiped":
             raise EquipmentError()
 
         available_hands = self.equipment['hands'].count("weapon_unarmed") + self.equipment['hands'].count(None)
 
-        if not available_hands >= weapon_instance.stats['hands']:
+        # Check the number of hands available against the number of hands required.
+        if not available_hands >= int(weapon_instance.stats['hands']):
             raise WeaponNotAvailableHandsError(self.name, weapon_instance)
 
-        equipable_slots = [weapon_instance] + ["holding_weapon" for _ in range(weapon_instance.stats['hands']-1)]
+        # Python list of available hands
+        equipable_slots = [weapon_instance] + ["holding_weapon" for _ in range(int(weapon_instance.stats['hands'])-1)]
 
+        # Equip weapon using the necessary count of hands
         for idx, hand in enumerate(self.equipment['hands']):
             if hand == "weapon_unarmed" or hand == None:
                 self.equipment['hands'][idx] = equipable_slots.pop(0)
@@ -428,11 +459,12 @@ class Entity:
         if weapon_instance not in self.inventory:
             raise WeaponNotFoundInInventoryError(self.name, weapon_instance)
         
+        # Check if a the weapon is already equiped
         if weapon_instance not in self.equipment['hands']:
             raise WeaponNotEquipedError(self.name, weapon_instance)
 
         # count of hands
-        equipable_slots = ["weapon_unarmed" for _ in range(weapon_instance.stats['hands'])]
+        equipable_slots = ["weapon_unarmed" for _ in range(int(weapon_instance.stats['hands']))]
 
         # remove weapon and "holding_weapon" to "weapon_unarmed"
         for idx, hand in enumerate(self.equipment['hands']):
@@ -445,3 +477,4 @@ class Entity:
         weapon_instance.status = None
 
         return True
+

@@ -1,6 +1,3 @@
-# import json
-
-
 from scripts.item import Item
 from scripts.mechanics import add_item as add_it, remove_item as rem_it
 
@@ -17,7 +14,13 @@ class Container:
         return f"<{self.name.upper()} - Status :{self.is_locked} , Inventory :{len(self.inventory)}/{self.capacity}>"
 
     def add_item(self, item_instance):
+        """
+        Add an object to container inventory.
+        """
         return add_it(self, item_instance)
     
     def remove_item(self, item_instance):
+        """
+        Remove an object from container inventory.
+        """
         return rem_it(self, item_instance)
