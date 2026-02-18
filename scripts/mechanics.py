@@ -7,7 +7,8 @@ from scripts.exceptions import (
     StorageLimitItemsError,
     ItemNotRemovedError,
     WeaponNotFoundInInventoryError,
-    EquipmentError
+    EquipmentError,
+    EntityParameterNotFoundError
     )
 
 from scripts.dice   import Dice
@@ -38,7 +39,7 @@ def get_name_df(df, name, column = "name", df_name = "DataFrame"):
 
 def add_item(inventory, item_instance, force_add = False):
     """
-    Add an object from inventory.
+    Add an object to inventory.
     """
     if not isinstance(item_instance, Item) and not isinstance(item_instance, dict):
         raise ItemNotFoundError(item_instance)
@@ -102,73 +103,119 @@ def attempt_transfer(source, target, item):
 
 
 # ==============================================================
-# ENTITY THROWS - FUNCTIONS 
+# ENTITY ROLLS | CHECK - FUNCTIONS 
 # ==============================================================
 
 throw_d20 = Dice(20)
 
-def _parameter_checks(parameter_name, parameter_list , parameter_type="parameter" ,extra = 0):
+def _parameter_checks(entity, parameter_name, parameter_list , parameter_type="parameter" ,extra = 0):
+    """
+    Main function for rolls according to parameter type ("Skill", "Saving Throws"). Calculated according to the corresponding formula, without considering Item Bonus and Other Bonuses/Penalties.
+
+    result = 1d20 + Ability Modifier + Proficiency Bonus + extra(plus custom)
+    """
     result = 0
     d20_value = throw_d20.roll()
     result += d20_value
     result += extra
 
     if not parameter_name in parameter_list:
-        pass # /---/ Error
+        raise EntityParameterNotFoundError(parameter_name, parameter_type)
+
+    # Get value depend it's parameter type
+    if parameter_type == "Skill":
+        result += entity.get_skill_value(parameter_name)
+    elif parameter_type == "Saving Throws":
+        result += entity.get_saving_throws_value(parameter_name)
 
     return d20_value , result
 
 
 def skill_checks(entity, parameter_name, extra = 0):
-    return _parameter_checks(parameter_name, entity.skill, "Skill", extra)
+    """
+    Calculate the entity's Skill values and roll a 1d20. 
+
+    result = 1d20 + Ability Modifier + Proficiency Bonus + extra(plus custom)
+    """
+    return _parameter_checks(entity, parameter_name, entity.skill, "Skill", extra)
 
 
 def saving_throw_checks(entity, parameter_name, extra = 0):
-    return _parameter_checks(parameter_name, entity.saving_throws, "Saving Throws", extra)
+    """
+    Calculate the entity's Saving Throws values and roll a 1d20. 
+
+    result = 1d20 + Ability Modifier + Proficiency Bonus + extra(plus custom)
+    """
+    return _parameter_checks(entity, parameter_name, entity.saving_throws, "Saving Throws", extra)
 
 
-def attack_roll_checks(entity, weapon, n_attack, distance=False, ):
-    if hasattr(weapon, 'stats') and 'weapon_category' not in weapon.stats:
-        print("Error") # /---/
+def attack_roll_checks(entity, weapon, n_attack= 1, distance=False, force = False):
+    """
+    An entity attempts to attack with its weapon. A penalty will be applied if more attacks have 
+    been made in the same turn.
+ 
+    The result of the rolls will determine whether the attack hits or meets the difficulty value.
 
-    if weapon not in entity.inventory:
-        raise WeaponNotFoundInInventoryError(entity.name, weapon)
-    
-    if weapon.status != "equiped":
-        raise EquipmentError()
+    Result = 1d20 + Ability Modifier + Weapon proficiency - MAP (Multipe attacks Penalty) 
+    """
+    if force == False:
+        if weapon not in entity.inventory:
+            raise WeaponNotFoundInInventoryError(entity.name, weapon)
+        
+        if weapon.status != "equiped":
+            raise EquipmentError()
 
     result = 0
+
+    # Weapon proficiency_
     result += entity.proficiency_value(weapon.stats["weapon_category"]) 
 
+    # Ability mod value, Ability modification value, depends on weapon type and distance.
     mod = 0
-    if distance:
-        mod += entity.core_ability_score["DEX"]
-    elif "Finesse" in weapon.stats['trait'].split(", "):
-        mod += max(entity.core_ability_score["DEX"] , entity.core_ability_score["STR"])
+    if distance: # If is a distance weapon o throw weapon
+        mod += entity.ability_calculation("DEX")
+    elif "Finesse" in weapon.stats['trait'].split(", "): # Weapon "Finesse" trait
+        mod += max(entity.ability_calculation("DEX") , entity.ability_calculation("STR"))
     else: 
-        mod += entity.core_ability_score["STR"]
+        mod += entity.ability_calculation("STR")
 
+    # MAP (Multipe attacks Penalty) depned of "Agile" trait.
     if "Agile" in weapon.stats['trait'].split(", "):
         penalized_value = 4
     else:
         penalized_value = 5
+ 
     penalized_value *= (n_attack - 1)
 
-    result += (mod + throw_d20.roll()) * penalized_value
+    # Roll 1d20
+    roll = throw_d20.roll()
 
-    return throw_d20 , result
+    result += (mod + roll) - penalized_value
+
+    return roll , result
 
 
 def perception_check(entity):
-    return throw_d20.roll(), entity.calculate_perception() + throw_d20.roll()
+    """
+    Calculate the entity's perception values and roll a 1d20. 
+    """
+    roll = throw_d20.roll()
+    return roll, (entity.calculate_perception() + roll)
 
 
 def armor_class_check(entity):
+    """
+    returns the entity's armor class
+    """
     return entity.calculate_armor_class()
 
 # ==============================================================
-# CHARACTER THROWS - FUNCTIONS 
+# CHARACTER - FUNCTIONS 
 # ==============================================================
 
 def class_cd_check(character):
+    """
+    Value that enemies must beat with a saving throw to avoid the effects of a 
+    entity's special ability.
+    """
     return throw_d20.roll(), character.calculate_class_cd() + throw_d20.roll()

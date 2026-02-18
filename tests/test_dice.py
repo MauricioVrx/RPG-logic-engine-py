@@ -22,6 +22,5 @@ def test_multiple_rolls_numeric_sum(d6):
 
 def test_non_numeric_dice_exception(color_dice):
     """Ensure NonNumericResultError is raised when performing arithmetic on non-numeric dice."""
-    # Si color_dice tiene is_numeric=True debería fallar
     with pytest.raises(NonNumericResultError):
         assert color_dice.multiple_rolls(2)
