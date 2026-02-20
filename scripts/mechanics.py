@@ -108,6 +108,42 @@ def attempt_transfer(source, target, item):
 
 throw_d20 = Dice(20)
 
+def critical_roll(dice_result):
+    """
+    Check whether the dice roll corresponds to a critical success or a critical failure. 
+    """
+    status = "None"
+    if dice_result == throw_d20.sides:
+        status = "Critical_Success"
+    elif dice_result == 1:
+        status = "Critical_Failure"
+    return status
+
+def critical_diff(result, cd):
+    """Calculate the difference in value between the entity information with roll and the difficulty class."""
+    value = result - cd
+    return {"result_diff" : value} 
+
+
+def check_CD(rolled_value, cd, cleared = "passed"):
+    """
+    Calculate if the roll's result pass the difficulty class.
+    """
+    result_info =  rolled_value
+    result_info[cleared] = False
+    if rolled_value['result'] >= cd:
+        result_info[cleared] = True
+
+    return result_info | critical_diff(rolled_value['result'], cd)
+
+
+def format_return_check(dice_result, sum_params):
+    """
+    Make a dictionary format from throw result . 
+    """
+    return {"roll" : dice_result, "result" : sum_params , "natural_critical" : critical_roll(dice_result)}
+
+
 def _parameter_checks(entity, parameter_name, parameter_list , parameter_type="parameter" ,extra = 0):
     """
     Main function for rolls according to parameter type ("Skill", "Saving Throws"). Calculated according to the corresponding formula, without considering Item Bonus and Other Bonuses/Penalties.
@@ -128,7 +164,7 @@ def _parameter_checks(entity, parameter_name, parameter_list , parameter_type="p
     elif parameter_type == "Saving Throws":
         result += entity.get_saving_throws_value(parameter_name)
 
-    return d20_value , result
+    return  {"type" : parameter_type , "parameter": parameter_name}| format_return_check(d20_value , result)
 
 
 def skill_checks(entity, parameter_name, extra = 0):
@@ -147,6 +183,19 @@ def saving_throw_checks(entity, parameter_name, extra = 0):
     result = 1d20 + Ability Modifier + Proficiency Bonus + extra(plus custom)
     """
     return _parameter_checks(entity, parameter_name, entity.saving_throws, "Saving Throws", extra)
+
+
+def skill_cd(entity, parameter_name, cd_value, extra = 0):
+    """Calculate the skill roll's result, then check if it's higher than difficulty class."""
+    result = skill_checks(entity, parameter_name, extra)
+    result = check_CD(result, cd_value)
+    return result
+
+def saving_throw_cd(entity, parameter_name, cd_value, extra = 0):
+    """Calculate the saving throw roll's result, then check if it's higher than difficulty class."""
+    result = saving_throw_checks(entity, parameter_name, extra)
+    result = check_CD(result, cd_value)
+    return result
 
 
 def attack_roll_checks(entity, weapon, n_attack= 1, distance=False, force = False):
@@ -192,7 +241,7 @@ def attack_roll_checks(entity, weapon, n_attack= 1, distance=False, force = Fals
 
     result += (mod + roll) - penalized_value
 
-    return roll , result
+    return {"type" : "attack" , "parameter": "weapon"} | format_return_check(roll , result)
 
 
 def perception_check(entity):
@@ -200,7 +249,7 @@ def perception_check(entity):
     Calculate the entity's perception values and roll a 1d20. 
     """
     roll = throw_d20.roll()
-    return roll, (entity.calculate_perception() + roll)
+    return format_return_check(roll, (entity.calculate_perception() + roll))
 
 
 def armor_class_check(entity):
@@ -208,6 +257,14 @@ def armor_class_check(entity):
     returns the entity's armor class
     """
     return entity.calculate_armor_class()
+
+
+def check_impact_attack(attacked_entity , rolled_value):
+    """
+    Calculate whether the result of the attack equals or exceeds the target's armor class.
+    """
+    return check_CD(rolled_value, armor_class_check(attacked_entity), cleared="impact_attack")
+
 
 # ==============================================================
 # CHARACTER - FUNCTIONS 
@@ -218,4 +275,4 @@ def class_cd_check(character):
     Value that enemies must beat with a saving throw to avoid the effects of a 
     entity's special ability.
     """
-    return throw_d20.roll(), character.calculate_class_cd() + throw_d20.roll()
+    return format_return_check(throw_d20.roll(), character.calculate_class_cd() + throw_d20.roll())
