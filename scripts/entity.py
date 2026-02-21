@@ -416,13 +416,14 @@ class Entity:
             return True
         return False
 
-
+# /---/ Equip shield | check shield parameters
     def equip_weapon_on_hand(self, weapon_instance):
         """
         Equip an weapon to entity. The entity must have hands available to equip the weapon.
         """
         # Check instance params 
-        if hasattr(weapon_instance, 'stats') and 'weapon_category' not in weapon_instance.stats:
+        # if hasattr(weapon_instance, 'stats') and 'weapon_category' not in weapon_instance.stats and  weapon_instance.category not in ['shield', 'weapon']:
+        if weapon_instance.category not in ['shield', 'weapon']:
             raise WeaponNonEquippableItemError(weapon_instance)
 
         # Check if weapon not in inventory
@@ -432,15 +433,23 @@ class Entity:
         # Check if a the weapon is already equiped
         if weapon_instance.status == "equiped":
             raise EquipmentError()
+        
+        req_hands = 0
+        if hasattr(weapon_instance, 'stats') and 'hands' in weapon_instance.stats :
+            # Weapon
+            req_hands = int(weapon_instance.stats['hands'])
+        else:
+            # Shield
+            req_hands = 1
 
         available_hands = self.equipment['hands'].count("weapon_unarmed") + self.equipment['hands'].count(None)
 
         # Check the number of hands available against the number of hands required.
-        if not available_hands >= int(weapon_instance.stats['hands']):
+        if not available_hands >= req_hands:
             raise WeaponNotAvailableHandsError(self.name, weapon_instance)
 
         # Python list of available hands
-        equipable_slots = [weapon_instance] + ["holding_weapon" for _ in range(int(weapon_instance.stats['hands'])-1)]
+        equipable_slots = [weapon_instance] + ["holding_weapon" for _ in range(req_hands-1)]
 
         # Equip weapon using the necessary count of hands
         for idx, hand in enumerate(self.equipment['hands']):

@@ -91,7 +91,7 @@ def npc_human():
 
 factory = ItemManager(base_path = "tests/schemas/data/info_csv")
 factory.load_all_items(structure = {
-    "equipment": ["armor", "weapon"],
+    "equipment": ["armor", "weapon", "shield"],
     "item": ["consumables"]
 })
 
@@ -114,6 +114,11 @@ def longspear():
 def imposible_weapon():
     imposible_weapon = factory.spawn("imposible_weapon")
     return imposible_weapon
+
+@pytest.fixture
+def simple_shield():
+    simple_shield = factory.spawn("Wooden Shield")
+    return simple_shield
 
 @pytest.fixture
 def simple_armor():

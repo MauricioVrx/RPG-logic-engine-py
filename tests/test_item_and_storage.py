@@ -180,7 +180,7 @@ def test_equip_wrong_armor(simple_entity, simple_armor, heavy_armor,simple_dagge
         simple_entity.equip_armor(heavy_armor)
 
 
-def test_equip_weapon(simple_entity, simple_dagger, longspear):
+def test_equip_weapon(simple_entity, simple_dagger, longspear, simple_shield):
     """
     Add and equip weapon to a entity.
     """
@@ -195,6 +195,7 @@ def test_equip_weapon(simple_entity, simple_dagger, longspear):
     simple_entity.add_item(simple_dagger)
     simple_entity.add_item(simple_dagger_copy)
     simple_entity.add_item(longspear)
+    simple_entity.add_item(simple_shield)
     simple_entity.equip_weapon_on_hand(simple_dagger)
 
     assert simple_entity.equipment['hands'] == [simple_dagger, None]
@@ -223,6 +224,11 @@ def test_equip_weapon(simple_entity, simple_dagger, longspear):
     assert simple_dagger.status      == None
     assert simple_dagger_copy.status == None
     assert longspear.status          == None
+
+    # Equip shield
+    simple_entity.equip_weapon_on_hand(simple_shield)
+    assert simple_entity.equipment['hands'] == [simple_shield, "weapon_unarmed" or None]
+    assert simple_shield.status             == "equiped"
 
 
 def test_equip_wrong_weapon(simple_entity, simple_dagger, longspear, imposible_weapon, simple_armor):
