@@ -73,6 +73,16 @@ def full_char():
     full_char.update_character_ability_points()
     return full_char
 
+@pytest.fixture
+def npc_human():
+    human_char = Character()
+    human_char.set_ancestry('Human', ["STR", "WIS"])
+    human_char.set_class('Rogue', "DEX")
+    human_char.set_background('Merchant', ["CHA", "WIS"])
+    human_char.set_free_ability_points(["STR", "CHA", "WIS", "INT"])
+    human_char.update_character_ability_points()
+    return human_char
+
 # ===============================
 # ITEMS AND STORAGE
 # ===============================

@@ -191,6 +191,7 @@ def skill_cd(entity, parameter_name, cd_value, extra = 0):
     result = check_CD(result, cd_value)
     return result
 
+
 def saving_throw_cd(entity, parameter_name, cd_value, extra = 0):
     """Calculate the saving throw roll's result, then check if it's higher than difficulty class."""
     result = saving_throw_checks(entity, parameter_name, extra)
@@ -270,9 +271,12 @@ def check_impact_attack(attacked_entity , rolled_value):
 # CHARACTER - FUNCTIONS 
 # ==============================================================
 
-def class_cd_check(character):
+def class_cd_check(entity_attack, entity_deffend, param_name, extra = 0):
     """
     Value that enemies must beat with a saving throw to avoid the effects of a 
     entity's special ability.
     """
-    return format_return_check(throw_d20.roll(), character.calculate_class_cd() + throw_d20.roll())
+
+    class_cd = entity_attack.calculate_class_cd()
+    saving_throw = saving_throw_cd(entity_deffend, param_name, class_cd, extra)
+    return saving_throw
