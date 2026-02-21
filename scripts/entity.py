@@ -422,7 +422,6 @@ class Entity:
         Equip an weapon to entity. The entity must have hands available to equip the weapon.
         """
         # Check instance params 
-        # if hasattr(weapon_instance, 'stats') and 'weapon_category' not in weapon_instance.stats and  weapon_instance.category not in ['shield', 'weapon']:
         if weapon_instance.category not in ['shield', 'weapon']:
             raise WeaponNonEquippableItemError(weapon_instance)
 
