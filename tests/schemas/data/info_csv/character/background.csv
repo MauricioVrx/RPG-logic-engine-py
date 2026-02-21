@@ -1,0 +1,4 @@
+name;ability;boosts_count;description;rarity;skills;lore;feat;extra;status;from
+Acrobat;STR, DEX;2;In a circus or on the streets, you earned your pay by performing as an acrobat. You might have turned to adventuring when the money dried up, or simply decided to put your skills to better use.;Common;Acrobatics;Circus;Steady Balance;{};1;base
+Hunter;DEX, WIS;2;You stalked and took down animals and other creatures of the wild. Skinning animals, harvesting their flesh, and cooking them were also part of your training, all of which can give you useful resources while you adventure.;Common;Survival;Tanning;Survey Wildlife;{};1;base
+Merchant;INT, CHA;2;In a dusty shop, market stall, or merchant caravan, you bartered wares for coin and trade goods. The skills you picked up still apply in the adventuring life, in which a good deal on a suit of armor could prevent your death.;Common;Diplomacy;Mercantile;Bargain Hunter;{};1;base

@@ -234,6 +234,6 @@ class Character(Entity):
     # ==============================================================
   
     def calculate_class_cd(self): 
-        self.class_cd =  10 + self.core_ability_score[self.main_ability] + self.proficiency_value('class_cd')
+        self.class_cd =  10 + self.ability_calculation(self.main_ability) + self.proficiency_value('class_cd')
         return self.class_cd
         
