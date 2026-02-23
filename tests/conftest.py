@@ -102,37 +102,37 @@ def test_item_factory():
 # 2. Create items
 @pytest.fixture
 def simple_dagger():
-    simple_dagger = factory.spawn("Clan Dagger")
+    simple_dagger = factory.spawn("clan_dagger")
     return simple_dagger
 
 @pytest.fixture
 def longspear():
-    longspear = factory.spawn("Longspear")
+    longspear = factory.spawn("longspear")
     return longspear
 
 @pytest.fixture
 def imposible_weapon():
-    imposible_weapon = factory.spawn("imposible_weapon")
+    imposible_weapon = factory.spawn("impossible_weapon")
     return imposible_weapon
 
 @pytest.fixture
 def simple_shield():
-    simple_shield = factory.spawn("Wooden Shield")
+    simple_shield = factory.spawn("wooden_shield")
     return simple_shield
 
 @pytest.fixture
 def simple_armor():
-    simple_armor  = factory.spawn("Padded Armor")
+    simple_armor  = factory.spawn("padded_armor")
     return simple_armor
 
 @pytest.fixture
 def explorer_armor():
-    explorer_armor  = factory.spawn("Explorer's Clothing")
+    explorer_armor  = factory.spawn("explorers_clothing")
     return explorer_armor
 
 @pytest.fixture
 def heavy_armor():
-    heavy_armor  = factory.spawn("Full Plate")
+    heavy_armor  = factory.spawn("full_plate")
     return heavy_armor
 
 # 3. Create containers

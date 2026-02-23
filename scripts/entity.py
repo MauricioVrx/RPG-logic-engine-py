@@ -384,16 +384,17 @@ class Entity:
         Equip an armor to entity.
         """
         # Check instance params 
-        if hasattr(armor_instance, 'stats') and 'armor_category' not in armor_instance.stats:
+        if hasattr(armor_instance, 'mechanics') and 'armor_category' not in armor_instance.mechanics:
             raise ArmorNonEquippableItemError(armor_instance)
 
         # Check if armor not in inventory
         if armor_instance not in self.inventory:
             raise ArmorNotFoundInInventoryError(self.name, armor_instance)
         
+        print(armor_instance.mechanics)
         # Check if the minimum STR required to use the equipment is available.
-        if not self.ability_calculation('STR') >= armor_instance.stats.get('str_req', 0):
-            raise ArmorInsufficientParameterError(self.name, self.ability_calculation('STR'), armor_instance.name, 'STR', armor_instance.stats['str_req'])
+        if not self.ability_calculation('STR') >= armor_instance.mechanics.get('strength_requirement', 0):
+            raise ArmorInsufficientParameterError(self.name, self.ability_calculation('STR'), armor_instance.name, 'STR', armor_instance.mechanics['strength_requirement'])
 
         # Check if a the armor is already equiped, this will be unequip
         if self.equipment['armor'] != None:
@@ -416,7 +417,6 @@ class Entity:
             return True
         return False
 
-# /---/ Equip shield | check shield parameters
     def equip_weapon_on_hand(self, weapon_instance):
         """
         Equip an weapon to entity. The entity must have hands available to equip the weapon.
@@ -434,9 +434,9 @@ class Entity:
             raise EquipmentError()
         
         req_hands = 0
-        if hasattr(weapon_instance, 'stats') and 'hands' in weapon_instance.stats :
+        if hasattr(weapon_instance, 'mechanics') and 'hands' in weapon_instance.mechanics :
             # Weapon
-            req_hands = int(weapon_instance.stats['hands'])
+            req_hands = int(weapon_instance.mechanics['hands'])
         else:
             # Shield
             req_hands = 1
@@ -472,7 +472,7 @@ class Entity:
             raise WeaponNotEquipedError(self.name, weapon_instance)
 
         # count of hands
-        equipable_slots = ["weapon_unarmed" for _ in range(int(weapon_instance.stats['hands']))]
+        equipable_slots = ["weapon_unarmed" for _ in range(int(weapon_instance.mechanics['hands']))]
 
         # remove weapon and "holding_weapon" to "weapon_unarmed"
         for idx, hand in enumerate(self.equipment['hands']):

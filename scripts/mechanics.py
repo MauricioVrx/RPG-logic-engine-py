@@ -1,5 +1,7 @@
 import math
 from scripts.item import Item
+from notebooks.new_weapon_format import Itm
+
 from scripts.exceptions import (
     DataFrameMultipleRowsError,
     DataFrameRowNotFoundError,
@@ -41,12 +43,13 @@ def add_item(inventory, item_instance, force_add = False):
     """
     Add an object to inventory.
     """
-    if not isinstance(item_instance, Item) and not isinstance(item_instance, dict):
+    # if not isinstance(item_instance, Item) and not isinstance(item_instance, dict):
+    if not isinstance(item_instance, Item) and not isinstance(item_instance, Itm) and not isinstance(item_instance, dict): # /---/ temporary
         raise ItemNotFoundError(item_instance)
 
     if len(inventory.inventory) < inventory.capacity or force_add == True:
         inventory.inventory.append(item_instance)
-        return True
+        return item_instance
     else:
         raise StorageLimitItemsError(inventory.name, inventory.capacity)
 
@@ -217,20 +220,27 @@ def attack_roll_checks(entity, weapon, n_attack= 1, distance=False, force = Fals
 
     result = 0
 
-    # Weapon proficiency_
-    result += entity.proficiency_value(weapon.stats["weapon_category"]) 
+
+    # Weapon proficiency
+    if hasattr(weapon.mechanics, 'weapon_category'): # Weapon
+        proficiency_name = weapon.mechanics["weapon_category"]
+    else: # Shield
+        proficiency_name = "armor_unarmored"
+
+    result += entity.proficiency_value(proficiency_name) 
+    # result += entity.proficiency_value(weapon.mechanics["weapon_category"])  # /---/
 
     # Ability mod value, Ability modification value, depends on weapon type and distance.
     mod = 0
     if distance: # If is a distance weapon o throw weapon
         mod += entity.ability_calculation("DEX")
-    elif "Finesse" in weapon.stats['trait'].split(", "): # Weapon "Finesse" trait
+    elif "Finesse" in weapon.traits: # Weapon "Finesse" trait
         mod += max(entity.ability_calculation("DEX") , entity.ability_calculation("STR"))
     else: 
         mod += entity.ability_calculation("STR")
 
     # MAP (Multipe attacks Penalty) depned of "Agile" trait.
-    if "Agile" in weapon.stats['trait'].split(", "):
+    if "Agile" in weapon.traits:
         penalized_value = 4
     else:
         penalized_value = 5

@@ -1,4 +1,5 @@
-import pandas as pd
+import json
+
 import os
 import copy
 from scripts.config import ITEMS_CSV_FILES
@@ -11,13 +12,25 @@ class Item:
     """
     Represents an individual object in the game world.
     """
-    def __init__(self, name, category, **kwargs):
+    def __init__(self, item_id, name, category,
+                 rarity=None, traits=None,
+                 level=None, price=None, bulk=None,
+                 mechanics=None, lore=None):
+
+        self.id = item_id
         self.name = name
         self.category = category
-        # Stores all CSV columns (Price, Weight, Damage, etc.) filtering out NaN values
-        self.stats = {k: v for k, v in kwargs.items() if pd.notna(v)}
-        self.status = None
 
+        self.rarity = rarity
+        self.traits = traits or []
+        self.level = level
+        self.price = price
+        self.bulk = bulk
+
+        self.mechanics = mechanics or {}
+        self.lore = lore or {}
+
+        self.status = None
 
     def __repr__(self):
         return f"<{self.category.upper()}: {self.name}>"
@@ -28,6 +41,7 @@ class Item:
         return self.stats.get(key, default)
 
 
+
 class ItemManager:
     """
     Manages the loading of CSV templates and the creation of new items.
@@ -36,32 +50,31 @@ class ItemManager:
         self.base_path = base_path
         self.library = {}
 
-    def load_all_items(self, structure = ITEMS_CSV_FILES):
-        """
-        Iterates through specific folders to load all game items.
-        """
-        
+
+    def load_all_items(self, structure=ITEMS_CSV_FILES):
         for folder, files in structure.items():
-                for file in files:
-                    path = os.path.join(self.base_path, folder, f"{file}.csv")
-                    if os.path.exists(path):
-                        self._load_csv(path, category=file)
-                    else:
-                        raise ItemFileNotFoundError(file, folder)
+            for file in files:
+                path = os.path.join(self.base_path, folder, f"{file}.json")
 
+                if not os.path.exists(path):
+                    raise ItemFileNotFoundError(file, self.base_path)
+                
+                with open(path, "r", encoding="utf-8") as f:
+                    data = json.load(f)
 
-    def _load_csv(self, path, category):
-        """
-        Reads a CSV and stores each row as a template Item.
-        """
-        df = pd.read_csv(path, sep=';')
-        for _, row in df.iterrows():
-            data = row.to_dict()
-            name = data.pop("name", data.pop("name ", None)) 
-            if name:
-                # Create the 'Master' library template
-                self.library[name] = Item(name, category, **data)
-
+                for item_id, item_data in data.items():
+                    self.library[item_id] = Item(
+                        item_id=item_id,
+                        name=item_data["name"],
+                        category=item_data["category"],
+                        rarity = item_data.get("rarity", "Common"),
+                        traits = item_data.get("traits", []),
+                        level  = item_data.get("level", 0),
+                        price  = item_data.get("price", 150),
+                        bulk   = item_data.get("bulk", 1),
+                        mechanics=item_data.get("mechanics", {}),
+                        lore=item_data.get("lore", {})
+                    )
 
     def spawn(self, item_name):
         """

@@ -25,7 +25,7 @@ def test_generate_item():
     """
     Gererate a simple item
     """
-    Item(name = "Next City ticket", category = "obligatory" , kwargs=  { "from" : "custom", "common_use" : "required to enter city X"} )
+    Item(item_id = "next_city_ticket" ,name = "Next City ticket", category = "obligatory" , lore =  { "common_use" : "required to enter city X"} )
 
 
 def test_read_csv_files():
@@ -60,7 +60,7 @@ def test_spawn_item(test_item_factory):
     """
     Spawn a correct item
     """
-    test_item_factory.spawn("Clan Dagger")
+    test_item_factory.spawn("clan_dagger")
 
 
 def test_spawn_wrong_item(test_item_factory):
@@ -75,11 +75,11 @@ def test_storage_items(test_item_factory, simple_dagger, normal_chest):
     """
     Add and remove items in a storage
     """
-    normal_chest.add_item(test_item_factory.spawn("Padded Armor"))
+    armor = normal_chest.add_item(test_item_factory.spawn("padded_armor"))
     normal_chest.add_item(simple_dagger)
 
-    normal_chest.remove_item("Clan Dagger")
-    normal_chest.remove_item("Padded Armor")
+    normal_chest.remove_item(simple_dagger)
+    normal_chest.remove_item(armor)
 
 
 def test_bad_storage(simple_dagger, simple_chest):
