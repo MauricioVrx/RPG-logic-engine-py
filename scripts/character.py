@@ -1,6 +1,9 @@
 from collections import Counter
+import os
+import copy
+
 from scripts.entity import Entity
-from scripts.constants import SIZE_NAME, ABILITY_NAMES
+from scripts.constants import ABILITY_NAMES
 from scripts.config import FREE_ABILITY_POINTS
 from scripts.exceptions import (
     EntityAbilityNotFoundError,
@@ -16,18 +19,12 @@ from scripts.exceptions import (
     BackgroundNotFoundError,
     BackgroundMinAbilityRequiredError,
 )
-from data.dataframes import (
-    df_ancestry  as ancestry, 
-    df_char_class as character_class,
-    df_background as background, 
-)
 
 from scripts.constants import ABILITY_SCORE
 
 from scripts.mechanics import get_name_df
 import json
 
-# Data structures (To be moved to JSON/Database in future sprints)
 
 class Character(Entity):
     def __init__(self):
@@ -50,23 +47,26 @@ class Character(Entity):
     # ==============================================================
     # ANCESTRY / CLASS / BACKGROUND / FREE - POINTS FUNCTIONS
     # ==============================================================
-    def set_ancestry(self, name, extra_abilities = []):
+    def set_ancestry(self, ancestry, extra_abilities = [], identity_list=None):
         """
         Sets the character's ancestry and applies related boosts and stats.
         """
+        ancestry_instance = ancestry
+        if isinstance(ancestry_instance, str) and identity_list != None:
+            ancestry_instance = identity_list.spawn("ancestry" , ancestry_instance)
+
         if self.ancestry != None:
             raise CharacterChangePastError(self.name, 'ancestry')
+ 
+        if not isinstance(ancestry_instance, Ancestry):
+            raise AncestryNotFoundError(ancestry_instance)
 
-        info = get_name_df(ancestry, name)
-
-        if len(info) == 0: 
-            raise AncestryNotFoundError(name)
-
-        if info.get("status") == 0:
-            raise CharacterDisabledParameterError(name, 'Ancestry')
+        if ancestry_instance.status == 0:
+            raise CharacterDisabledParameterError(ancestry_instance, 'Ancestry')
         
         # Validate Free Boosts limit
-        ability_boosts = json.loads(info["ability_boosts"])
+        # ability_boosts = json.loads(ancestry_instance.ability_boosts)
+        ability_boosts = ancestry_instance.ability_boosts
         max_free = ability_boosts.get('FREE', 0)
         if len(extra_abilities) > max_free:
             raise CharacterAbilityLimitExceededError(len(extra_abilities), max_free)
@@ -80,86 +80,78 @@ class Character(Entity):
                 raise CharacterDuplicateAbilityError(ability, 'Ancestry', ability_boosts)
        
         # Assign core stats
-        self.hit_points_max += info['hit_points_max']
-        self.speed          += info['speed']
-        self.size            = info['size']
-        self.trait          += info['trait']
-   
-        if isinstance(info['sense'], list):
-            self.sense      += info.get('sense', [])    
-        else:
-            self.sense = []
-        self.language       += info.get('language', []) 
+        self.hit_points_max += ancestry_instance.hit_points_max
+        self.speed          += ancestry_instance.speed
+        self.size            = ancestry_instance.size
+        self.trait          += ancestry_instance.trait
+        self.sense          += ancestry_instance.sense   
+        self.language       += ancestry_instance.language 
 
         # Process boosts (1 boost = 2 points)
         base_boosts = {k: v for k, v in ability_boosts.items() if k != 'FREE'}
         final_boost_map = base_boosts | {ability: 1 for ability in extra_abilities}
 
         self._ancestry_boosts = {ability: val * 2 for ability, val in final_boost_map.items()}
-        self.ancestry         = name 
+        self.ancestry         = ancestry_instance.id 
 
         return True
-    
 
-    def set_class(self, name, main_ability):
+
+    def set_class(self, class_ins, main_ability, identity_list=None):
         """
         Sets the character's class and the key ability boost.
         """
-        
+        class_instance = class_ins
+        if isinstance(class_instance, str) and identity_list != None:
+            class_instance = identity_list.spawn("class" , class_instance)
+
         if self.character_class != None:
             raise CharacterChangePastError(self.name, 'class')
 
-        info = get_name_df(character_class, name)
-
-        if len(info) == 0: 
-            raise ClassNotFoundError(name)
+        if not isinstance(class_instance, CharClass):
+            raise ClassNotFoundError(class_instance)
         
         if main_ability not in ABILITY_NAMES:
             raise EntityAbilityNotFoundError(main_ability)
 
-        if info.get("status") == 0:
-            raise CharacterDisabledParameterError(name, 'class')
+        if class_instance.status == 0:
+            raise CharacterDisabledParameterError(class_instance, 'class')
 
-        if main_ability not in info['main_ability']:
-            raise ClassMainAbilityRequiredError(main_ability, info['main_ability'])
+        if main_ability not in class_instance.main_ability:
+            raise ClassMainAbilityRequiredError(main_ability, class_instance)
 
-        self.character_class   = name 
-        self.hit_points_max    += info['hit_points_max']
+        self.character_class   =  class_instance 
+        self.hit_points_max    += class_instance.hit_points_max
         self.main_ability       = main_ability 
-        self.secondary_ability += info['secondary_ability']
-        self.trait             += info['trait']
-        # self.magical_aptitude  += info['magical_aptitude']
-        if isinstance(info['magical_aptitude'], list):
-            self.magical_aptitude  += info.get('magical_aptitude', [])
-        else:
-            self.magical_aptitude = []
+        self.secondary_ability += class_instance.secondary_ability
+        self.trait             += class_instance.trait
+        self.magical_aptitude  += class_instance.magical_aptitude
 
         self._class_boosts   = {main_ability:2}
-        self.character_class = name 
 
         self.calculate_class_cd()
 
         return True
 
-
-    def set_background(self, name, chosen_boosts):
+    def set_background(self, background, chosen_boosts, identity_list=None):
         """
         Sets background and applies proficiency in skills/lore.
         """
+        background_instance = background
+        if isinstance(background_instance, str) and identity_list != None:
+            background_instance = identity_list.spawn("background" , background_instance)
 
         if self.background != None:
             raise CharacterChangePastError(self.name, 'background')
 
-        info = get_name_df(background, name)
+        if not isinstance(background_instance, Background):
+            raise BackgroundNotFoundError(background_instance)
 
-        if len(info) == 0: 
-            raise BackgroundNotFoundError(name)
+        if background_instance.status == 0:
+            raise CharacterDisabledParameterError(background_instance, 'Background')
 
-        if info.get("status") == 0:
-            raise CharacterDisabledParameterError(name, 'Background')
-
-        if len(chosen_boosts) > info['boosts_count']:
-            raise CharacterAbilityLimitExceededError(len(chosen_boosts), info['boosts_count'])
+        if len(chosen_boosts) > background_instance.boosts_count:
+            raise CharacterAbilityLimitExceededError(len(chosen_boosts), background_instance.boosts_count)
 
         # Validate against duplicates and existence
         for ability in chosen_boosts:
@@ -167,28 +159,29 @@ class Character(Entity):
                 raise EntityAbilityNotFoundError(ability)
 
         # Validate proficiency
-        for skill in info['skills'].split(','):
+        for skill in background_instance.trained_skills:
             if skill not in self.proficiency_rank: 
                 raise EntityParameterNotFoundError(skill, "skill")
             self.proficiency_promotion(skill) 
 
         min_ability_count = 0
         for ability in chosen_boosts: 
-            if ability in info['ability']:
+            if ability in background_instance.ability:
                 min_ability_count += 1
         if min_ability_count < 1:
-            raise BackgroundMinAbilityRequiredError(name, info['ability'])
+            raise BackgroundMinAbilityRequiredError(background_instance, background_instance.ability)
         sum_ability =  {ability: 2 for ability in chosen_boosts}
         if sum(sum_ability.values()) != len(chosen_boosts) * 2:
             raise CharacterInvalidDistributionError(chosen_boosts)
 
         self._background_boosts = sum_ability
-        self.background         = name
-        self.lore           += info['lore']
-        self.acquired_feats += info['feat']
+        self.background         = background_instance
+        self.lore           += background_instance.trained_lore
+        self.acquired_feats += background_instance.granted_feats
 
         return True
     
+
 
     def set_free_ability_points(self, ability_points):
         for ability in ability_points:
@@ -237,3 +230,183 @@ class Character(Entity):
         self.class_cd =  10 + self.ability_calculation(self.main_ability) + self.proficiency_value('class_cd')
         return self.class_cd
         
+# ==============================================================
+# Character Identity Library :  Ancestry, Class, Background
+# ==============================================================
+class Ancestry:
+    def __init__(self, ancestries_id, name, category = "Ancestry", hit_points_max = None, size = None, speed = None, 
+                 ability_boosts = None, trait= None, language= None, sense= None, status= None, 
+                 description= None):
+        self.id = ancestries_id
+        self.name = name
+        self.category = category
+        self.hit_points_max = hit_points_max
+        self.speed = speed
+        self.size = size
+        self.ability_boosts = ability_boosts or {}
+        self.trait = trait or []
+        self.language = language or []
+        self.sense = sense or []
+        self.status = status
+        self.description = description
+    
+    def __repr__(self):
+        return f"<{self.category.upper()}: {self.name}>"
+
+
+    def get_stat(self, key, default=None):
+        """Safely retrieves a stat from the ancestry."""
+        return self.stats.get(key, default)
+    
+class CharClass:
+    def __init__(self, class_id, name, category = "Class", hit_points_max = None, size = None, main_ability = None, 
+                 secondary_ability = None, trait= None, magical_aptitude= None, status= None, 
+                 ):
+        self.id = class_id
+        self.name = name
+        self.category = category
+        self.hit_points_max = hit_points_max
+        self.main_ability = main_ability
+        self.size = size
+        self.secondary_ability = secondary_ability or {}
+        self.trait = trait or []
+        self.magical_aptitude = magical_aptitude or []
+        self.status = status 
+        
+    
+    def __repr__(self):
+        return f"<{self.category.upper()}: {self.name}>"
+
+
+    def get_stat(self, key, default=None):
+        """Safely retrieves a stat from the class."""
+        return self.stats.get(key, default)
+    
+
+class Background:
+    def __init__(self, background_id, name, category = "Background", ability = None, boosts_count = None, trained_skills = None, 
+                 trained_lore = None, granted_feats= None, additional_effects= None, status= None, 
+                 ):
+        self.background_id = background_id
+        self.name = name
+        self.category = category
+        self.ability  = ability
+        self.boosts_count = boosts_count
+        self.trained_skills     = trained_skills or [] 
+        self.trained_lore       = trained_lore or []
+        self.granted_feats      = granted_feats or []
+        self.additional_effects = additional_effects or {}
+        self.status = status 
+        
+    
+    def __repr__(self):
+        return f"<{self.category.upper()}: {self.name}>"
+
+
+    def get_stat(self, key, default=None):
+        """Safely retrieves a stat from the background."""
+        return self.stats.get(key, default)
+
+
+class CharacterIdentityManager:
+    def __init__(self, base_path="notebooks/data"):
+        self.base_path = base_path
+        self.ancestry   = {}
+        self.char_class = {}
+        self.background = {}
+
+    def load_all_ancestries(self, file_name= "ancestry"):
+        path = os.path.join(self.base_path, "character" ,f"{file_name}.json")
+        
+        if not os.path.exists(path):
+            print("no hay") # Make exception/---/
+            # raise ItemFileNotFoundError(file, self.base_path)
+
+        with open(path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+
+        for ancestries_id, ancestry_data in data.items():
+            self.ancestry[ancestries_id] = Ancestry(
+                ancestries_id   = ancestries_id,
+                name            = ancestry_data["name"],
+                hit_points_max  = ancestry_data["hit_points_max"],
+                speed           = ancestry_data["speed"],
+                size            = ancestry_data.get("size", 2),
+                ability_boosts  = ancestry_data.get("ability_boosts", {}),
+                trait           = ancestry_data.get("trait", []),
+                language        = ancestry_data.get("language", []),
+                sense           = ancestry_data.get("sense", []),
+                status          = ancestry_data.get("status", 0),
+                description     = ancestry_data.get("description", ""),
+            )
+
+    def load_all_class(self, file_name= "char_class"):
+        path = os.path.join(self.base_path, "character" ,f"{file_name}.json")
+        
+        if not os.path.exists(path):
+            print("no hay") # Make exception/---/
+            # raise ItemFileNotFoundError(file, self.base_path)
+
+        with open(path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+
+        for class_id, char_class_data in data.items():
+            self.char_class[class_id] = CharClass(
+                class_id          = class_id,
+                name              = char_class_data["name"],
+                hit_points_max    = char_class_data['base_stats']["hit_points_max"],
+                main_ability      = char_class_data["main_ability"],
+                secondary_ability = char_class_data["secondary_ability"],
+                trait             = char_class_data.get("trait", []),
+                magical_aptitude  = char_class_data['magical_progression']['spellcasting_ability'],
+                status            = char_class_data['status'],
+            )
+
+    def load_all_background(self, file_name= "background"):
+        path = os.path.join(self.base_path, "character" ,f"{file_name}.json")
+        
+        if not os.path.exists(path):
+            print("no hay") # Make exception/---/
+            # raise ItemFileNotFoundError(file, self.base_path)
+
+        with open(path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+
+        for background_id, background_data in data.items():
+            self.background[background_id] = Background(
+                background_id       = background_id,
+                name                = background_data["name"],
+                ability             = background_data['ability_boosts']["choices"],
+                boosts_count        = background_data["ability_boosts"]['boosts'],
+                trained_skills     = background_data["trained_skills"],
+                trained_lore       = background_data['trained_lore'],
+                granted_feats      = background_data['granted_feats'],
+                additional_effects = background_data['additional_effects'],
+                status             = background_data['status'],
+            )
+
+    def load_all_identity(self):
+        self.load_all_ancestries()
+        self.load_all_class()
+        self.load_all_background()
+
+    def spawn(self, char_identity , name):
+        """
+        Creates and returns a unique, independent copy of an item.
+        """
+        if char_identity == "ancestry":
+            template = self.ancestry.get(name)
+        elif char_identity == "class":
+            template = self.char_class.get(name)
+        elif char_identity == "background":
+            template = self.background.get(name)
+        else:
+            pass # /---/ make error
+
+        if template:
+            # deepcopy ensures the new item doesn't share memory with the template
+            return copy.deepcopy(template) if template else None
+        # raise ItemNotFoundError(item_name) # /---/ Make error
+
+
+

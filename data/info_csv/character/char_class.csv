@@ -1,4 +1,0 @@
-name;hit_points_max;main_ability;secondary_ability;trained_skills;trait;magical_aptitude;status;from;description
-Fighter;10;STR, DEX;CON;3;Fighter;;1;base;
-Rogue;8;DEX;CON, CHA;7;Rogue;;1;base;
-Ranger;10;STR, DEX;CON, WIS;4;Ranger;WIS;1;base;

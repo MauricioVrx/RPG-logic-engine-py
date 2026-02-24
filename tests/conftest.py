@@ -3,7 +3,7 @@ from scripts.dice import Dice, CustomDice, RangeDice
 from scripts.parser import FormulaProcessor
 
 from scripts.entity import Entity
-from scripts.character import Character
+from scripts.character import Character, CharacterIdentityManager
 
 from scripts.item import ItemManager
 from scripts.storage import Container
@@ -57,6 +57,12 @@ def simple_entity():
 # ===============================
 # CHARACTER 
 # ===============================
+char_factory = CharacterIdentityManager(base_path = "tests/schemas/data/info_csv")
+char_factory.load_all_identity()
+
+@pytest.fixture
+def test_char_factory():
+    return char_factory
 
 @pytest.fixture
 def simple_char():
@@ -66,19 +72,23 @@ def simple_char():
 @pytest.fixture
 def full_char():
     full_char = Character()
-    full_char.set_ancestry('Elf', ["STR"])
-    full_char.set_class('Ranger', "DEX")
-    full_char.set_background('Acrobat', ["DEX", "WIS"])
+    full_char.set_ancestry('elf', ["STR"], identity_list= char_factory)
+    full_char.set_class('ranger', "DEX", identity_list= char_factory)
+    full_char.set_background('acrobat', ["DEX", "WIS"], identity_list= char_factory)
     full_char.set_free_ability_points(["STR", "DEX", "WIS", "INT"])
     full_char.update_character_ability_points()
     return full_char
 
 @pytest.fixture
 def npc_human():
+    ancestry    = char_factory.spawn('ancestry', 'human')
+    class_char  = char_factory.spawn('class', 'rogue')
+    background  = char_factory.spawn('background', 'merchant')
+
     human_char = Character()
-    human_char.set_ancestry('Human', ["STR", "WIS"])
-    human_char.set_class('Rogue', "DEX")
-    human_char.set_background('Merchant', ["CHA", "WIS"])
+    human_char.set_ancestry(ancestry, ["STR", "WIS"])
+    human_char.set_class(class_char, "DEX")
+    human_char.set_background(background, ["CHA", "WIS"])
     human_char.set_free_ability_points(["STR", "CHA", "WIS", "INT"])
     human_char.update_character_ability_points()
     return human_char
