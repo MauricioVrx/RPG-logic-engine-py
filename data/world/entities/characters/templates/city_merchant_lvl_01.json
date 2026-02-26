@@ -1,0 +1,45 @@
+{
+  "id"   : "npc_city_merchant_lvl_01",
+  "type" : "template"
+  "components": {
+    "identity": {
+      "name" : "City Merchant"
+      "alias": "City Merchant"
+    },
+    "stats": {
+      "level": 1,
+      "ancestry": ["anc_human", ["CHA", "INT"]],
+      "background": ["bkg_merchant", "INT"],
+      "extra_ability_score" : {"CON" : -2, "STR" : -2}
+      "skill" : {'Society' : 1}
+      "skill_custom" : {"Athletics" : -3, "Diplomacy" : 3},
+      "saving_throws_custom" : {"will" : 4, 'fortitude' : -3}
+    },
+    "behavior" : {
+      "ally"   = {"city_guard" : 2}
+      "enemy"  = {"class_Rogue": 8}
+      "faction": ["merchant"]
+    }
+    "inventory": {
+      "default_items" : ["healing_potion_minor", "torch", "ration_basic"],
+      "equipment"     : ["dagger", "unarmored"],
+      "gold" : 120
+    },
+    "job":{
+      "Vendor": {
+        "stock": {
+          "torch": {"qty": 23, "price": 3},
+          "ration_basic": {"qty": 5, "price": 12},
+          "healing_potion_minor": {"qty": 3},
+          "dagger": {"qty": 2, "price": 200}
+        },
+        "type": "shop",
+        "bargain_skill": "diplomacy"
+      },
+    }
+    "ai": {
+      "profile": "merchant_stationary",
+      "faction": "mercantile"
+    }
+  }
+}

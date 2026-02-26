@@ -37,7 +37,7 @@
         "description": ""
     },
 
-    "rouge" : {
+    "rogue" : {
         "name": "Rogue",
         "type": "class",
 

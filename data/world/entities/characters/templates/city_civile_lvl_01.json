@@ -1,0 +1,26 @@
+{
+  "id"   : "city_civile_lvl_01",
+  "type" : "template"
+  "components": {
+    "identity": {
+      "name" : "City Civile"
+      "alias": "City Civile"
+    },
+    "stats": {
+      "level": 1,
+      "ancestry": ["anc_human"],
+      "skill" : {'Society' : 1}
+    },
+    "behavior" : {
+      "ally"   = {"city_guard" : 2}
+      "faction": ["civile"]
+    }
+    "inventory": {
+      "default_items" : ["healing_potion_minor", "torch"],
+      "gold" : [0, 300]
+    },
+    "ai": {
+      "profile": "city civil",
+    }
+  }
+}

@@ -6,7 +6,7 @@ from scripts.mechanics import attempt_transfer
 from scripts.exceptions import (
     ItemNotFoundError,
     StorageLimitItemsError,
-    ItemFileNotFoundError,
+    FileNotFoundError,
     ArmorNonEquippableItemError,
     ArmorNotFoundInInventoryError,
     ArmorInsufficientParameterError,
@@ -52,7 +52,7 @@ def test_read_wrong_csv_files():
     Try to make item library with wrongs values
     """
     item_factory = ItemManager()
-    with pytest.raises(ItemFileNotFoundError):
+    with pytest.raises(FileNotFoundError):
        item_factory.load_all_items(structure = {"Wrong_csv": ["WrongFile1", "WrongFile2"]})
 
 

@@ -10,7 +10,7 @@ FREE_ABILITY_POINTS = 4
 
 # Items CSV files
 # {folder:[csv_files]}
-ITEMS_CSV_FILES = {
+ITEMS_FILES = {
     "equipment": ["armor", "weapon", "shield"],
     "item": ["adventuring_gear", "consumables"]
 }

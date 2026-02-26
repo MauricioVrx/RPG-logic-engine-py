@@ -1,6 +1,6 @@
 import math
 from scripts.item import Item
-from notebooks.new_weapon_format import Itm
+# from notebooks.new_weapon_format import Itm
 
 from scripts.exceptions import (
     DataFrameMultipleRowsError,
@@ -43,8 +43,7 @@ def add_item(inventory, item_instance, force_add = False):
     """
     Add an object to inventory.
     """
-    # if not isinstance(item_instance, Item) and not isinstance(item_instance, dict):
-    if not isinstance(item_instance, Item) and not isinstance(item_instance, Itm) and not isinstance(item_instance, dict): # /---/ temporary
+    if not isinstance(item_instance, Item) and not isinstance(item_instance, dict):
         raise ItemNotFoundError(item_instance)
 
     if len(inventory.inventory) < inventory.capacity or force_add == True:

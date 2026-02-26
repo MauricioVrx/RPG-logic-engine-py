@@ -543,24 +543,6 @@ class ItemError(GameBaseError):
     """Base class for errors occurring during Items usage, equip and tranfer."""
     pass
 
-class ItemFileNotFoundError(ItemError):
-    """Raised when the specified File does not found"""
-    def __init__(self, name, folder):
-        self.name       = name
-        self.folder   = folder
-        self.error_code = "ERR_ITEM_FILE_NOT_FOUND"
-        self.message    = f"{folder} Folder: '{name}' file not found."
-        super().__init__(self.message)
-
-    def to_dict(self):
-        return {
-            "error"          : self.__class__.__name__,
-            "name"           : self.name ,
-            "folder"         : self.folder ,
-            "code"           : self.error_code
-        }
-    
-
 class ItemNotFoundError(ItemError):
     """Raised when the specified Item does not found"""
     def __init__(self, item_name):
@@ -749,4 +731,30 @@ class StorageLimitItemsError(StorageError):
             "name"           : self.name ,
             "limit"          : self.limit ,
             "code"           : self.error_code
+        }
+
+# =============================================================================
+# SYSTEM EXCEPTIONS
+# =============================================================================
+
+class SystemError(GameBaseError): 
+    """Base class for exceptions in this module."""
+    pass
+
+
+class FileNotFoundError(SystemError):
+    """Exception raised when a "dice" is not in the inventory."""
+    def __init__(self, file_name, folder, file_format):
+        self.file_name   = file_name
+        self.folder      = folder
+        self.file_format = file_format
+        self.error_code  = "ERR_FILE_NOT_FOUND"
+        super().__init__(f"'{file_name}.{file_format}' not found in '{folder}' folder")
+    
+        def to_dict(self):
+            return {
+                "error"       : self.__class__.__name__,
+                "file_name"   : self.file_name ,
+                "folder"      : self.folder ,
+                "file_format" : self.file_format
         }

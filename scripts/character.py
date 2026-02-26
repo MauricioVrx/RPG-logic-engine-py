@@ -1,5 +1,5 @@
 from collections import Counter
-import os
+from scripts.system import read_json_files
 import copy
 
 from scripts.entity import Entity
@@ -23,7 +23,6 @@ from scripts.exceptions import (
 from scripts.constants import ABILITY_SCORE
 
 from scripts.mechanics import get_name_df
-import json
 
 
 class Character(Entity):
@@ -234,12 +233,13 @@ class Character(Entity):
 # Character Identity Library :  Ancestry, Class, Background
 # ==============================================================
 class Ancestry:
-    def __init__(self, ancestries_id, name, category = "Ancestry", hit_points_max = None, size = None, speed = None, 
+    def __init__(self, ancestries_id, name, category = "Ancestry", id_value = None, hit_points_max = None, size = None, speed = None, 
                  ability_boosts = None, trait= None, language= None, sense= None, status= None, 
                  description= None):
         self.id = ancestries_id
         self.name = name
         self.category = category
+        self.id_value = id_value
         self.hit_points_max = hit_points_max
         self.speed = speed
         self.size = size
@@ -259,12 +259,13 @@ class Ancestry:
         return self.stats.get(key, default)
     
 class CharClass:
-    def __init__(self, class_id, name, category = "Class", hit_points_max = None, size = None, main_ability = None, 
+    def __init__(self, class_id, name, category = "Class", id_value = None, hit_points_max = None, size = None, main_ability = None, 
                  secondary_ability = None, trait= None, magical_aptitude= None, status= None, 
                  ):
         self.id = class_id
         self.name = name
         self.category = category
+        self.id_value = id_value
         self.hit_points_max = hit_points_max
         self.main_ability = main_ability
         self.size = size
@@ -284,12 +285,13 @@ class CharClass:
     
 
 class Background:
-    def __init__(self, background_id, name, category = "Background", ability = None, boosts_count = None, trained_skills = None, 
+    def __init__(self, background_id, name, category = "Background", id_value = None, ability = None, boosts_count = None, trained_skills = None, 
                  trained_lore = None, granted_feats= None, additional_effects= None, status= None, 
                  ):
         self.background_id = background_id
         self.name = name
         self.category = category
+        self.id_value = id_value
         self.ability  = ability
         self.boosts_count = boosts_count
         self.trained_skills     = trained_skills or [] 
@@ -309,26 +311,22 @@ class Background:
 
 
 class CharacterIdentityManager:
-    def __init__(self, base_path="notebooks/data"):
+    def __init__(self, base_path="data/info"):
         self.base_path = base_path
         self.ancestry   = {}
         self.char_class = {}
         self.background = {}
 
     def load_all_ancestries(self, file_name= "ancestry"):
-        path = os.path.join(self.base_path, "character" ,f"{file_name}.json")
+        data = read_json_files(self.base_path,"character", file_name )
         
-        if not os.path.exists(path):
-            print("no hay") # Make exception/---/
-            # raise ItemFileNotFoundError(file, self.base_path)
-
-        with open(path, "r", encoding="utf-8") as f:
-            data = json.load(f)
-
-        for ancestries_id, ancestry_data in data.items():
+        for n, info in enumerate(data.items()):
+            ancestries_id = info[0]
+            ancestry_data = info[1]
             self.ancestry[ancestries_id] = Ancestry(
                 ancestries_id   = ancestries_id,
                 name            = ancestry_data["name"],
+                id_value        = n,
                 hit_points_max  = ancestry_data["hit_points_max"],
                 speed           = ancestry_data["speed"],
                 size            = ancestry_data.get("size", 2),
@@ -341,19 +339,15 @@ class CharacterIdentityManager:
             )
 
     def load_all_class(self, file_name= "char_class"):
-        path = os.path.join(self.base_path, "character" ,f"{file_name}.json")
-        
-        if not os.path.exists(path):
-            print("no hay") # Make exception/---/
-            # raise ItemFileNotFoundError(file, self.base_path)
+        data = read_json_files(self.base_path,"character", file_name )
 
-        with open(path, "r", encoding="utf-8") as f:
-            data = json.load(f)
-
-        for class_id, char_class_data in data.items():
+        for n, info in enumerate(data.items()):
+            class_id        = info[0]
+            char_class_data = info[1]
             self.char_class[class_id] = CharClass(
                 class_id          = class_id,
                 name              = char_class_data["name"],
+                id_value          = n,
                 hit_points_max    = char_class_data['base_stats']["hit_points_max"],
                 main_ability      = char_class_data["main_ability"],
                 secondary_ability = char_class_data["secondary_ability"],
@@ -363,21 +357,17 @@ class CharacterIdentityManager:
             )
 
     def load_all_background(self, file_name= "background"):
-        path = os.path.join(self.base_path, "character" ,f"{file_name}.json")
-        
-        if not os.path.exists(path):
-            print("no hay") # Make exception/---/
-            # raise ItemFileNotFoundError(file, self.base_path)
+        data = read_json_files(self.base_path,"character", file_name )
 
-        with open(path, "r", encoding="utf-8") as f:
-            data = json.load(f)
-
-        for background_id, background_data in data.items():
+        for n, info in enumerate(data.items()):
+            background_id   = info[0]
+            background_data = info[1]
             self.background[background_id] = Background(
-                background_id       = background_id,
-                name                = background_data["name"],
-                ability             = background_data['ability_boosts']["choices"],
-                boosts_count        = background_data["ability_boosts"]['boosts'],
+                background_id      = background_id,
+                name               = background_data["name"],
+                id_value           = n,
+                ability            = background_data['ability_boosts']["choices"],
+                boosts_count       = background_data["ability_boosts"]['boosts'],
                 trained_skills     = background_data["trained_skills"],
                 trained_lore       = background_data['trained_lore'],
                 granted_feats      = background_data['granted_feats'],

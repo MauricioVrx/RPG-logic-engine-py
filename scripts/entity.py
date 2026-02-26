@@ -47,6 +47,7 @@ class Entity:
         self.alignment = "" # Alignment preferences
         self.belief    = "" # If beliebe in something or someone
         self.attitude  = "" # Base attitud 
+        self.faction   = ""  
 
         self.language  = [] # Language comprehension 
         self.sense     = [] # Unusual senses
@@ -59,14 +60,14 @@ class Entity:
 
         self.resistance  = [] # Types of resistance or vulnerability according to level: Vulnerability(>0), Resisitance(<0), Immunity(==0)
 
-        self.actions = DEFAULTS_ACTIONS # Type and count 3 actions, 1 reaction, 1 free action
-        self.size    = 3                # Size rank
+        self.actions = DEFAULTS_ACTIONS.copy()  # Type and count 3 actions, 1 reaction, 1 free action
+        self.size    = 3                        # Size rank
 
         self.trait     = ['general'] # All entity tags 
         self.condition = []          # Altered conditions 
 
         self.proficiency_rank    = PROF_RANG_BASE.copy() # Proficiency rank dict  
-        self.core_ability_score  = ABILITY_SCORE    # Ability
+        self.core_ability_score  = ABILITY_SCORE.copy()     # Ability
         self.extra_ability_score = {name: 0 for name, _ in self.core_ability_score.items()} 
         self.skill               = self.__initial_insert_parameters_points(SKILLS_BASE.copy())     # All Skills with dependences values
         self.saving_throws       = self.__initial_insert_parameters_points(SAV_THROWS_BASE.copy()) # Saving parameters with dependences values
@@ -82,8 +83,12 @@ class Entity:
         self.class_cd    = 0 # Specific abilities(from class or creatures) that force other creatures to attempt a saving throw
 
         self.inventory = [] 
-        self.capacity  = 30                                                       # temporal - Inventory of objects
+        self.capacity  = 30                                                         # temporal - Inventory of objects
         self.equipment = {'armor' : None, "accesory" : [], "hands" : [None, None]}  # Humanoid template
+        self.gold      = 0  # Game money
+        self.extra     = {} # For NPC data
+        self.job       = {} # For NPC data
+        self.ia        = {} # For IA data
 
 
     def __str__(self): 
@@ -391,7 +396,6 @@ class Entity:
         if armor_instance not in self.inventory:
             raise ArmorNotFoundInInventoryError(self.name, armor_instance)
         
-        print(armor_instance.mechanics)
         # Check if the minimum STR required to use the equipment is available.
         if not self.ability_calculation('STR') >= armor_instance.mechanics.get('strength_requirement', 0):
             raise ArmorInsufficientParameterError(self.name, self.ability_calculation('STR'), armor_instance.name, 'STR', armor_instance.mechanics['strength_requirement'])
