@@ -1,10 +1,9 @@
 import math
 from scripts.item import Item
-# from notebooks.new_weapon_format import Itm
+
 
 from scripts.exceptions import (
     DataFrameMultipleRowsError,
-    DataFrameRowNotFoundError,
     ItemNotFoundError,
     StorageLimitItemsError,
     ItemNotRemovedError,
@@ -46,8 +45,8 @@ def add_item(inventory, item_instance, force_add = False):
     if not isinstance(item_instance, Item) and not isinstance(item_instance, dict):
         raise ItemNotFoundError(item_instance)
 
-    if len(inventory.inventory) < inventory.capacity or force_add == True:
-        inventory.inventory.append(item_instance)
+    if len(inventory.items) < inventory.capacity or force_add == True:
+        inventory.items.append(item_instance)
         return item_instance
     else:
         raise StorageLimitItemsError(inventory.name, inventory.capacity)
@@ -60,10 +59,10 @@ def remove_item(inventory, item_name):
     if  hasattr(item_name, 'status') and item_name.status == 'equiped' :
         raise ItemNotRemovedError(item_name)
 
-    for i, item in enumerate(inventory.inventory):
+    for i, item in enumerate(inventory.items):
         # if item.name == item_name:
         if item == item_name or item.name == item_name:
-            return inventory.inventory.pop(i)
+            return inventory.items.pop(i)
     raise ItemNotFoundError(item_name)
 
 
@@ -78,7 +77,7 @@ def attempt_transfer(source, target, item):
     # 2. Locate the item at the source.
     item_instance = None
 
-    for source_item in source.inventory:
+    for source_item in source.get_component("inventory").items:
         if isinstance(item, Item) and source_item.name  == item.name :
             item_instance = item
             break
@@ -90,18 +89,18 @@ def attempt_transfer(source, target, item):
         raise ItemNotFoundError(item)
 
     # 3. Destination Validations (Example: Weight or Capacity)
-    if hasattr(target, 'capacity') and len(target.inventory) >= target.capacity:
-        raise StorageLimitItemsError(target.name, target.capacity)
+    if hasattr(target.get_component("inventory"), 'capacity') and len(target.get_component("inventory").items) >= target.get_component("inventory").capacity:
+        raise StorageLimitItemsError(target.get_component("identity").name, target.get_component("inventory").capacity)
 
     # 4. Execution of the movement 
-    source.inventory.remove(item_instance)
-    success = target.add_item(item_instance) 
+    source.get_component("inventory").remove_item(item_instance)
+    success = target.get_component("inventory").add_item(item_instance) 
 
     if success:
         return True, f"'{item_instance.name}' has been successfully moved."
     else:
-        source.inventory.append(item_instance)
-        raise StorageLimitItemsError(target.name, target.capacity)
+        source.get_component("inventory").append(item_instance)
+        raise StorageLimitItemsError(target.get_component("identity").name, target.get_component("inventory").capacity)
 
 
 # ==============================================================
@@ -160,11 +159,15 @@ def _parameter_checks(entity, parameter_name, parameter_list , parameter_type="p
     if not parameter_name in parameter_list:
         raise EntityParameterNotFoundError(parameter_name, parameter_type)
 
-    # Get value depend it's parameter type
+
+    val = 0
     if parameter_type == "Skill":
-        result += entity.get_skill_value(parameter_name)
+        val = entity.get_component("ability").get_skill_value(parameter_name)
+        result += val
     elif parameter_type == "Saving Throws":
-        result += entity.get_saving_throws_value(parameter_name)
+        val =  entity.get_component("ability").get_saving_throws_value(parameter_name)
+        print(f'{parameter_name} - {val}')
+        result += val
 
     return  {"type" : parameter_type , "parameter": parameter_name}| format_return_check(d20_value , result)
 
@@ -175,7 +178,7 @@ def skill_checks(entity, parameter_name, extra = 0):
 
     result = 1d20 + Ability Modifier + Proficiency Bonus + extra(plus custom)
     """
-    return _parameter_checks(entity, parameter_name, entity.skill, "Skill", extra)
+    return _parameter_checks(entity, parameter_name, entity.get_component("ability").skill, "Skill", extra)
 
 
 def saving_throw_checks(entity, parameter_name, extra = 0):
@@ -184,7 +187,7 @@ def saving_throw_checks(entity, parameter_name, extra = 0):
 
     result = 1d20 + Ability Modifier + Proficiency Bonus + extra(plus custom)
     """
-    return _parameter_checks(entity, parameter_name, entity.saving_throws, "Saving Throws", extra)
+    return _parameter_checks(entity, parameter_name, entity.get_component("ability").saving_throws, "Saving Throws", extra)
 
 
 def skill_cd(entity, parameter_name, cd_value, extra = 0):
@@ -211,8 +214,9 @@ def attack_roll_checks(entity, weapon, n_attack= 1, distance=False, force = Fals
     Result = 1d20 + Ability Modifier + Weapon proficiency - MAP (Multipe attacks Penalty) 
     """
     if force == False:
-        if weapon not in entity.inventory:
-            raise WeaponNotFoundInInventoryError(entity.name, weapon)
+        if weapon not in entity.get_component("inventory").items:
+        # if weapon not in entity.inventory:
+            raise WeaponNotFoundInInventoryError(entity.get_component("identity").name, weapon)
         
         if weapon.status != "equiped":
             raise EquipmentError()
@@ -226,17 +230,16 @@ def attack_roll_checks(entity, weapon, n_attack= 1, distance=False, force = Fals
     else: # Shield
         proficiency_name = "armor_unarmored"
 
-    result += entity.proficiency_value(proficiency_name) 
-    # result += entity.proficiency_value(weapon.mechanics["weapon_category"])  # /---/
+    result += entity.get_component("ability").proficiency_value(proficiency_name) 
 
     # Ability mod value, Ability modification value, depends on weapon type and distance.
     mod = 0
     if distance: # If is a distance weapon o throw weapon
-        mod += entity.ability_calculation("DEX")
+        mod += entity.get_component("ability").ability_calculation("DEX")
     elif "Finesse" in weapon.traits: # Weapon "Finesse" trait
-        mod += max(entity.ability_calculation("DEX") , entity.ability_calculation("STR"))
+        mod += max(entity.get_component("ability").ability_calculation("DEX") , entity.get_component("ability").ability_calculation("STR"))
     else: 
-        mod += entity.ability_calculation("STR")
+        mod += entity.get_component("ability").ability_calculation("STR")
 
     # MAP (Multipe attacks Penalty) depned of "Agile" trait.
     if "Agile" in weapon.traits:
@@ -259,14 +262,14 @@ def perception_check(entity):
     Calculate the entity's perception values and roll a 1d20. 
     """
     roll = throw_d20.roll()
-    return format_return_check(roll, (entity.calculate_perception() + roll))
+    return format_return_check(roll, (entity.get_component("ability").calculate_perception() + roll))
 
 
 def armor_class_check(entity):
     """
     returns the entity's armor class
     """
-    return entity.calculate_armor_class()
+    return entity.get_component("combat").calculate_armor_class()
 
 
 def check_impact_attack(attacked_entity , rolled_value):

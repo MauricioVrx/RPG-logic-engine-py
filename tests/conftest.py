@@ -2,11 +2,10 @@ import pytest
 from scripts.dice import Dice, CustomDice, RangeDice
 from scripts.parser import FormulaProcessor
 
-from scripts.entity import Entity
 from scripts.character import Character, CharacterIdentityManager
 
 from scripts.item import ItemManager
-from scripts.storage import Container
+from scripts.container import Container
 
 # ===============================
 # DICE 
@@ -48,9 +47,9 @@ def parser_instance():
 
 @pytest.fixture
 def simple_entity():
-    simple_entity = Entity()
-    simple_entity.hit_points_max     = 10
-    simple_entity.hit_points_current = 5
+    simple_entity = Character()
+    simple_entity.get_component("combat").hit_points_max     = 10
+    simple_entity.get_component("combat").hit_points_current = 5
     return simple_entity
 
 

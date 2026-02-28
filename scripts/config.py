@@ -14,3 +14,6 @@ ITEMS_FILES = {
     "equipment": ["armor", "weapon", "shield"],
     "item": ["adventuring_gear", "consumables"]
 }
+
+
+BASE_HIT_POINTS = 10

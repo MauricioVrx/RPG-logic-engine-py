@@ -1,6 +1,7 @@
 from collections import Counter
 from scripts.system import read_json_files
 import copy
+from scripts.config import BASE_HIT_POINTS 
 
 from scripts.entity import Entity
 from scripts.constants import ABILITY_NAMES
@@ -20,21 +21,39 @@ from scripts.exceptions import (
     BackgroundMinAbilityRequiredError,
 )
 
+from scripts.components import EquipmentComponent ,IdentityComponent  ,NarrativeComponent ,SocialComponent ,ProgressionComponent ,AbilityComponent  ,AIComponent ,JobComponent , CombatComponent, InventoryComponent
+
 from scripts.constants import ABILITY_SCORE
 
 from scripts.mechanics import get_name_df
-
-
+# class Character(Entity):
 class Character(Entity):
-    def __init__(self):
-        super().__init__()
-        self.character_class = None 
+    # def __init__(self):
+    def __init__(self, template_id = None, name = None):
+        super().__init__(template_id)
+        # super().__init__()
+        self.add_component(IdentityComponent(self))
+        self.add_component(NarrativeComponent(self))
+        self.add_component(SocialComponent(self))
+        self.add_component(ProgressionComponent(self))
+        self.add_component(AbilityComponent(self))
+        self.add_component(InventoryComponent(self,capacity=20))
+        self.add_component(CombatComponent(self))
+        self.add_component(EquipmentComponent(self))
+        self.add_component(AIComponent(self))
+        self.add_component(JobComponent(self))
+        
+        self.name = name
+        
         self.ancestry        = None 
+        self.character_class = None 
         self.background      = None 
+
         self.lore              = []
         self.magical_aptitude  = []
-
         self.secondary_ability = []
+
+        print(self.components)
 
         # Points for the 4-step boost process
         self._ancestry_boosts   = {}
@@ -42,6 +61,25 @@ class Character(Entity):
         self._background_boosts = {}
         self._free_boosts       = {}
 
+        self._ability_choices = {}
+
+        self.recalculate_all()
+
+    def recalculate_all(self):
+        self.get_component("ability").update_parameters_by_ability()
+        self.get_component("combat").calculate_armor_class()
+
+    def recalculate_hit_points_max(self):
+        base_character_hp = BASE_HIT_POINTS
+        ancestry_hp_bonus = 0
+        class_hp_bonus = 0
+
+        if self.ancestry != None:
+            ancestry_hp_bonus = self.ancestry.hit_points_max
+        if self.character_class != None:
+            class_hp_bonus = self.character_class.hit_points_max
+
+        self.get_component("combat").hit_points_max = self.get_component("combat").entity_hit_points + base_character_hp + ancestry_hp_bonus + class_hp_bonus
 
     # ==============================================================
     # ANCESTRY / CLASS / BACKGROUND / FREE - POINTS FUNCTIONS
@@ -55,7 +93,7 @@ class Character(Entity):
             ancestry_instance = identity_list.spawn("ancestry" , ancestry_instance)
 
         if self.ancestry != None:
-            raise CharacterChangePastError(self.name, 'ancestry')
+            raise CharacterChangePastError(self.get_component("identity").name, 'ancestry')
  
         if not isinstance(ancestry_instance, Ancestry):
             raise AncestryNotFoundError(ancestry_instance)
@@ -77,21 +115,27 @@ class Character(Entity):
             if ability in ability_boosts:
                 del ability_boosts['FREE']
                 raise CharacterDuplicateAbilityError(ability, 'Ancestry', ability_boosts)
-       
-        # Assign core stats
-        self.hit_points_max += ancestry_instance.hit_points_max
-        self.speed          += ancestry_instance.speed
-        self.size            = ancestry_instance.size
-        self.trait          += ancestry_instance.trait
-        self.sense          += ancestry_instance.sense   
-        self.language       += ancestry_instance.language 
-
+        
         # Process boosts (1 boost = 2 points)
         base_boosts = {k: v for k, v in ability_boosts.items() if k != 'FREE'}
         final_boost_map = base_boosts | {ability: 1 for ability in extra_abilities}
 
+        # Update ability points
+        self.update_character_ability_points()
+        
+        # Assign core stats
+        # self.get_component("combat").hit_points_max += ancestry_instance.hit_points_max
+        self.get_component("identity").speed                 += ancestry_instance.speed
+        self.get_component("identity").size                   = ancestry_instance.size
+        self.get_component("identity").trait                 += ancestry_instance.trait
+        self.get_component("social").sense     += ancestry_instance.sense   
+        self.get_component("social").language  += ancestry_instance.language 
+
         self._ancestry_boosts = {ability: val * 2 for ability, val in final_boost_map.items()}
-        self.ancestry         = ancestry_instance.id 
+        self.ancestry         = ancestry_instance
+
+        self._ability_choices['ancestry'] = extra_abilities
+        self.recalculate_hit_points_max()
 
         return True
 
@@ -105,7 +149,7 @@ class Character(Entity):
             class_instance = identity_list.spawn("class" , class_instance)
 
         if self.character_class != None:
-            raise CharacterChangePastError(self.name, 'class')
+            raise CharacterChangePastError(self.get_component("identity").name, 'class')
 
         if not isinstance(class_instance, CharClass):
             raise ClassNotFoundError(class_instance)
@@ -119,17 +163,18 @@ class Character(Entity):
         if main_ability not in class_instance.main_ability:
             raise ClassMainAbilityRequiredError(main_ability, class_instance)
 
-        self.character_class   =  class_instance 
-        self.hit_points_max    += class_instance.hit_points_max
-        self.main_ability       = main_ability 
-        self.secondary_ability += class_instance.secondary_ability
-        self.trait             += class_instance.trait
-        self.magical_aptitude  += class_instance.magical_aptitude
+        self.character_class         = class_instance 
+        # self.get_component("combat").hit_points_max  += class_instance.hit_points_max
+        self.main_ability            = main_ability 
+        self.secondary_ability      += class_instance.secondary_ability
+        self.get_component("identity").trait         += class_instance.trait
+        self.magical_aptitude        = class_instance.magical_aptitude
 
         self._class_boosts   = {main_ability:2}
 
         self.calculate_class_cd()
-
+        self._ability_choices['class'] = main_ability
+        self.recalculate_hit_points_max()
         return True
 
     def set_background(self, background, chosen_boosts, identity_list=None):
@@ -141,7 +186,7 @@ class Character(Entity):
             background_instance = identity_list.spawn("background" , background_instance)
 
         if self.background != None:
-            raise CharacterChangePastError(self.name, 'background')
+            raise CharacterChangePastError(self.get_component("identity").name, 'background')
 
         if not isinstance(background_instance, Background):
             raise BackgroundNotFoundError(background_instance)
@@ -159,9 +204,9 @@ class Character(Entity):
 
         # Validate proficiency
         for skill in background_instance.trained_skills:
-            if skill not in self.proficiency_rank: 
+            if skill not in self.get_component("ability").proficiency_rank: 
                 raise EntityParameterNotFoundError(skill, "skill")
-            self.proficiency_promotion(skill) 
+            self.get_component("ability").proficiency_promotion(skill) 
 
         min_ability_count = 0
         for ability in chosen_boosts: 
@@ -175,12 +220,16 @@ class Character(Entity):
 
         self._background_boosts = sum_ability
         self.background         = background_instance
-        self.lore           += background_instance.trained_lore
-        self.acquired_feats += background_instance.granted_feats
+        self.lore              += background_instance.trained_lore
+        self.get_component("ability").acquired_feats += background_instance.granted_feats
+
+        self._ability_choices['background'] = chosen_boosts
+        self.recalculate_hit_points_max()
+
+        # Update ability points
+        self.update_character_ability_points()
 
         return True
-    
-
 
     def set_free_ability_points(self, ability_points):
         for ability in ability_points:
@@ -197,6 +246,9 @@ class Character(Entity):
 
         self._free_boosts = sum_ability
 
+        # Update ability points
+        self.update_character_ability_points()
+
         return True
     
     # ==============================================================
@@ -207,7 +259,7 @@ class Character(Entity):
         """
         Sum of base, ancestry, class and background and free abilities points on core ability 
         """
-        self.core_ability_score = dict(
+        self.get_component("ability").core_ability_score = dict(
             Counter(ABILITY_SCORE) + 
             Counter(self._ancestry_boosts)  + 
             Counter(self._class_boosts)  + 
@@ -216,7 +268,7 @@ class Character(Entity):
         )
 
         # Update dependency values by ability points
-        self.update_parameters_by_ability()
+        self.get_component("ability").update_parameters_by_ability()
         
         return True
 
@@ -226,7 +278,7 @@ class Character(Entity):
     # ==============================================================
   
     def calculate_class_cd(self): 
-        self.class_cd =  10 + self.ability_calculation(self.main_ability) + self.proficiency_value('class_cd')
+        self.class_cd =  10 + self.get_component("ability").ability_calculation(self.main_ability) + self.get_component("ability").proficiency_value('class_cd')
         return self.class_cd
         
 # ==============================================================
@@ -281,8 +333,7 @@ class CharClass:
 
     def get_stat(self, key, default=None):
         """Safely retrieves a stat from the class."""
-        return self.stats.get(key, default)
-    
+        return self.stats.get(key, default)  
 
 class Background:
     def __init__(self, background_id, name, category = "Background", id_value = None, ability = None, boosts_count = None, trained_skills = None, 
@@ -308,7 +359,6 @@ class Background:
     def get_stat(self, key, default=None):
         """Safely retrieves a stat from the background."""
         return self.stats.get(key, default)
-
 
 class CharacterIdentityManager:
     def __init__(self, base_path="data/info"):
@@ -397,6 +447,3 @@ class CharacterIdentityManager:
             # deepcopy ensures the new item doesn't share memory with the template
             return copy.deepcopy(template) if template else None
         # raise ItemNotFoundError(item_name) # /---/ Make error
-
-
-

@@ -6,6 +6,7 @@ from scripts.exceptions import (
     )
 
 from scripts.constants import SAV_THROWS_NAMES
+from scripts.components.equipment_component import EquipmentComponent
 
 from scripts.mechanics import (
     # Entity
@@ -82,8 +83,8 @@ def test_attack_roll_checks(full_char, npc_human, simple_dagger, longspear, mock
     mocker.patch('scripts.dice.random.randint', return_value=12)
 
     #Equip weapon> Dagger
-    full_char.add_item(simple_dagger)
-    full_char.equip_weapon_on_hand(simple_dagger)
+    full_char.get_component("inventory").add_item(simple_dagger)
+    full_char.get_component("equipment").equip_weapon_on_hand(simple_dagger)
 
     # 1. Dagger's attack (STR - Finesse)
     attack_1 = attack_roll_checks(full_char, simple_dagger, n_attack=1)
@@ -99,9 +100,9 @@ def test_attack_roll_checks(full_char, npc_human, simple_dagger, longspear, mock
     assert attack_3["result"] == 6
 
     # 2. Longspear's attack (STR)
-    full_char.unequip_weapon_on_hand(simple_dagger)
-    full_char.add_item(longspear)
-    full_char.equip_weapon_on_hand(longspear)
+    full_char.get_component("equipment").unequip_weapon_on_hand(simple_dagger)
+    full_char.get_component("inventory").add_item(longspear)
+    full_char.get_component("equipment").equip_weapon_on_hand(longspear)
 
     attack_1 = attack_roll_checks(full_char, longspear, n_attack=1)
     assert attack_1['roll']   == 12
@@ -154,7 +155,7 @@ def test_wrong_attack_roll_checks(full_char, simple_dagger):
     with pytest.raises(WeaponNotFoundInInventoryError):
         attack_roll_checks(full_char, simple_dagger, n_attack=1)
 
-    full_char.add_item(simple_dagger)
+    full_char.get_component("inventory").add_item(simple_dagger)
 
     # 2. Attacking with a weapon that is not equipped.
     with pytest.raises(EquipmentError):
@@ -176,8 +177,8 @@ def test_armor_class_check(full_char, simple_armor):
     
     assert ac_check == 14
 
-    full_char.add_item(simple_armor)
-    full_char.equip_armor(simple_armor)
+    full_char.get_component("inventory").add_item(simple_armor)
+    full_char.get_component("equipment").equip_armor(simple_armor)
 
     ac_check = armor_class_check(full_char)
 
