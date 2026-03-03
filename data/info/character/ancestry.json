@@ -1,22 +1,23 @@
 {   
-    "gnome": {
-        "name": "Gnome",
-        "hit_points_max": 8,
-        "speed": 25,
-        "size": 1,
+    "dwarf": {
+        "name": "Dwarf",
+        "hit_points_max": 10,
+        "speed": 20,
+        "size": 2,
         "ability_boosts": {
             "CON": 1,
-            "CHA": 1,
-            "STR": -1,
+            "WIS": 1,
+            "CHA": -1,
             "FREE": 1
         },
-        "trait": ["Gnome", "Humanoid"],
-        "language": ["Common", "Gnomish", "Fey"],
-        "sense": ["Low-Light Vision"],
+        "trait": ["Dwarf", "Humanoid"],
+        "language": ["Common", "Dwarven"],
+        "sense": ["Darkvision"],
         "status": 1,
         "from": "base",
         "description": ""
     },
+
     "elf": {
         "name": "Elf",
         "hit_points_max": 6,
@@ -35,7 +36,46 @@
         "from": "base",
         "description": ""
     },
-    
+
+    "gnome": {
+        "name": "Gnome",
+        "hit_points_max": 8,
+        "speed": 25,
+        "size": 1,
+        "ability_boosts": {
+            "CON": 1,
+            "CHA": 1,
+            "STR": -1,
+            "FREE": 1
+        },
+        "trait": ["Gnome", "Humanoid"],
+        "language": ["Common", "Gnomish", "Fey"],
+        "sense": ["Low-Light Vision"],
+        "status": 1,
+        "from": "base",
+        "description": ""
+    },
+        
+
+    "goblin": {
+        "name": "Goblin",
+        "hit_points_max": 6,
+        "speed": 25,
+        "size": 1,
+        "ability_boosts": {
+            "DEX": 1,
+            "CHA": 1,
+            "WIS": -1,
+            "FREE": 1
+        },
+        "trait": ["Goblin", "Humanoid"],
+        "language": ["Common", "Goblin"],
+        "sense": ["Darkvision"],
+        "status": 1,
+        "from": "base",
+        "description": ""
+    },
+
     "human": {
         "name": "Human",
         "hit_points_max": 8,
@@ -50,6 +90,61 @@
         "status": 1,
         "from": "base",
         "description": ""
+    },
+
+    "kobold": {
+        "name": "Kobold",
+        "hit_points_max": 6,
+        "speed": 25,
+        "size": 1,
+        "ability_boosts": {
+            "DEX": 1,
+            "CHA": 1,
+            "CON": -1,
+            "FREE": 1
+        },
+        "trait": ["Kobold", "Humanoid", "Uncommon "],
+        "language": ["Common", "Sakvroth"],
+        "sense": ["Darkvision"],
+        "status": 1,
+        "from": "base",
+        "description": ""
+    },
+
+    "orc": {
+        "name": "Orc",
+        "hit_points_max": 10,
+        "speed": 25,
+        "size": 2,
+        "ability_boosts": {
+            "FREE": 2
+        },
+        "trait": ["Orc", "Humanoid"],
+        "language": ["Common", "Orcish"],
+        "sense": ["Darkvision"],
+        "status": 1,
+        "from": "base",
+        "description": ""
+    },
+
+    "ratfolk": {
+        "name": "Ratfolk",
+        "hit_points_max": 6,
+        "speed": 25,
+        "size": 1,
+        "ability_boosts": {
+            "DEX": 1,
+            "INT": 1,
+            "STR": -1,
+            "FREE": 1
+        },
+        "trait": ["Ratfolk", "Humanoid", "Uncommon "],
+        "language": ["Common", "Ysoki"],
+        "sense": ["Low-Light Vision"],
+        "status": 1,
+        "from": "base",
+        "description": "",
+        "acquired_feats" : ["Sharp Teeth"]
     }
 }
 

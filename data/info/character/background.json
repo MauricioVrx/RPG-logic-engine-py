@@ -18,29 +18,250 @@
 
         "status": 1,
         "source": "base",
-        "description": "In a circus or on the streets, you earned your pay by performing as an acrobat. You might have turned to adventuring when the money dried up, or simply decided to put your skills to better use."
+        "description": ""
     },
 
-    "hunter" : {
-        "name": "Hunter",
+    "artisan" : {
+        "name": "Artisan",
         "type": "background",
 
         "rarity": "Common",
 
         "ability_boosts": {
-            "choices": ["DEX", "WIS"],
+            "choices": ["STR", "INT"],
             "boosts": 2
         },
 
-        "trained_skills": ["Survival"],
-        "trained_lore": ["Tanning"],
-        "granted_feats": ["Survey Wildlife"],
+        "trained_skills": ["Crafting"],
+        "trained_lore": ["Guild"],
+        "granted_feats": ["Specialty Crafting"],
 
         "additional_effects": {},
 
         "status": 1,
         "source": "base",
-        "description": "You stalked and took down animals and other creatures of the wild. Skinning animals, harvesting their flesh, and cooking them were also part of your training, all of which can give you useful resources while you adventure."
+        "description": ""
+    },
+
+    "artist" : {
+        "name": "Artist",
+        "type": "background",
+
+        "rarity": "Common",
+
+        "ability_boosts": {
+            "choices": ["DEX", "CHA"],
+            "boosts": 2
+        },
+
+        "trained_skills": ["Crafting"],
+        "trained_lore": ["Art"],
+        "granted_feats": ["Specialty Crafting"],
+
+        "additional_effects": {},
+
+        "status": 1,
+        "source": "base",
+        "description": ""
+    },
+
+    "bandi" : {
+        "name": "Bandi",
+        "type": "background",
+
+        "rarity": "Common",
+
+        "ability_boosts": {
+            "choices": ["DEX", "CHA"],
+            "boosts": 2
+        },
+
+        "trained_skills": ["Intimidation"],
+        "trained_lore": ["Terrain"],
+        "granted_feats": ["Group Coercion"],
+
+        "additional_effects": {},
+
+        "status": 1,
+        "source": "base",
+        "description": ""
+    },
+
+    "barkeep" : {
+        "name": "Barkeep",
+        "type": "background",
+
+        "rarity": "Common",
+
+        "ability_boosts": {
+            "choices": ["CON", "CHA"],
+            "boosts": 2
+        },
+
+        "trained_skills": ["Diplomacy"],
+        "trained_lore": ["Alcohol"],
+        "granted_feats": ["Hobnobber"],
+
+        "additional_effects": {},
+
+        "status": 1,
+        "source": "base",
+        "description": ""
+    },
+
+    "cook" : {
+        "name": "Cook",
+        "type": "background",
+
+        "rarity": "Common",
+
+        "ability_boosts": {
+            "choices": ["CON", "INT"],
+            "boosts": 2
+        },
+
+        "trained_skills": ["Survival"],
+        "trained_lore": ["Cooking"],
+        "granted_feats": ["Seasoned"],
+
+        "additional_effects": {},
+
+        "status": 1,
+        "source": "base",
+        "description": ""
+    },
+
+    "criminal" : {
+        "name": "Criminal",
+        "type": "background",
+
+        "rarity": "Common",
+
+        "ability_boosts": {
+            "choices": ["DEX", "INT"],
+            "boosts": 2
+        },
+
+        "trained_skills": ["Stealth"],
+        "trained_lore": ["Underworld"],
+        "granted_feats": ["Experienced Smuggler"],
+
+        "additional_effects": {},
+
+        "status": 1,
+        "source": "base",
+        "description": ""
+    },
+
+    "guard" : {
+        "name": "Guard",
+        "type": "background",
+
+        "rarity": "Common",
+
+        "ability_boosts": {
+            "choices": ["STR", "CHA"],
+            "boosts": 2
+        },
+
+        "trained_skills": ["Intimidation"],
+        "trained_lore": ["Legal"],
+        "granted_feats": ["Quick Coercion"],
+
+        "additional_effects": {},
+
+        "status": 1,
+        "source": "base",
+        "description": ""
+    },
+
+    "Herbalist" : {
+        "name": "Herbalist",
+        "type": "background",
+
+        "rarity": "Common",
+
+        "ability_boosts": {
+            "choices": ["CON", "WIS"],
+            "boosts": 2
+        },
+
+        "trained_skills": ["Nature"],
+        "trained_lore": ["Herbalism"],
+        "granted_feats": ["Natural Medicine"],
+
+        "additional_effects": {},
+
+        "status": 1,
+        "source": "base",
+        "description": ""
+    },
+
+    "hermit" : {
+        "name": "Hermit",
+        "type": "background",
+
+        "rarity": "Common",
+
+        "ability_boosts": {
+            "choices": ["CON", "INT"],
+            "boosts": 2
+        },
+
+        "trained_skills": [],
+        "choices_skills": ["Nature","Occultism"],
+        "trained_lore": ["Live_terrain"],
+        "granted_feats": ["Dubious Knowledge"],
+
+        "additional_effects": {},
+
+        "status": 1,
+        "source": "base",
+        "description": ""
+    },
+
+    "hired_killer" : {
+        "name": "Hired Killer",
+        "type": "background",
+
+        "rarity": "Common",
+
+        "ability_boosts": {
+            "choices": ["STR", "DEX"],
+            "boosts": 2
+        },
+
+        "trained_skills": ["Stealth"],
+        "trained_lore": ["Underworld"],
+        "granted_feats": ["Terrain Stalker"],
+
+        "additional_effects": {},
+
+        "status": 1,
+        "source": "base",
+        "description": ""
+    },
+
+    "jeweler" : {
+        "name": "Jeweler",
+        "type": "background",
+
+        "rarity": "Common",
+
+        "ability_boosts": {
+            "choices": ["WIS", "INT"],
+            "boosts": 2
+        },
+
+        "trained_skills": ["Crafting"],
+        "trained_lore": ["Gem"],
+        "granted_feats": ["Crafter's Appraisal"],
+
+        "additional_effects": {},
+
+        "status": 1,
+        "source": "base",
+        "description": ""
     },
 
     "merchant" : {
@@ -62,6 +283,72 @@
 
         "status": 1,
         "source": "base",
-        "description": "In a dusty shop, market stall, or merchant caravan, you bartered wares for coin and trade goods. The skills you picked up still apply in the adventuring life, in which a good deal on a suit of armor could prevent your death."
+        "description": ""
+    },
+
+    "miner" : {
+        "name": "Miner",
+        "type": "background",
+
+        "rarity": "Common",
+
+        "ability_boosts": {
+            "choices": ["STR", "WIS"],
+            "boosts": 2
+        },
+
+        "trained_skills": ["Survival"],
+        "trained_lore": ["Mining"],
+        "granted_feats": ["Terrain Expertise"],
+
+        "additional_effects": {},
+
+        "status": 1,
+        "source": "base",
+        "description": ""
+    },
+
+    "scout" : {
+        "name": "Scout",
+        "type": "background",
+
+        "rarity": "Common",
+
+        "ability_boosts": {
+            "choices": ["DEX", "WIS"],
+            "boosts": 2
+        },
+
+        "trained_skills": ["Survival"],
+        "trained_lore": ["Terrain_scouted"],
+        "granted_feats": ["Forager"],
+
+        "additional_effects": {},
+
+        "status": 1,
+        "source": "base",
+        "description": ""
+    },
+
+    "servant" : {
+        "name": "Servant",
+        "type": "background",
+
+        "rarity": "Common",
+
+        "ability_boosts": {
+            "choices": ["DEX", "CHA"],
+            "boosts": 2
+        },
+
+        "trained_skills": ["Society"],
+        "trained_lore": ["Labor"],
+        "granted_feats": ["Read Lips"],
+
+        "additional_effects": {},
+
+        "status": 1,
+        "source": "base",
+        "description": ""
     }
 }

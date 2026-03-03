@@ -1,4 +1,73 @@
 {
+  "clan_dagger": {
+    "name": "Clan Dagger",
+    "category": "weapon",
+    "rarity": "Uncommon",
+    "traits": ["Agile", "Dwarf", "Parry", "Versatile B"],
+    "level": 0,
+    "price": 200,
+    "bulk": "L",
+    "mechanics": {
+      "weapon_type": "Melee",
+      "weapon_category": "simple",
+      "weapon_group": "Knife",
+      "damage": "1d4",
+      "damage_type": "Piercing",
+      "hands": 1,
+      "range": null,
+      "reload": null
+    },
+    "lore": {
+      "description": "A dagger crafted in traditional clan style."
+    }
+  },
+
+  "claw_blade": {
+    "name": "Claw Blade",
+    "category": "weapon",
+    "rarity": "Uncommon ",
+    "traits": ["Agile", "Catfolk", "Deadly d8", "Disarm", "Finesse", "Versatile P"],
+    "level": 0,
+    "price": 200,
+    "bulk": "L",
+    "mechanics": {
+      "weapon_type": "Melee",
+      "weapon_category": "martial",
+      "weapon_group": "Knife",
+      "damage": "1d4",
+      "damage_type": "Slashing",
+      "hands": 1,
+      "range": null,
+      "reload": null
+    },
+    "lore": {
+      "description": "This handheld weapon’s three parallel blades extend between the fingers to resemble the natural claws of the amurruns who created them, providing a way for those catfolk without suitable natural claws to share the fighting customs of their kin."
+    }
+  },
+
+  "dagger": {
+    "name": "Dagger",
+    "category": "weapon",
+    "rarity": "Common",
+    "traits": ["Agile" , "Finesse", "Thrown 10 ft." , "Versatile S"],
+    "level": 0,
+    "price": 20,
+    "bulk": "L",
+    "mechanics": {
+      "weapon_type": "Melee",
+      "weapon_category": "simple",
+      "weapon_group": "Knife",
+      "damage": "1d4",
+      "damage_type": "Piercing",
+      "hands": 1,
+      "range": null,
+      "reload": null
+    },
+    "lore": {
+      "description": "This small, bladed weapon is held in one hand and used to stab a creature in close combat. It can also be thrown."
+    }
+  },
+
   "fist": {
     "name": "Fist",
     "category": "weapon",
@@ -22,13 +91,59 @@
     }
   },
 
-  "clan_dagger": {
-    "name": "Clan Dagger",
+  "impossible_weapon": {
+    "name": "Impossible Weapon",
+    "category": "weapon",
+    "rarity": "Common",
+    "traits": ["Reach"],
+    "level": 0,
+    "price": 50,
+    "bulk": "2",
+    "mechanics": {
+      "weapon_type": "Melee",
+      "weapon_category": "simple",
+      "weapon_group": "Spear",
+      "damage": "1d8",
+      "damage_type": "Piercing",
+      "hands": 12,
+      "range": null,
+      "reload": null
+    },
+    "lore": {
+      "description": "A clearly unusable weapon requiring an absurd number of hands."
+    }
+  },
+
+  "katana": {
+    "name": "Katana",
     "category": "weapon",
     "rarity": "Uncommon",
-    "traits": ["Agile", "Dwarf", "Parry", "Versatile B"],
+    "traits": ["Deadly d8", "Two-Hand 1d10", "Versatile P"],
     "level": 0,
     "price": 200,
+    "bulk": 1,
+    "mechanics": {
+      "weapon_type": "Melee",
+      "weapon_category": "martial",
+      "weapon_group": "Sword",
+      "damage": "1d6",
+      "damage_type": "Slashing",
+      "hands": 1,
+      "range": null,
+      "reload": null
+    },
+    "lore": {
+      "description": "A katana is a curved, single-edged sword known for its wickedly sharped blade."
+    }
+  },
+
+  "Katar": {
+    "name": "Katar",
+    "category": "weapon",
+    "rarity": "Uncommon",
+    "traits": ["Agile", "Deadly d6", "Monk"],
+    "level": 0,
+    "price": 30,
     "bulk": "L",
     "mechanics": {
       "weapon_type": "Melee",
@@ -41,7 +156,30 @@
       "reload": null
     },
     "lore": {
-      "description": "A dagger crafted in traditional clan style."
+      "description": "Also known as punching daggers, katars are characterized by their H-shaped hand grip that allows the blade to jut out from the knuckles."
+    }
+  },
+
+  "lance": {
+    "name": "Lance",
+    "category": "weapon",
+    "rarity": "Common ",
+    "traits": ["Deadly d8", "Jousting 1d6", "Reach"],
+    "level": 0,
+    "price": 100,
+    "bulk": 2,
+    "mechanics": {
+      "weapon_type": "Melee",
+      "weapon_category": "martial",
+      "weapon_group": "Spear",
+      "damage": "1d8",
+      "damage_type": "Piercing",
+      "hands": 1,
+      "range": null,
+      "reload": null
+    },
+    "lore": {
+      "description": "This medium-length sword has a wide blade and long grip. Though it is typically used to hack through heavy foliage, the machete can also be used as a deadly weapon."
     }
   },
 
@@ -68,26 +206,165 @@
     }
   },
 
-  "impossible_weapon": {
-    "name": "Impossible Weapon",
+  "longsword": {
+    "name": "Longsword",
     "category": "weapon",
-    "rarity": "Common",
-    "traits": ["Reach"],
+    "rarity": "Common ",
+    "traits": ["Versatile P"],
     "level": 0,
-    "price": 50,
-    "bulk": "2",
+    "price": 100,
+    "bulk": 1,
     "mechanics": {
       "weapon_type": "Melee",
-      "weapon_category": "simple",
-      "weapon_group": "Spear",
+      "weapon_category": "martial",
+      "weapon_group": "Sword",
       "damage": "1d8",
-      "damage_type": "Piercing",
-      "hands": 12,
+      "damage_type": "Slashing",
+      "hands": 1,
       "range": null,
       "reload": null
     },
     "lore": {
-      "description": "A clearly unusable weapon requiring an absurd number of hands."
+      "description": "Longswords can be one-edged or two-edged swords. Their blades are heavy and they're between 3 and 4 feet in length."
+    }
+  },
+
+  "mace": {
+    "name": "Mace",
+    "category": "weapon",
+    "rarity": "Common",
+    "traits": ["Shove"],
+    "level": 0,
+    "price": 100,
+    "bulk": "L",
+    "mechanics": {
+      "weapon_type": "Melee",
+      "weapon_category": "simple",
+      "weapon_group": "Club",
+      "damage": "1d4",
+      "damage_type": "Bludgeoning",
+      "hands": 1,
+      "range": null,
+      "reload": null
+    },
+    "lore": {
+      "description": "With a stout haft and a heavy metal head, a mace is sturdy and allows its wielder to deliver powerful blows and dent armor."
+    }
+  },
+
+  "machete": {
+    "name": "Machete",
+    "category": "weapon",
+    "rarity": "Common ",
+    "traits": ["Deadly d8",  "Sweep"],
+    "level": 0,
+    "price": 70,
+    "bulk": "L",
+    "mechanics": {
+      "weapon_type": "Melee",
+      "weapon_category": "martial",
+      "weapon_group": "Sword",
+      "damage": "1d6",
+      "damage_type": "Slashing",
+      "hands": 1,
+      "range": null,
+      "reload": null
+    },
+    "lore": {
+      "description": "This medium-length sword has a wide blade and long grip. Though it is typically used to hack through heavy foliage, the machete can also be used as a deadly weapon."
+    }
+  },
+
+  "scythe": {
+    "name": "Scythe",
+    "category": "weapon",
+    "rarity": "Common ",
+    "traits": ["Deadly d10",  "Trip"],
+    "level": 0,
+    "price": 200,
+    "bulk": 2,
+    "mechanics": {
+      "weapon_type": "Melee",
+      "weapon_category": "martial",
+      "weapon_group": "Polearm",
+      "damage": "1d10",
+      "damage_type": "Slashing",
+      "hands": 2,
+      "range": null,
+      "reload": null
+    },
+    "lore": {
+      "description": "Derived from a farming tool used to mow down long grains and cereals, this weapon has a long wooden shaft with protruding handles, capped with a curved blade set at a right angle."
+    }
+  },
+
+  "throwing_knife": {
+    "name": "Throwing Knife",
+    "category": "weapon",
+    "rarity": "Common",
+    "traits": ["Agile", "Finesse", "Thrown 20 ft."],
+    "level": 0,
+    "price": 30,
+    "bulk": "L",
+    "mechanics": {
+      "weapon_type": "Melee",
+      "weapon_category": "simple",
+      "weapon_group": "Knife",
+      "damage": "1d4",
+      "damage_type": "Piercing",
+      "hands": 1,
+      "range": null,
+      "reload": null
+    },
+    "lore": {
+      "description": "This light knife is optimally balanced to be thrown accurately at a greater distance than a common dagger. While this comes at the cost of a significant cutting edge, the difference is worth it for throwing specialists."
+    }
+  }, 
+
+  "tonfa": {
+    "name": "Tonfa",
+    "category": "weapon",
+    "rarity": "Uncommon ",
+    "traits": ["Agile", "Finesse", "Monk", "Parry", "Twin"],
+    "level": 0,
+    "price": 10,
+    "bulk": "L",
+    "mechanics": {
+      "weapon_type": "Melee",
+      "weapon_category": "martial",
+      "weapon_group": "Brawling",
+      "damage": "1d4",
+      "damage_type": "Slashing",
+      "hands": 1,
+      "range": null,
+      "reload": null
+    },
+    "lore": {
+      "description": "These L-shaped fighting batons are good for striking and blocking. The wielder holds the handle and either spins the stick or strikes with the stick covering the forearm."
+    }
+  },
+
+  "whip": {
+    "name": "Whip",
+    "category": "weapon",
+    "rarity": "Uncommon ",
+    "traits": ["Disarm",  "Finesse", "Nonlethal", "Reach",  "Trip"],
+    "level": 0,
+    "price": 10,
+    "bulk": "L",
+    "mechanics": {
+      "weapon_type": "Melee",
+      "weapon_category": "martial",
+      "weapon_group": "Flail",
+      "damage": "1d4",
+      "damage_type": "Slashing",
+      "hands": 1,
+      "range": null,
+      "reload": null
+    },
+    "lore": {
+      "description": "This handheld weapon’s three parallel blades extend between the fingers to resemble the natural claws of the amurruns who created them, providing a way for those catfolk without suitable natural claws to share the fighting customs of their kin."
     }
   }
+
 }

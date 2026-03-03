@@ -1,23 +1,23 @@
 {
-  "unarmored": {
-    "name": "Unarmored",
+  "chain_mail": {
+    "name": "Chain Mail",
     "category": "armor",
     "rarity": "Common",
-    "traits": [],
+    "traits": ["Flexible", "Noisy"],
     "level": 0,
-    "price": 0,
-    "bulk": null,
+    "price": 600,
+    "bulk": 2,
     "mechanics": {
-      "armor_category": "unarmored",
-      "ac_bonus": 0,
-      "dex_cap": 0,
-      "check_penalty": 0,
-      "speed_penalty": 0,
-      "strength_requirement": 0,
-      "armor_group": null
+      "armor_category": "armor_medium",
+      "ac_bonus": 4,
+      "dex_cap": 1,
+      "check_penalty": -2,
+      "speed_penalty": -5,
+      "strength_requirement": 3,
+      "armor_group": "Chain"
     },
     "lore": {
-      "description": "Wearing no armor."
+      "description": "A suit of chain mail consists of several pieces of armor composed of small metal rings linked together in a protective mesh. It typically includes a chain shirt, leggings, a pair of arms, and a coif, collectively protecting most of the body."
     }
   },
 
@@ -43,28 +43,6 @@
     }
   },
 
-  "padded_armor": {
-    "name": "Padded Armor",
-    "category": "armor",
-    "rarity": "Common",
-    "traits": ["Comfort"],
-    "level": 0,
-    "price": 20,
-    "bulk": "L",
-    "mechanics": {
-      "armor_category": "light",
-      "ac_bonus": 1,
-      "dex_cap": 3,
-      "check_penalty": 0,
-      "speed_penalty": 0,
-      "strength_requirement": 0,
-      "armor_group": "Cloth"
-    },
-    "lore": {
-      "description": "Layers of quilted fabric offering minimal protection."
-    }
-  },
-
   "full_plate": {
     "name": "Full Plate",
     "category": "armor",
@@ -72,7 +50,7 @@
     "traits": ["Bulwark"],
     "level": 2,
     "price": 3000,
-    "bulk": "4",
+    "bulk": 4,
     "mechanics": {
       "armor_category": "armor_heavy",
       "ac_bonus": 6,
@@ -85,5 +63,94 @@
     "lore": {
       "description": "Heavy armor."
     }
+  },
+
+  "hide_armor": {
+    "name": "Hide Armor",
+    "category": "armor",
+    "rarity": "Common",
+    "traits": [],
+    "level": 2,
+    "price": 200,
+    "bulk": 2,
+    "mechanics": {
+      "armor_category": "armor_medium",
+      "ac_bonus": 3,
+      "dex_cap": 2,
+      "check_penalty": -2,
+      "speed_penalty": -5,
+      "strength_requirement": 2,
+      "armor_group": "Leather"
+    },
+    "lore": {
+      "description": "A mix of furs, sturdy hide, and sometimes molded boiled leather, this armor provides protection due to its layers of leather, though its bulkiness slows the wearer down and decreases mobility."
+    }
+  },
+
+  "leather_armor": {
+    "name": "Leather Armor",
+    "category": "armor",
+    "rarity": "Common",
+    "traits": [],
+    "level": 2,
+    "price": 200,
+    "bulk": 1,
+    "mechanics": {
+      "armor_category": "armor_light",
+      "ac_bonus": 1,
+      "dex_cap": 4,
+      "check_penalty": -1,
+      "speed_penalty": 0,
+      "strength_requirement": 0,
+      "armor_group": "Leather"
+    },
+    "lore": {
+      "description": "A mix of flexible and molded boiled leather, a suit of this type of armor provides some protection with maximum flexibility."
+    }
+  },
+
+  "padded_armor": {
+    "name": "Padded Armor",
+    "category": "armor",
+    "rarity": "Common",
+    "traits": ["Comfort"],
+    "level": 0,
+    "price": 20,
+    "bulk": "L",
+    "mechanics": {
+      "armor_category": "armor_light",
+      "ac_bonus": 1,
+      "dex_cap": 3,
+      "check_penalty": 0,
+      "speed_penalty": 0,
+      "strength_requirement": 0,
+      "armor_group": "Cloth"
+    },
+    "lore": {
+      "description": "Layers of quilted fabric offering minimal protection."
+    }
+  },
+
+  "unarmored": {
+    "name": "Unarmored",
+    "category": "armor",
+    "rarity": "Common",
+    "traits": [],
+    "level": 0,
+    "price": 0,
+    "bulk": null,
+    "mechanics": {
+      "armor_category": "unarmored",
+      "ac_bonus": 0,
+      "dex_cap": 0,
+      "check_penalty": 0,
+      "speed_penalty": 0,
+      "strength_requirement": 0,
+      "armor_group": null
+    },
+    "lore": {
+      "description": "Wearing no armor."
+    }
   }
+  
 }

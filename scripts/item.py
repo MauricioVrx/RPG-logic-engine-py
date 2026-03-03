@@ -1,4 +1,3 @@
-from components.inventory_component import InventoryComponent
 
 import copy
 from scripts.config import ITEMS_FILES
@@ -38,14 +37,6 @@ class Item:
     def get_stat(self, key, default=None):
         """Safely retrieves a stat from the item."""
         return self.stats.get(key, default)
-
-
-class Backpack(Item):
-
-    def __init__(self, template_id, name):
-        super().__init__(template_id, name= None, category="equipment")
-        self.name = name
-        self.add_component(InventoryComponent(capacity=15))
 
 
 class ItemManager:
