@@ -1,7 +1,3 @@
-
-# from scripts.components import InventoryComponent, CombatComponent
-# from scripts.components import IdentityComponent
-
 class Entity:
     """
     Base class for all creatures

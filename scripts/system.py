@@ -9,3 +9,8 @@ def read_json_files(file_path, folder_name, file_name):
     with open(path, "r", encoding="utf-8") as f:
         data = json.load(f)
     return data
+
+
+def get_list_files(path, folder):
+    list_files = os.listdir(f"{path}{folder}")
+    return list_files

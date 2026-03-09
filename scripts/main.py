@@ -1,13 +1,31 @@
 # Items and Characters Identity library
-from scripts.item import ItemManager
-from scripts.character import CharacterIdentityManager
+from scripts.items.manager import ItemManager
+from scripts.characters.manager import CharacterManager
+from scripts.characters.character import CharacterIdentityManager
+
 
 item_factory = ItemManager()
-item_factory.load_all_items()
-character_factory = CharacterIdentityManager()
-character_factory.load_all_identity()
+item_factory.load_all()
+identity_character_factory = CharacterIdentityManager()
+identity_character_factory.load_all_identity()
+
+unique_character_loaded = CharacterManager(identity_character_factory, item_factory)
+unique_character_loaded.load_all()
 
 
+print()
+print(unique_character_loaded.characters)
+print()
+print(identity_character_factory.ancestry)
+print()
+print(identity_character_factory.char_class)
+print()
+print(identity_character_factory.background)
+print()
+print(item_factory.templates)
+print()
+
+# print(character_loaded.characters)
 
 # from scripts.dice import Dice, CustomDice
 # from scripts.parser import FormulaProcessor

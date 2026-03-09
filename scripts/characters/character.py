@@ -3,7 +3,7 @@ from scripts.system import read_json_files
 import copy
 from scripts.config import BASE_HIT_POINTS 
 
-from scripts.entity import Entity
+from scripts.entities.entity import Entity
 from scripts.constants import ABILITY_NAMES
 from scripts.config import FREE_ABILITY_POINTS
 from scripts.exceptions import (
@@ -21,7 +21,7 @@ from scripts.exceptions import (
     BackgroundMinAbilityRequiredError,
 )
 
-from scripts.components import EquipmentComponent ,IdentityComponent  ,NarrativeComponent ,SocialComponent ,ProgressionComponent ,AbilityComponent  ,AIComponent ,JobComponent , CombatComponent, InventoryComponent
+from scripts.components import EquipmentComponent, IdentityComponent, NarrativeComponent, SocialComponent, ProgressionComponent, AbilityComponent, AIComponent, JobComponent, CombatComponent, InventoryComponent
 
 from scripts.constants import ABILITY_SCORE
 
@@ -31,7 +31,6 @@ class Character(Entity):
     # def __init__(self):
     def __init__(self, template_id = None, name = None):
         super().__init__(template_id)
-        # super().__init__()
         self.add_component(IdentityComponent(self))
         self.add_component(NarrativeComponent(self))
         self.add_component(SocialComponent(self))
@@ -53,8 +52,6 @@ class Character(Entity):
         self.magical_aptitude  = []
         self.secondary_ability = []
 
-        print(self.components)
-
         # Points for the 4-step boost process
         self._ancestry_boosts   = {}
         self._class_boosts      = {}
@@ -68,6 +65,7 @@ class Character(Entity):
     def recalculate_all(self):
         self.get_component("ability").update_parameters_by_ability()
         self.get_component("combat").calculate_armor_class()
+        self.get_component("combat").calculate_perception()
 
     def recalculate_hit_points_max(self):
         base_character_hp = BASE_HIT_POINTS
@@ -84,7 +82,7 @@ class Character(Entity):
     # ==============================================================
     # ANCESTRY / CLASS / BACKGROUND / FREE - POINTS FUNCTIONS
     # ==============================================================
-    def set_ancestry(self, ancestry, extra_abilities = [], identity_list=None):
+    def set_ancestry(self, ancestry, extra_abilities = [], identity_list=None, empty_values = False):
         """
         Sets the character's ancestry and applies related boosts and stats.
         """
@@ -101,46 +99,47 @@ class Character(Entity):
         if ancestry_instance.status == 0:
             raise CharacterDisabledParameterError(ancestry_instance, 'Ancestry')
         
-        # Validate Free Boosts limit
-        # ability_boosts = json.loads(ancestry_instance.ability_boosts)
-        ability_boosts = ancestry_instance.ability_boosts
-        max_free = ability_boosts.get('FREE', 0)
-        if len(extra_abilities) > max_free:
-            raise CharacterAbilityLimitExceededError(len(extra_abilities), max_free)
+        if empty_values == False:
+            # Validate Free Boosts limit
+            # ability_boosts = json.loads(ancestry_instance.ability_boosts)
+            ability_boosts = ancestry_instance.ability_boosts
+            max_free = ability_boosts.get('FREE', 0)
+            if len(extra_abilities) > max_free:
+                raise CharacterAbilityLimitExceededError(len(extra_abilities), max_free)
 
-        # Validate against duplicates and existence
-        for ability in extra_abilities:
-            if ability not in ABILITY_NAMES:
-                raise EntityAbilityNotFoundError(ability)
-            if ability in ability_boosts:
-                del ability_boosts['FREE']
-                raise CharacterDuplicateAbilityError(ability, 'Ancestry', ability_boosts)
-        
-        # Process boosts (1 boost = 2 points)
-        base_boosts = {k: v for k, v in ability_boosts.items() if k != 'FREE'}
-        final_boost_map = base_boosts | {ability: 1 for ability in extra_abilities}
+            # Validate against duplicates and existence
+            for ability in extra_abilities:
+                if ability not in ABILITY_NAMES:
+                    raise EntityAbilityNotFoundError(ability)
+                if ability in ability_boosts:
+                    del ability_boosts['FREE']
+                    raise CharacterDuplicateAbilityError(ability, 'Ancestry', ability_boosts)
+            
+            # Process boosts (1 boost = 2 points)
+            base_boosts = {k: v for k, v in ability_boosts.items() if k != 'FREE'}
+            final_boost_map = base_boosts | {ability: 1 for ability in extra_abilities}
 
-        # Update ability points
-        self.update_character_ability_points()
-        
+            # Update ability points
+            self.update_character_ability_points()
+            self._ancestry_boosts = {ability: val * 2 for ability, val in final_boost_map.items()}
+            
+            self._ability_choices['ancestry'] = extra_abilities
+
         # Assign core stats
-        # self.get_component("combat").hit_points_max += ancestry_instance.hit_points_max
-        self.get_component("identity").speed                 += ancestry_instance.speed
-        self.get_component("identity").size                   = ancestry_instance.size
-        self.get_component("identity").trait                 += ancestry_instance.trait
+        self.get_component("identity").speed   += ancestry_instance.speed
+        self.get_component("identity").size     = ancestry_instance.size
+        self.get_component("identity").trait   += ancestry_instance.trait
         self.get_component("social").sense     += ancestry_instance.sense   
         self.get_component("social").language  += ancestry_instance.language 
 
-        self._ancestry_boosts = {ability: val * 2 for ability, val in final_boost_map.items()}
         self.ancestry         = ancestry_instance
 
-        self._ability_choices['ancestry'] = extra_abilities
         self.recalculate_hit_points_max()
 
         return True
 
 
-    def set_class(self, class_ins, main_ability, identity_list=None):
+    def set_class(self, class_ins, main_ability, identity_list=None, empty_values = False):
         """
         Sets the character's class and the key ability boost.
         """
@@ -162,22 +161,22 @@ class Character(Entity):
 
         if main_ability not in class_instance.main_ability:
             raise ClassMainAbilityRequiredError(main_ability, class_instance)
+        
+        if empty_values == False:
+            self._class_boosts   = {main_ability:2}
+            self._ability_choices['class'] = [main_ability]
 
-        self.character_class         = class_instance 
-        # self.get_component("combat").hit_points_max  += class_instance.hit_points_max
-        self.main_ability            = main_ability 
-        self.secondary_ability      += class_instance.secondary_ability
-        self.get_component("identity").trait         += class_instance.trait
-        self.magical_aptitude        = class_instance.magical_aptitude
-
-        self._class_boosts   = {main_ability:2}
+        self.character_class                   = class_instance 
+        self.main_ability                      = main_ability 
+        self.secondary_ability                += class_instance.secondary_ability
+        self.get_component("identity").trait  += class_instance.trait
+        self.magical_aptitude                  = class_instance.magical_aptitude
 
         self.calculate_class_cd()
-        self._ability_choices['class'] = main_ability
         self.recalculate_hit_points_max()
         return True
 
-    def set_background(self, background, chosen_boosts, identity_list=None):
+    def set_background(self, background, chosen_boosts = [], identity_list = None, empty_values = False):
         """
         Sets background and applies proficiency in skills/lore.
         """
@@ -194,31 +193,34 @@ class Character(Entity):
         if background_instance.status == 0:
             raise CharacterDisabledParameterError(background_instance, 'Background')
 
-        if len(chosen_boosts) > background_instance.boosts_count:
-            raise CharacterAbilityLimitExceededError(len(chosen_boosts), background_instance.boosts_count)
+        if empty_values == False:
+            if len(chosen_boosts) > background_instance.boosts_count:
+                raise CharacterAbilityLimitExceededError(len(chosen_boosts), background_instance.boosts_count)
 
-        # Validate against duplicates and existence
-        for ability in chosen_boosts:
-            if ability not in ABILITY_NAMES:
-                raise EntityAbilityNotFoundError(ability)
+            # Validate against duplicates and existence
+            for ability in chosen_boosts:
+                if ability not in ABILITY_NAMES:
+                    raise EntityAbilityNotFoundError(ability)
 
-        # Validate proficiency
-        for skill in background_instance.trained_skills:
-            if skill not in self.get_component("ability").proficiency_rank: 
-                raise EntityParameterNotFoundError(skill, "skill")
-            self.get_component("ability").proficiency_promotion(skill) 
+            # Validate proficiency
+            for skill in background_instance.trained_skills:
+                if skill not in self.get_component("ability").proficiency_rank: 
+                    raise EntityParameterNotFoundError(skill, "skill")
+                self.get_component("ability").proficiency_promotion(skill) 
 
-        min_ability_count = 0
-        for ability in chosen_boosts: 
-            if ability in background_instance.ability:
-                min_ability_count += 1
-        if min_ability_count < 1:
-            raise BackgroundMinAbilityRequiredError(background_instance, background_instance.ability)
-        sum_ability =  {ability: 2 for ability in chosen_boosts}
-        if sum(sum_ability.values()) != len(chosen_boosts) * 2:
-            raise CharacterInvalidDistributionError(chosen_boosts)
+            min_ability_count = 0
+            for ability in chosen_boosts: 
+                if ability in background_instance.ability:
+                    min_ability_count += 1
+            if min_ability_count < 1:
+                raise BackgroundMinAbilityRequiredError(background_instance, background_instance.ability)
+            sum_ability =  {ability: 2 for ability in chosen_boosts}
+            if sum(sum_ability.values()) != len(chosen_boosts) * 2:
+                raise CharacterInvalidDistributionError(chosen_boosts)
 
-        self._background_boosts = sum_ability
+            self._background_boosts = sum_ability
+
+
         self.background         = background_instance
         self.lore              += background_instance.trained_lore
         self.get_component("ability").acquired_feats += background_instance.granted_feats
@@ -230,6 +232,7 @@ class Character(Entity):
         self.update_character_ability_points()
 
         return True
+
 
     def set_free_ability_points(self, ability_points):
         for ability in ability_points:
@@ -278,8 +281,9 @@ class Character(Entity):
     # ==============================================================
   
     def calculate_class_cd(self): 
-        self.class_cd =  10 + self.get_component("ability").ability_calculation(self.main_ability) + self.get_component("ability").proficiency_value('class_cd')
-        return self.class_cd
+        class_cd =  10 + self.get_component("ability").ability_calculation(self.main_ability) + self.get_component("ability").proficiency_value('class_cd')
+        self.get_component('combat').class_cd['value'] = class_cd
+        return class_cd
         
 # ==============================================================
 # Character Identity Library :  Ancestry, Class, Background

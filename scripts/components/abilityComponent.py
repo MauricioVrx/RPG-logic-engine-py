@@ -25,8 +25,23 @@ class AbilityComponent:
 
     def load_from_dict(self, data: dict):
         for key, value in data.items():
+            if key == "custom_skill":
+                for skill_name, skill_value in value.items():
+                    self.update_skill(skill_name, custom=skill_value)
+                continue
+            if key == "custom_saving_throws":
+                for st_name, st_value in value.items():
+                    self.update_saving_throw(st_name, custom=st_value)
+                continue
+            if key == "proficiency_rank":
+                self.proficiency_rank.update(value)
             if hasattr(self, key):
+                if key == "extra_ability_score":
+                    for ability_name, ability_value in value.items():
+                        self.extra_ability_score[ability_name] += ability_value
+                    continue
                 setattr(self, key, value)
+            
 
     def __initial_insert_parameters_points(self, parameters):  
         """
@@ -47,7 +62,7 @@ class AbilityComponent:
         if  parameters['custom'] == 0:
             return parameters['mod'] + parameters['proficiency']
         else:
-            return parameters['mod'] + parameters['custom']
+            return parameters['custom']
     
     def ability_calculation(self, name): 
         """
@@ -56,11 +71,6 @@ class AbilityComponent:
         ability_value = self.get_ability_value(name) 
         return calculate_ability_modifier(ability_value)
 
-    def calculate_perception(self): 
-        perception = self.ability_calculation('WIS')
-        if 'perception' in self.proficiency_rank :
-            perception += self.proficiency_value('perception')
-        return perception
 
     def get_ability_value(self, name):
         """
@@ -144,7 +154,7 @@ class AbilityComponent:
             raise EntityIsIntegerError("Custom bonus value must be an integer.")
         
         param_dict[name]['proficiency'] = calculate_proficiency_bonus(self.entity.get_component("progression").level, self.proficiency_rank[name])
-
+       
         # Update values if provided
         if custom is not None:
             param_dict[name]['custom'] = custom

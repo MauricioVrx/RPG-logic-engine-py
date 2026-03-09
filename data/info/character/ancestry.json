@@ -51,7 +51,7 @@
         "trait": ["Gnome", "Humanoid"],
         "language": ["Common", "Gnomish", "Fey"],
         "sense": ["Low-Light Vision"],
-        "status": 1,
+        "status": 0,
         "from": "base",
         "description": ""
     },
@@ -71,7 +71,7 @@
         "trait": ["Goblin", "Humanoid"],
         "language": ["Common", "Goblin"],
         "sense": ["Darkvision"],
-        "status": 1,
+        "status": 0,
         "from": "base",
         "description": ""
     },
@@ -106,7 +106,7 @@
         "trait": ["Kobold", "Humanoid", "Uncommon "],
         "language": ["Common", "Sakvroth"],
         "sense": ["Darkvision"],
-        "status": 1,
+        "status": 0,
         "from": "base",
         "description": ""
     },
@@ -122,7 +122,7 @@
         "trait": ["Orc", "Humanoid"],
         "language": ["Common", "Orcish"],
         "sense": ["Darkvision"],
-        "status": 1,
+        "status": 0,
         "from": "base",
         "description": ""
     },
@@ -141,7 +141,7 @@
         "trait": ["Ratfolk", "Humanoid", "Uncommon "],
         "language": ["Common", "Ysoki"],
         "sense": ["Low-Light Vision"],
-        "status": 1,
+        "status": 0,
         "from": "base",
         "description": "",
         "acquired_feats" : ["Sharp Teeth"]

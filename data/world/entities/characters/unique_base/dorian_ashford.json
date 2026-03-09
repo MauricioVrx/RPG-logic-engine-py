@@ -1,0 +1,87 @@
+{
+  "id": "dorian_ashford",
+  "components": {
+    "identity": {
+      "name"   : "Dorian Ashford",
+      "alias"  : "Traveling alchemist salesman",
+      "gender" : 1,
+      "years_old"    : 32,
+      "type"   : "character",
+      "appearance" : "attractive, black hair, green eyes", 
+      "size"   : 2
+    },
+    "social": {
+        "language" : ["Common"]
+    },
+    "progression": {
+      "level"      : 4,
+      "experience" : 0
+    },
+    "ability": {
+      "extra_ability_score": {
+        "DEX": 4,
+        "CON": -2,
+        "INT": 4,
+        "WIS": 4,
+        "CHA": 6
+      },
+      "custom_skill": {
+        "Crafting"    : 12, 
+        "Lore"        : 10,
+        "Diplomacy"   : 12,
+        "Society"     : 8
+      },
+      "custom_saving_throws" : {
+        "fortitude"  : 3,
+        "reflex"     : 5,
+        "will"       : 12
+      }
+    },
+    "inventory": { 
+      "capacity": 20,
+      "items" : ["dagger", "torch", "torch", "healing_potion_minor", "artisans_toolkit"]
+    },
+    "equipment": {
+      "equipment" : {
+        "armor" : ["padded_armor"]
+      }
+    },
+    "combat": {
+      "custom_hit_points"  : 32,
+      "custom_armor_class" : 10,
+      "custom_perception"  : 9
+    },
+    "job" : {
+      "job" : {
+        "crafting" : {
+          "alchemist" : {
+            "recipe" : {},
+            "bargain_skill": "Crafting"
+          }
+        },
+        "vendor": {
+            "stock": {
+              "torch": {"qty": 10, "price": 1},
+              "ration_basic": {"qty": 20, "price": 5},
+              "healing_potion_minor": {"qty": 3, "price": 40},
+              "dagger": {"qty": 2, "price": 200}
+            },
+            "bargain_skill": "diplomacy"
+          }
+      }
+    },
+    "ai" : {
+      "profile"    : "Nomad seller, recurrency on cities or towns, buying o selling items",
+      "history"    : "None",
+      "importance" : "None, not mandatory"
+    }
+  },
+  "ancestry" : {
+    "name" : "elf",
+    "empty_values" : true
+  },
+  "background" : {
+    "name" : "merchant",
+    "empty_values" : true
+  }
+}

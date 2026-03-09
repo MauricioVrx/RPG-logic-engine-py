@@ -1,6 +1,6 @@
 
-from scripts.entity import Entity
-from scripts.item import Item
+from scripts.entities.entity import Entity
+from scripts.items.item import Item
 from scripts.components.inventory_component import InventoryComponent
 from scripts.components.identityComponent import IdentityComponent
 from scripts.components.lockComponent import LockComponent

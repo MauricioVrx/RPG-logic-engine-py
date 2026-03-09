@@ -33,7 +33,7 @@
             "3": {}
         },
 
-        "traits": ["Fighter"],
+        "trait": ["Fighter"],
 
         "rarity": "Common",
         "status": 1,
@@ -76,7 +76,7 @@
             "3": {}
         },
 
-        "traits": ["Guardian"],
+        "trait": ["Guardian"],
 
         "rarity": "Common",
         "status": 1,
@@ -118,7 +118,7 @@
             "3": {}
         },
 
-        "traits": ["Ranger"],
+        "trait": ["Ranger"],
 
         "rarity": "Common",
         "status": 1,
@@ -160,12 +160,11 @@
             "3": {}
         },
 
-        "traits": ["Rogue"],
+        "trait": ["Rogue"],
 
         "rarity": "Common",
         "status": 1,
         "source": "base",
         "description": ""
     }
-    
 }

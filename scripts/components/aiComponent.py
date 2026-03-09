@@ -7,5 +7,4 @@ class AIComponent:
 
     def load_from_dict(self, data: dict):
         for key, value in data.items():
-            if hasattr(self, key):
-                setattr(self, key, value)
+            setattr(self, key, value)

@@ -2,9 +2,9 @@ import pytest
 from scripts.dice import Dice, CustomDice, RangeDice
 from scripts.parser import FormulaProcessor
 
-from scripts.character import Character, CharacterIdentityManager
+from scripts.characters.character import Character, CharacterIdentityManager
 
-from scripts.item import ItemManager
+from scripts.items.manager import ItemManager
 from scripts.container import Container
 
 # ===============================
@@ -99,7 +99,7 @@ def npc_human():
 # 1. Import items from CSV
 
 factory = ItemManager(base_path = "tests/schemas/data/info_csv")
-factory.load_all_items(structure = {
+factory.load_all(structure = {
     "equipment": ["armor", "weapon", "shield"],
     "item": ["consumables"]
 })

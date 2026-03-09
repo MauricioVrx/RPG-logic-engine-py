@@ -15,10 +15,19 @@ class EquipmentComponent:
 
         self.entity = entity                                       
         self.equipment = {'armor' : None, "accesory" : [], "hands" : [None, None], 'back' : None}  # Humanoid template
+        # /---/ make accesory back equipment
 
-
-    def load_from_dict(self, data: dict):
+    def load_from_dict(self, data: dict, factory):
         for key, value in data.items():
+            if key == "equipment":
+                for category, equipments in value.items():
+                    equipment = []
+                    [equipment.append(self.entity.get_component("inventory").add_item(factory.spawn(equip), force_add = True)) for equip in equipments]
+                    if category == "armor":
+                        [self.equip_armor(equip) for equip in equipment] 
+                    elif category == "hands":
+                        [self.equip_weapon_on_hand(equip) for equip in equipment]
+                continue
             if hasattr(self, key):
                 setattr(self, key, value)
     
@@ -47,6 +56,8 @@ class EquipmentComponent:
         # Equip armor
         self.equipment['armor'] = armor_instance
         armor_instance.status = "equiped" # Change armor status 
+        self.entity.get_component("combat").calculate_armor_class()
+
 
         return True
      

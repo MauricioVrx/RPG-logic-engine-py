@@ -15,5 +15,9 @@ ITEMS_FILES = {
     "item": ["adventuring_gear", "consumables"]
 }
 
+CHARACTER_UNIQUE = {
+    "unique" : 1,
+    "unique_base" : 1
+}
 
 BASE_HIT_POINTS = 10

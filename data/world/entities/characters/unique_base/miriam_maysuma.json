@@ -1,0 +1,92 @@
+{
+  "id": "miriam_maysuma",
+  "components": {
+    "identity": {
+      "name"   : "Miriam Maysuma",
+      "alias"  : "Beauty",
+      "gender" : 2,
+      "years_old": 24,
+      "type"   : "character",
+      "appearance" : "attractive", 
+      "size"   : 2
+    },
+    "social": {
+        "language" : ["Common"]
+    },
+    "narrative": {
+        "backstory" : "Always live with her family serve on 'Zertuinn'",
+        "belief"    : "be a adventurer",
+        "attitude"  : "Always positive",
+        "like"      : ["Adventure Histories", "Look adventures wear"],
+        "dislike"   : ["Her alias", "Bad people"]
+    },
+    "progression": {
+      "level"      : 1,
+      "experience" : 0
+    },
+    "ability": {
+      
+    },
+    "inventory": { 
+      "capacity": 20,
+      "items" : ["torch", "artisans_toolkit"]
+    },
+    "equipment": {
+      "equipment" : {
+        "armor" : ["padded_armor"]
+      }
+    },
+    "combat": {
+      "custom_hit_points"  : 20,
+      "custom_armor_class" : 14,
+      "custom_perception"  : 7
+    },
+    "job" : {
+      "job" :{
+        "get_infomation" : {
+          "font_of_gossip" : {
+              "time_per_day" : 1,
+              "price" : 25
+            },
+            "bargain_skill": "Diplomacy",
+            "requirement" : "work in town or city"
+        },
+        "serve" :{
+            "items" : {
+            },
+            "bargain_skill": "Diplomacy",
+            "requirement" : "work on inn, house or bar"    
+        },
+        "vendor": {
+            "stock": {
+              "ration_basic": {"qty": 40, "price": 5},
+              "candle": {"qty": 10, "price": 2}
+            },
+            "bargain_skill": "diplomacy",
+            "requirement" : "work on inn or shop" 
+        }
+      }
+    },
+    "ai" : {
+      "profile" : "inn_merchant",
+      "history" : "None, work on 'Zenturinn', from 18:00 hrs to 3:00 hrs",
+      "importance" : "None, not Mandatory for main history"
+    }
+  },
+  "ancestry" : {
+      "name" : "elf",
+      "extra_abilities" : ["STR"]
+  },
+  "class" : {
+      "name" : "ranger",
+      "main_ability" : "DEX"
+  },
+  "background" : {
+      "name" : "acrobat",
+      "chosen_boosts" : ["DEX", "WIS"],
+      "lore" : ["Accounting" ,"Alcohol", "Cooking"]
+  },
+  "free_ability_points" : {
+      "ability_points" : ["STR", "DEX", "WIS", "INT"]
+  }
+}

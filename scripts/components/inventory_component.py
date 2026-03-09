@@ -14,12 +14,13 @@ class InventoryComponent:
         self.weight_limit = weight_limit
         self.items = []
 
-    def add_item(self, item_instance):
-        if len(self.items) >= self.capacity:
+    def add_item(self, item_instance, force_add = False):
+        
+        if len(self.items) >= self.capacity and force_add == False:
             raise StorageLimitItemsError("Capacity reached", self.capacity)
 
-        item = add_it(self, item_instance)
-        # self.items.append(item)
+        item = add_it(self, item_instance, force_add)
+  
         return item
 
     def remove_item(self, item_instance):
@@ -34,3 +35,13 @@ class InventoryComponent:
         Return a inventory object list from entity  
         """
         return ", ".join([item.name for item in self.items]) or "Empty"
+    
+
+    def load_from_dict(self, data, factory):
+        for key, value in data.items():
+            if key == "items":
+                for item in value:
+                    self.add_item(factory.spawn(item), force_add = True)
+                continue
+            if hasattr(self, key):
+                setattr(self, key, value)

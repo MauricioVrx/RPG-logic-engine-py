@@ -80,6 +80,8 @@ def test_wrong_parameter_checks(full_char):
 
 def test_attack_roll_checks(full_char, npc_human, simple_dagger, longspear, mocker):
     """Test successful attacks with two kind of weapons."""
+    full_char.get_component("combat").calculate_armor_class()
+    npc_human.get_component("combat").calculate_armor_class()
     mocker.patch('scripts.dice.random.randint', return_value=12)
 
     #Equip weapon> Dagger
@@ -173,13 +175,14 @@ def test_perception_check(full_char, mocker):
 
 def test_armor_class_check(full_char, simple_armor):
     """Test successful armor class rolls."""
+    full_char.get_component("combat").calculate_armor_class()
     ac_check = armor_class_check(full_char)
     
     assert ac_check == 14
-
     full_char.get_component("inventory").add_item(simple_armor)
     full_char.get_component("equipment").equip_armor(simple_armor)
 
+    full_char.get_component("combat").calculate_armor_class()
     ac_check = armor_class_check(full_char)
 
     assert ac_check == 14

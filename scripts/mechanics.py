@@ -1,5 +1,5 @@
 import math
-from scripts.item import Item
+from scripts.items.item import Item
 
 
 from scripts.exceptions import (
@@ -166,7 +166,6 @@ def _parameter_checks(entity, parameter_name, parameter_list , parameter_type="p
         result += val
     elif parameter_type == "Saving Throws":
         val =  entity.get_component("ability").get_saving_throws_value(parameter_name)
-        print(f'{parameter_name} - {val}')
         result += val
 
     return  {"type" : parameter_type , "parameter": parameter_name}| format_return_check(d20_value , result)
@@ -262,14 +261,15 @@ def perception_check(entity):
     Calculate the entity's perception values and roll a 1d20. 
     """
     roll = throw_d20.roll()
-    return format_return_check(roll, (entity.get_component("ability").calculate_perception() + roll))
+    entity.get_component("combat").calculate_perception()
+    return format_return_check(roll, (entity.get_component("combat").get_perception() + roll))
 
 
 def armor_class_check(entity):
     """
     returns the entity's armor class
     """
-    return entity.get_component("combat").calculate_armor_class()
+    return entity.get_component("combat").get_armor_class()
 
 
 def check_impact_attack(attacked_entity , rolled_value):

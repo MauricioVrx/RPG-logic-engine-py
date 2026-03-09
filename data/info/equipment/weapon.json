@@ -1,4 +1,27 @@
 {
+  "bastard_sword": {
+    "name": "Bastard Sword",
+    "category": "weapon",
+    "rarity": "Common ",
+    "traits": ["Two-Hand 1d12"],
+    "level": 0,
+    "price": 400,
+    "bulk": 1,
+    "mechanics": {
+      "weapon_type": "Melee",
+      "weapon_category": "martial",
+      "weapon_group": "Sword",
+      "damage": "1d8",
+      "damage_type": "Slashing",
+      "hands": 1,
+      "range": null,
+      "reload": null
+    },
+    "lore": {
+      "description": "These blades come in a variety of shapes and styles, but they are typically 2 feet long."
+    }
+  },
+
   "clan_dagger": {
     "name": "Clan Dagger",
     "category": "weapon",
@@ -88,6 +111,29 @@
     },
     "lore": {
       "description": "Your natural unarmed strike."
+    }
+  },
+
+ "greatsword": {
+    "name": "Greatsword",
+    "category": "weapon",
+    "rarity": "Common",
+    "traits": ["Versatile P"],
+    "level": 0,
+    "price": 200,
+    "bulk": 2,
+    "mechanics": {
+      "weapon_type": "Melee",
+      "weapon_category": "martial",
+      "weapon_group": "Sword",
+      "damage": "1d12",
+      "damage_type": "Slashing",
+      "hands": 2,
+      "range": null,
+      "reload": null
+    },
+    "lore": {
+      "description": "This immense two-handed sword is nearly as tall as its wielder. Its lower blade is often somewhat dulled to allow it to be gripped for extra leverage in close-quarter fights."
     }
   },
 
@@ -295,6 +341,29 @@
     },
     "lore": {
       "description": "Derived from a farming tool used to mow down long grains and cereals, this weapon has a long wooden shaft with protruding handles, capped with a curved blade set at a right angle."
+    }
+  },
+
+  "shortsword": {
+    "name": "Shortsword",
+    "category": "weapon",
+    "rarity": "Common ",
+    "traits": ["Agile", "Finesse", "Versatile S"],
+    "level": 0,
+    "price": 90,
+    "bulk": "L",
+    "mechanics": {
+      "weapon_type": "Melee",
+      "weapon_category": "martial",
+      "weapon_group": "Sword",
+      "damage": "1d6",
+      "damage_type": "Piercing",
+      "hands": 1,
+      "range": null,
+      "reload": null
+    },
+    "lore": {
+      "description": "These blades come in a variety of shapes and styles, but they are typically 2 feet long."
     }
   },
 

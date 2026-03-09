@@ -65,8 +65,8 @@
         "description": ""
     },
 
-    "bandi" : {
-        "name": "Bandi",
+    "bandid" : {
+        "name": "Bandid",
         "type": "background",
 
         "rarity": "Common",

@@ -12,15 +12,29 @@ class CombatComponent:
         self.hit_points_current = 0 # Current health points of the entity 
         self.dying              = 0 # Counts 
         self.state              = "Stable" # State if is alive, dead or another 
-        self.armor_class        = 0 # Difficult a character is to hit in combat
-        self.class_cd           = 0 # Specific abilities(from class or creatures) that force other creatures to attempt a saving throw
-        self.perception         = 0 # Entity's general awareness and ability to notice their surroundings
+        self.armor_class        = {"value" : 0, "custom" :0} # Difficult a character is to hit in combat
+        self.class_cd           = {"value" : 0, "custom" :0} # Specific abilities(from class or creatures) that force other creatures to attempt a saving throw
+        self.perception         = {"value" : 0, "custom" :0} # Entity's general awareness and ability to notice their surroundings
         self.actions            = DEFAULTS_ACTIONS.copy()  # Type and count 3 actions, 1 reaction, 1 free action
         self.resistance         = [] # Types of resistance or vulnerability according to level: Vulnerability(>0), Resisitance(<0), Immunity(==0)
-        
+
 
     def load_from_dict(self, data: dict):
         for key, value in data.items():
+            if key == "custom_hit_points":
+                self.entity_hit_points  = value
+                self.hit_points_max     = value
+                self.hit_points_current = value
+                continue
+            if key == "custom_armor_class":
+                self.armor_class['custom'] = value
+                continue
+            if key == "custom_perception":
+                self.perception['custom'] = value
+                continue
+            if key == "custom_class_cd":
+                self.class_cd['custom'] = value
+                continue
             if hasattr(self, key):
                 setattr(self, key, value)
 
@@ -62,23 +76,47 @@ class CombatComponent:
         """
         Get armor class result
         """
-
-        ac        = self.entity.get_component("ability").ability_calculation('DEX') 
+        ac = self.entity.get_component("ability").ability_calculation('DEX') + 10
         equipment = self.entity.get_component("equipment").equipment
+      
 
-        if equipment['armor'] in [None, "armor_unarmored"]:
-            if type(equipment['armor']) != type(None):
-                if ac > equipment['armor']['DEX_cap']:
-                    ac = equipment['armor']['DEX_cap']
+        if equipment['armor'] not in [None, "armor_unarmored"]: 
+        # if equipment['armor'] not in [None]: 
+            if type(equipment['armor']) != type(None): 
+                if ac > equipment['armor'].mechanics['dex_cap']:
+                    ac = equipment['armor'].mechanics['dex_cap'] + 10
+
+                if self.armor_class['custom'] != 0:
+                    ac = self.armor_class['custom']
                 
                 # Bonus CA 
-                ac += equipment['armor']['AC_bonus']
+                ac += equipment['armor'].mechanics['ac_bonus']
                 
                 # Armor actegory proficiency
-                ac += self.entity.get_component("ability").proficiency_value(equipment['armor']['armor_category'])
+                ac += self.entity.get_component("ability").proficiency_value(equipment['armor'].mechanics['armor_category'])
             else:
                 ac += self.entity.get_component("ability").proficiency_value('armor_unarmored')
+        else:
+            if self.armor_class['custom'] != 0: 
+                ac = self.armor_class['custom']
 
-        ac += 10  
-        self.armor_class = ac
+        self.armor_class['value'] = ac
         return ac
+    
+    def get_armor_class(self):
+        return self.armor_class['value']
+
+    def calculate_perception(self): 
+        perception = self.entity.get_component("ability").ability_calculation('WIS')
+        if 'perception' in self.entity.get_component("ability").proficiency_rank :
+            perception += self.entity.get_component("ability").proficiency_value('perception')
+        self.perception['value'] = perception
+        return perception
+    
+    def get_perception(self):
+        if self.armor_class['custom'] != 0:
+            return self.perception['custom']
+        else:
+            return self.perception['value']
+        
+    

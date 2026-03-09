@@ -1,6 +1,7 @@
 import copy
 import pytest
-from scripts.item import Item, ItemManager
+from scripts.items.item    import Item
+from scripts.items.manager import ItemManager
 from scripts.mechanics import attempt_transfer
 from scripts.components.equipment_component import EquipmentComponent
 from scripts.exceptions import (
@@ -33,7 +34,7 @@ def test_read_csv_files():
     Make the item library
     """
     item_factory = ItemManager()
-    item_factory.load_all_items()
+    item_factory.load_all()
 
 
 def test_format_read_csv_files():
@@ -41,7 +42,7 @@ def test_format_read_csv_files():
     Make the item library
     """
     factory = ItemManager(base_path = "tests/schemas/data/info_csv")
-    factory.load_all_items(structure = {
+    factory.load_all(structure = {
         "equipment": ["armor", "weapon"],
         "item": ["consumables"]
     })
@@ -53,7 +54,7 @@ def test_read_wrong_csv_files():
     """
     item_factory = ItemManager()
     with pytest.raises(FileNotFoundError):
-       item_factory.load_all_items(structure = {"Wrong_csv": ["WrongFile1", "WrongFile2"]})
+       item_factory.load_all(structure = {"Wrong_csv": ["WrongFile1", "WrongFile2"]})
 
 
 def test_spawn_item(test_item_factory):
