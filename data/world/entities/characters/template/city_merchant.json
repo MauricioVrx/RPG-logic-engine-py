@@ -40,24 +40,26 @@
     },
     "equipment": {
       "equipment" : {
-        "armor" : "padded_armor"
+        "armor" : ["padded_armor"]
       }
     },
     "combat": {
-      "custom_hit_points" : 12,
-      "armor_class"       : 8,
-      "custom_perception" : 6
+      "custom_hit_points"  : 12,
+      "custom_armor_class" : 8,
+      "custom_perception"  : 6
     },
     "job" : {
-      "vendor": {
-          "stock": {
-            "torch": {"qty": 10, "price": 1},
-            "ration_basic": {"qty": 20, "price": 5},
-            "healing_potion_minor": {"qty": 3, "price": 40},
-            "dagger": {"qty": 2, "price": 200}
-          },
-          "bargain_skill": "diplomacy"
-        }
+      "job" : {
+        "vendor": {
+            "stock": {
+              "torch": {"qty": 10, "price": 1},
+              "ration_basic": {"qty": 20, "price": 5},
+              "healing_potion_minor": {"qty": 3, "price": 40},
+              "dagger": {"qty": 2, "price": 200}
+            },
+            "bargain_skill": "diplomacy"
+          }
+      }
     }
   },
   "ancestry" : {

@@ -56,7 +56,6 @@
         "description": ""
     },
         
-
     "goblin": {
         "name": "Goblin",
         "hit_points_max": 6,

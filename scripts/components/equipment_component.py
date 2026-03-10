@@ -46,7 +46,7 @@ class EquipmentComponent:
             raise ArmorNotFoundInInventoryError(self.entity.get_component("identity").name, armor_instance)
         
         # Check if the minimum STR required to use the equipment is available.
-        if not self.entity.get_component("ability").ability_calculation('STR') >= armor_instance.mechanics.get('strength_requirement', 0):
+        if not self.entity.get_component("ability").ability_calculation('STR') >= armor_instance.mechanics.get('strength_requirement', 0) and not armor_instance.mechanics.get('armor_category') == "unarmored":
             raise ArmorInsufficientParameterError(self.entity.get_component("identity").name, self.entity.get_component("ability").ability_calculation('STR'), armor_instance.name, 'STR', armor_instance.mechanics['strength_requirement'])
 
         # Check if a the armor is already equiped, this will be unequip

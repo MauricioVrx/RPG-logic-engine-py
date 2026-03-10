@@ -20,4 +20,8 @@ CHARACTER_UNIQUE = {
     "unique_base" : 1
 }
 
+CHARACTER_TEMPLATE = {
+    "template" : 1
+}
+
 BASE_HIT_POINTS = 10

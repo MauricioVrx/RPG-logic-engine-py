@@ -40,13 +40,13 @@
     },
     "equipment": {
       "equipment" : {
-        "armor" : "padded_armor"
+        "armor" : ["padded_armor"]
       }
     },
     "combat": {
-      "custom_hit_points" : 20,
-      "armor_class"       : 16,
-      "custom_perception" : 7
+      "custom_hit_points"  : 20,
+      "custom_armor_class" : 16,
+      "custom_perception"  : 7
     }
   },
   "ancestry" : {
@@ -55,6 +55,7 @@
   },
   "class" : {
     "name" : "guardian",
+    "main_ability" : "STR",
     "empty_values" : true
   }
 }

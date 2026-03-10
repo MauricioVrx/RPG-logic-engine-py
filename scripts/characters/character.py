@@ -377,20 +377,23 @@ class CharacterIdentityManager:
         for n, info in enumerate(data.items()):
             ancestries_id = info[0]
             ancestry_data = info[1]
-            self.ancestry[ancestries_id] = Ancestry(
-                ancestries_id   = ancestries_id,
-                name            = ancestry_data["name"],
-                id_value        = n,
-                hit_points_max  = ancestry_data["hit_points_max"],
-                speed           = ancestry_data["speed"],
-                size            = ancestry_data.get("size", 2),
-                ability_boosts  = ancestry_data.get("ability_boosts", {}),
-                trait           = ancestry_data.get("trait", []),
-                language        = ancestry_data.get("language", []),
-                sense           = ancestry_data.get("sense", []),
-                status          = ancestry_data.get("status", 0),
-                description     = ancestry_data.get("description", ""),
-            )
+            
+            status = ancestry_data.get("status", 0)
+            if status == 1:
+                self.ancestry[ancestries_id] = Ancestry(
+                    ancestries_id   = ancestries_id,
+                    name            = ancestry_data["name"],
+                    id_value        = n,
+                    hit_points_max  = ancestry_data["hit_points_max"],
+                    speed           = ancestry_data["speed"],
+                    size            = ancestry_data.get("size", 2),
+                    ability_boosts  = ancestry_data.get("ability_boosts", {}),
+                    trait           = ancestry_data.get("trait", []),
+                    language        = ancestry_data.get("language", []),
+                    sense           = ancestry_data.get("sense", []),
+                    status          = ancestry_data.get("status", 0),
+                    description     = ancestry_data.get("description", ""),
+                )
 
     def load_all_class(self, file_name= "char_class"):
         data = read_json_files(self.base_path,"character", file_name )
@@ -398,17 +401,20 @@ class CharacterIdentityManager:
         for n, info in enumerate(data.items()):
             class_id        = info[0]
             char_class_data = info[1]
-            self.char_class[class_id] = CharClass(
-                class_id          = class_id,
-                name              = char_class_data["name"],
-                id_value          = n,
-                hit_points_max    = char_class_data['base_stats']["hit_points_max"],
-                main_ability      = char_class_data["main_ability"],
-                secondary_ability = char_class_data["secondary_ability"],
-                trait             = char_class_data.get("trait", []),
-                magical_aptitude  = char_class_data['magical_progression']['spellcasting_ability'],
-                status            = char_class_data['status'],
-            )
+
+            status = char_class_data.get("status", 0)
+            if status == 1:
+                self.char_class[class_id] = CharClass(
+                    class_id          = class_id,
+                    name              = char_class_data["name"],
+                    id_value          = n,
+                    hit_points_max    = char_class_data['base_stats']["hit_points_max"],
+                    main_ability      = char_class_data["main_ability"],
+                    secondary_ability = char_class_data["secondary_ability"],
+                    trait             = char_class_data.get("trait", []),
+                    magical_aptitude  = char_class_data['magical_progression']['spellcasting_ability'],
+                    status            = char_class_data['status'],
+                )
 
     def load_all_background(self, file_name= "background"):
         data = read_json_files(self.base_path,"character", file_name )
@@ -416,18 +422,21 @@ class CharacterIdentityManager:
         for n, info in enumerate(data.items()):
             background_id   = info[0]
             background_data = info[1]
-            self.background[background_id] = Background(
-                background_id      = background_id,
-                name               = background_data["name"],
-                id_value           = n,
-                ability            = background_data['ability_boosts']["choices"],
-                boosts_count       = background_data["ability_boosts"]['boosts'],
-                trained_skills     = background_data["trained_skills"],
-                trained_lore       = background_data['trained_lore'],
-                granted_feats      = background_data['granted_feats'],
-                additional_effects = background_data['additional_effects'],
-                status             = background_data['status'],
-            )
+            
+            status = background_data.get("status", 0)
+            if status == 1:
+                self.background[background_id] = Background(
+                    background_id      = background_id,
+                    name               = background_data["name"],
+                    id_value           = n,
+                    ability            = background_data['ability_boosts']["choices"],
+                    boosts_count       = background_data["ability_boosts"]['boosts'],
+                    trained_skills     = background_data["trained_skills"],
+                    trained_lore       = background_data['trained_lore'],
+                    granted_feats      = background_data['granted_feats'],
+                    additional_effects = background_data['additional_effects'],
+                    status             = background_data['status'],
+                )
 
     def load_all_identity(self):
         self.load_all_ancestries()
