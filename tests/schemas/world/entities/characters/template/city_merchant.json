@@ -1,0 +1,73 @@
+{
+  "id": "city_merchant",
+  "components": {
+    "identity": {
+      "name"   : "City Merchant",
+      "alias"  : "City Merchant",
+      "type"   : "character",
+      "size"   : 2,
+      "speed"  : 25
+    },
+    "Social": {
+        "language" : ["Common"]
+    },
+    "progression": {
+      "level"      : 1,
+      "experience" : 0
+    },
+    "ability": {
+      "extra_ability_score": {
+        "STR": 4,
+        "DEX": 4,
+        "CON": -2,
+        "INT": 4,
+        "CHA": 6
+      },
+      "custom_skill": {
+        "Crafting"    : 7, 
+        "Lore"        : 7,
+        "Diplomacy"   : 7
+      },
+      "custom_saving_throws" : {
+        "fortitude"  : 1,
+        "reflex"     : 2,
+        "will"       : 10
+      }
+    },
+    "inventory": { 
+      "capacity": 20,
+      "items" : ["dagger", "torch", "torch", "healing_potion_minor", "artisans_toolkit"]
+    },
+    "equipment": {
+      "equipment" : {
+        "armor" : ["padded_armor"]
+      }
+    },
+    "combat": {
+      "custom_hit_points"  : 12,
+      "custom_armor_class" : 8,
+      "custom_perception"  : 6
+    },
+    "job" : {
+      "job" : {
+        "vendor": {
+            "stock": {
+              "torch": {"qty": 10, "price": 1},
+              "ration_basic": {"qty": 20, "price": 5},
+              "healing_potion_minor": {"qty": 3, "price": 40},
+              "dagger": {"qty": 2, "price": 200}
+            },
+            "bargain_skill": "diplomacy"
+          }
+      }
+    }
+  },
+  "ancestry" : {
+    "name" : "human",
+    "empty_values" : true
+  },
+  "background" : {
+    "name" : "merchant",
+    "empty_values" : true
+  }
+}

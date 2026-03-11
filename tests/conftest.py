@@ -2,7 +2,8 @@ import pytest
 from scripts.dice import Dice, CustomDice, RangeDice
 from scripts.parser import FormulaProcessor
 
-from scripts.characters.character import Character, CharacterIdentityManager
+from scripts.characters.character import Character #, CharacterIdentityManager
+from scripts.characters.manager import CharacterManager, CharacterIdentityManager
 
 from scripts.items.manager import ItemManager
 from scripts.container import Container
@@ -56,7 +57,7 @@ def simple_entity():
 # ===============================
 # CHARACTER 
 # ===============================
-char_factory = CharacterIdentityManager(base_path = "tests/schemas/data/info_csv")
+char_factory = CharacterIdentityManager(base_path = "tests/schemas/data/info")
 char_factory.load_all_identity()
 
 @pytest.fixture
@@ -98,7 +99,7 @@ def npc_human():
 
 # 1. Import items from CSV
 
-factory = ItemManager(base_path = "tests/schemas/data/info_csv")
+factory = ItemManager(base_path = "tests/schemas/data/info")
 factory.load_all(structure = {
     "equipment": ["armor", "weapon", "shield"],
     "item": ["consumables"]

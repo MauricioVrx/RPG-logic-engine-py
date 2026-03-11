@@ -1,16 +1,17 @@
 import pytest
 
 from scripts.exceptions import (
-    EntityAbilityNotFoundError,
-    CharacterAbilityLimitExceededError,
-    CharacterDuplicateAbilityError,
-    CharacterInvalidDistributionError,
     AncestryNotFoundError,
-    ClassNotFoundError,
-    ClassMainAbilityRequiredError,
-    BackgroundNotFoundError,
     BackgroundMinAbilityRequiredError,
-    CharacterChangePastError
+    BackgroundNotFoundError,
+    CharacterAbilityLimitExceededError,
+    CharacterChangePastError,
+    CharacterDuplicateAbilityError,
+    CharacterIdentityNotFoundError,
+    CharacterInvalidDistributionError,
+    ClassMainAbilityRequiredError,
+    ClassNotFoundError,
+    EntityAbilityNotFoundError,
 )
 
 def test_assign_ancestry_valid(simple_char, test_char_factory):

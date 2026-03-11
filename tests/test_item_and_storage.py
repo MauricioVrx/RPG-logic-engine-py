@@ -41,7 +41,7 @@ def test_format_read_csv_files():
     """
     Make the item library
     """
-    factory = ItemManager(base_path = "tests/schemas/data/info_csv")
+    factory = ItemManager(base_path = "tests/schemas/data/info")
     factory.load_all(structure = {
         "equipment": ["armor", "weapon"],
         "item": ["consumables"]

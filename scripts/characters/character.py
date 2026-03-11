@@ -1,11 +1,12 @@
 from collections import Counter
 from scripts.system import read_json_files
 import copy
-from scripts.config import BASE_HIT_POINTS 
 
 from scripts.entities.entity import Entity
-from scripts.constants import ABILITY_NAMES
-from scripts.config import FREE_ABILITY_POINTS
+
+from scripts.constants import ABILITY_NAMES, ABILITY_SCORE
+from scripts.config import FREE_ABILITY_POINTS , BASE_HIT_POINTS
+
 from scripts.exceptions import (
     EntityAbilityNotFoundError,
     EntityParameterNotFoundError, 
@@ -21,11 +22,19 @@ from scripts.exceptions import (
     BackgroundMinAbilityRequiredError,
 )
 
-from scripts.components import EquipmentComponent, IdentityComponent, NarrativeComponent, SocialComponent, ProgressionComponent, AbilityComponent, AIComponent, JobComponent, CombatComponent, InventoryComponent
+from scripts.components import (
+    EquipmentComponent, 
+    IdentityComponent,
+    NarrativeComponent, 
+    SocialComponent, 
+    ProgressionComponent, 
+    AbilityComponent, 
+    AIComponent, 
+    JobComponent, 
+    CombatComponent, 
+    InventoryComponent
+)
 
-from scripts.constants import ABILITY_SCORE
-
-from scripts.mechanics import get_name_df
 # class Character(Entity):
 class Character(Entity):
     # def __init__(self):
@@ -285,6 +294,7 @@ class Character(Entity):
         self.get_component('combat').class_cd['value'] = class_cd
         return class_cd
         
+
 # ==============================================================
 # Character Identity Library :  Ancestry, Class, Background
 # ==============================================================
@@ -363,100 +373,3 @@ class Background:
     def get_stat(self, key, default=None):
         """Safely retrieves a stat from the background."""
         return self.stats.get(key, default)
-
-class CharacterIdentityManager:
-    def __init__(self, base_path="data/info"):
-        self.base_path = base_path
-        self.ancestry   = {}
-        self.char_class = {}
-        self.background = {}
-
-    def load_all_ancestries(self, file_name= "ancestry"):
-        data = read_json_files(self.base_path,"character", file_name )
-        
-        for n, info in enumerate(data.items()):
-            ancestries_id = info[0]
-            ancestry_data = info[1]
-            
-            status = ancestry_data.get("status", 0)
-            if status == 1:
-                self.ancestry[ancestries_id] = Ancestry(
-                    ancestries_id   = ancestries_id,
-                    name            = ancestry_data["name"],
-                    id_value        = n,
-                    hit_points_max  = ancestry_data["hit_points_max"],
-                    speed           = ancestry_data["speed"],
-                    size            = ancestry_data.get("size", 2),
-                    ability_boosts  = ancestry_data.get("ability_boosts", {}),
-                    trait           = ancestry_data.get("trait", []),
-                    language        = ancestry_data.get("language", []),
-                    sense           = ancestry_data.get("sense", []),
-                    status          = ancestry_data.get("status", 0),
-                    description     = ancestry_data.get("description", ""),
-                )
-
-    def load_all_class(self, file_name= "char_class"):
-        data = read_json_files(self.base_path,"character", file_name )
-
-        for n, info in enumerate(data.items()):
-            class_id        = info[0]
-            char_class_data = info[1]
-
-            status = char_class_data.get("status", 0)
-            if status == 1:
-                self.char_class[class_id] = CharClass(
-                    class_id          = class_id,
-                    name              = char_class_data["name"],
-                    id_value          = n,
-                    hit_points_max    = char_class_data['base_stats']["hit_points_max"],
-                    main_ability      = char_class_data["main_ability"],
-                    secondary_ability = char_class_data["secondary_ability"],
-                    trait             = char_class_data.get("trait", []),
-                    magical_aptitude  = char_class_data['magical_progression']['spellcasting_ability'],
-                    status            = char_class_data['status'],
-                )
-
-    def load_all_background(self, file_name= "background"):
-        data = read_json_files(self.base_path,"character", file_name )
-
-        for n, info in enumerate(data.items()):
-            background_id   = info[0]
-            background_data = info[1]
-            
-            status = background_data.get("status", 0)
-            if status == 1:
-                self.background[background_id] = Background(
-                    background_id      = background_id,
-                    name               = background_data["name"],
-                    id_value           = n,
-                    ability            = background_data['ability_boosts']["choices"],
-                    boosts_count       = background_data["ability_boosts"]['boosts'],
-                    trained_skills     = background_data["trained_skills"],
-                    trained_lore       = background_data['trained_lore'],
-                    granted_feats      = background_data['granted_feats'],
-                    additional_effects = background_data['additional_effects'],
-                    status             = background_data['status'],
-                )
-
-    def load_all_identity(self):
-        self.load_all_ancestries()
-        self.load_all_class()
-        self.load_all_background()
-
-    def spawn(self, char_identity , name):
-        """
-        Creates and returns a unique, independent copy of an item.
-        """
-        if char_identity == "ancestry":
-            template = self.ancestry.get(name)
-        elif char_identity == "class":
-            template = self.char_class.get(name)
-        elif char_identity == "background":
-            template = self.background.get(name)
-        else:
-            pass # /---/ make error
-
-        if template:
-            # deepcopy ensures the new item doesn't share memory with the template
-            return copy.deepcopy(template) if template else None
-        # raise ItemNotFoundError(item_name) # /---/ Make error

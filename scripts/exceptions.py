@@ -314,6 +314,22 @@ class CharacterEngineError(GameBaseError):
     """Base class for exceptions in this module."""
     pass
 
+class CharacterNotFoundError(CharacterEngineError):
+    """Raised when the specified Item does not found"""
+    def __init__(self, character_name):
+        self.character_name  = character_name
+        self.error_code = "ERR_CHARACTER_NOT_FOUND"
+        self.message    = f"Character : '{character_name}' not found."
+        super().__init__(self.message)
+
+    def to_dict(self):
+        return {
+            "error"          : self.__class__.__name__,
+            "character_name" : self.character_name ,
+            "code"           : self.error_code
+        }
+
+
 class CharacterDisabledParameterError(CharacterEngineError):
     """Raised when attempting to use a disabled Ancestry, Class, or Background."""
     def __init__(self, name, param_type):
@@ -331,6 +347,7 @@ class CharacterDisabledParameterError(CharacterEngineError):
             "code"           : self.error_code
         }
 
+
 class CharacterAbilityLimitExceededError(CharacterEngineError):
     """Raised when the number of selected abilities exceeds the allowed limit."""
     def __init__(self, count_abilities, max_limit):
@@ -347,6 +364,7 @@ class CharacterAbilityLimitExceededError(CharacterEngineError):
             "max_limit"       : self.max_limit ,
             "code"            : self.error_code
         }
+
 
 class CharacterDuplicateAbilityError(CharacterEngineError):
     """Exception generated when asign a free ability, but its already activate by the parameter"""
@@ -367,6 +385,7 @@ class CharacterDuplicateAbilityError(CharacterEngineError):
             "code"           : self.error_code
         }
     
+
 class CharacterInvalidDistributionError(CharacterEngineError):
     """Raised when the provided ability distribution contains non-unique parameters."""
     def __init__(self, abilities):
@@ -381,6 +400,7 @@ class CharacterInvalidDistributionError(CharacterEngineError):
             "abilities"      : self.abilities ,
             "code"           : self.error_code
         }
+
 
 class CharacterChangePastError(CharacterEngineError):
     """Raised when the try to change the character's ancestry, class or background."""
@@ -399,6 +419,23 @@ class CharacterChangePastError(CharacterEngineError):
             "code"           : self.error_code
         }
 
+
+class CharacterIdentityNotFoundError(CharacterEngineError):
+    """Raised when the try to change the character's ancestry, class or background."""
+    def __init__(self, char_identity, name):
+        self.char_identity  = char_identity
+        self.name  = name
+        self.error_code = "ERR_CHARACTER_IDENTITY_NOT_FOUND"
+        self.message    = f" {char_identity} : {name} not found."
+        super().__init__(self.message)
+
+    def to_dict(self):
+        return {
+            "error"          : self.__class__.__name__,
+            "char_identity"  : self.char_identity,
+            "name"           : self.name,
+            "code"           : self.error_code
+        }
 
 # =============================================================================
 # ANCESTRY EXCEPTIONS

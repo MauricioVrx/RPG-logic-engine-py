@@ -1,9 +1,9 @@
 # Items and Characters Identity library
 from scripts.items.manager import ItemManager
-from scripts.characters.manager import CharacterManager
-from scripts.characters.character import CharacterIdentityManager
+from scripts.characters.manager import CharacterManager, CharacterIdentityManager
+# from scripts.characters.character import CharacterIdentityManager
 
-
+#
 item_factory = ItemManager()
 item_factory.load_all()
 identity_character_factory = CharacterIdentityManager()
@@ -13,11 +13,6 @@ character_loaded = CharacterManager(identity_character_factory, item_factory)
 character_loaded.load_all("unique")
 character_loaded.load_all("template")
 
-# template_character_loaded = CharacterManager(identity_character_factory, item_factory)
-# template_character_loaded.load_all()
-
-
-# print(character_loaded)
 print()
 print(character_loaded.characters)
 print()
