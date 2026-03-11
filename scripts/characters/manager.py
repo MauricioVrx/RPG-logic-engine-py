@@ -20,10 +20,12 @@ class CharacterManager:
 
     def load_all(self , character_list = None):
 
+        template = False
         if character_list == None or character_list ==  'unique':
             structure = CHARACTER_UNIQUE
             char_dict = self.characters
         else:
+            template = True
             structure = CHARACTER_TEMPLATE
             char_dict = self.characters_template
         
@@ -31,6 +33,8 @@ class CharacterManager:
 
         for char_id, info  in data.items():
             char = Character()
+            if template:
+                char.template_id = info['id']
             char.unique_id = info['id']
             for component in info['components']:
                 if char.components.get(component) != None:
@@ -70,13 +74,19 @@ class CharacterManager:
 
             char_dict[char_id] = char
 
-    def spawn(self, item_name):
+    def spawn(self, character_type = None, character_name = ''):
         """
         Creates and returns a unique, independent copy of an character.
         """
-        template = self.templates.get(item_name)
+        if character_type == None or character_type == 'template':
+            template = self.characters_template.get(character_name)
+        elif character_type == 'unique':
+            template = self.characters.get(character_name)
+        else:
+            template = None
+
         if not template:
-            raise CharacterNotFoundError(item_name)
+            raise CharacterNotFoundError(character_name)
             
         return copy.deepcopy(template) if template else None
 
@@ -183,4 +193,3 @@ class CharacterIdentityManager:
         if template:
             # deepcopy ensures the new item doesn't share memory with the template
             return copy.deepcopy(template) if template else None
-        
