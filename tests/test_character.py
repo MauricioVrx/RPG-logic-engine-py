@@ -1,6 +1,6 @@
 import pytest
 
-from scripts.exceptions import (
+from scripts.system.exceptions import (
     AncestryNotFoundError,
     BackgroundMinAbilityRequiredError,
     BackgroundNotFoundError,

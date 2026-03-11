@@ -1,4 +1,4 @@
-from scripts.exceptions import (
+from scripts.system.exceptions import (
     ArmorNonEquippableItemError,
     ArmorNotFoundInInventoryError,
     ArmorInsufficientParameterError,

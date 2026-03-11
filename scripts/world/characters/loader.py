@@ -1,4 +1,4 @@
-from scripts.system import read_json_files, get_list_files
+from scripts.system.files_manager import read_json_files, get_list_files
 
 class CharacterLoader:
     def __init__(self, base_path):

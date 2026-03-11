@@ -1,12 +1,12 @@
 import pytest
-from scripts.dice import Dice, CustomDice, RangeDice
-from scripts.parser import FormulaProcessor
+from scripts.mechanics.dice import Dice, CustomDice, RangeDice
+from scripts.mechanics.math_parser import FormulaProcessor
 
-from scripts.characters.character import Character #, CharacterIdentityManager
-from scripts.characters.manager import CharacterManager, CharacterIdentityManager
+from scripts.world.characters.character import Character #, CharacterIdentityManager
+from scripts.world.characters.manager import CharacterManager, CharacterIdentityManager
 
-from scripts.items.manager import ItemManager
-from scripts.container import Container
+from scripts.world.items.manager import ItemManager
+from scripts.world.container import Container
 
 # ===============================
 # DICE 

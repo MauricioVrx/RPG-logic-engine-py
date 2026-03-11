@@ -1,4 +1,4 @@
-from scripts.system import read_json_files
+from scripts.system.files_manager import read_json_files
 
 class ItemLoader:
     def __init__(self, base_path):

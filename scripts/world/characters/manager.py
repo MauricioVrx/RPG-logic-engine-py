@@ -1,10 +1,10 @@
 import copy
 
-from scripts.characters.loader    import CharacterLoader, CharacterIdentityLoader
-from scripts.characters.character import Character, Ancestry, Background, CharClass
-from scripts.config import CHARACTER_UNIQUE , CHARACTER_TEMPLATE
+from scripts.world.characters.loader    import CharacterLoader, CharacterIdentityLoader
+from scripts.world.characters.character import Character, Ancestry, Background, CharClass
+from scripts.system.loaders_folder_path import CHARACTER_UNIQUE , CHARACTER_TEMPLATE
 
-from scripts.exceptions import (
+from scripts.system.exceptions import (
     CharacterNotFoundError,
     CharacterIdentityNotFoundError
 )
@@ -67,12 +67,12 @@ class CharacterManager:
 
             if info.get('free_ability_points') != None:
                 char.set_free_ability_points(info['free_ability_points'].get('ability_points'))
-            
 
             char.recalculate_all()
             char.update_character_ability_points()
 
             char_dict[char_id] = char
+
 
     def spawn(self, character_type = None, character_name = ''):
         """
@@ -150,7 +150,6 @@ class CharacterIdentityManager:
     def load_all_background(self, file_name= "background"):
         # data = read_json_files(self.base_path,"character", file_name )
         data = self.loader.load_characters_identity("character", file_name)
-
 
         for n, info in enumerate(data.items()):
             background_id   = info[0]

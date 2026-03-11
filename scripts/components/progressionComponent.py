@@ -1,5 +1,5 @@
-from scripts.config import MAX_LEVEL 
-from scripts.exceptions import (
+from scripts.game_system.constants import MAX_LEVEL 
+from scripts.system.exceptions import (
     EntityLevelLimitError, 
     EntityIsIntegerError, 
     )

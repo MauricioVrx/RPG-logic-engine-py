@@ -1,18 +1,16 @@
 import math
-from scripts.items.item import Item
+from scripts.world.items.item import Item
 
-
-from scripts.exceptions import (
-    DataFrameMultipleRowsError,
-    ItemNotFoundError,
-    StorageLimitItemsError,
-    ItemNotRemovedError,
-    WeaponNotFoundInInventoryError,
+from scripts.system.exceptions import (
     EquipmentError,
-    EntityParameterNotFoundError
+    EntityParameterNotFoundError,
+    ItemNotFoundError,
+    ItemNotRemovedError,
+    StorageLimitItemsError,
+    WeaponNotFoundInInventoryError,
     )
 
-from scripts.dice   import Dice
+from scripts.mechanics.dice   import Dice
 
 def calculate_ability_modifier(score: int) -> int:
     """Fórmula estándar de Pathfinder 2e para modificadores de atributo."""
@@ -23,15 +21,6 @@ def calculate_proficiency_bonus(level: int, rank: int) -> int:
     if rank <= 0:
         return 0
     return level + (rank * 2)
-
-def get_name_df(df, name, column = "name", df_name = "DataFrame"):
-    """Get Dataframe row by name"""
-    row = df[df[column] == name]
-    if len(row) > 1:
-        raise DataFrameMultipleRowsError(name, column, df_name)
-    elif len(row) == 0:
-        return []
-    return row.iloc[0]
 
 
 # ==============================================================

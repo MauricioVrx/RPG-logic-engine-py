@@ -1,9 +1,9 @@
-from scripts.exceptions import (
+from scripts.system.exceptions import (
     StorageLimitItemsError,
     ItemNotFoundError
     )
 
-from scripts.mechanics import add_item as add_it, remove_item as rem_it
+from scripts.mechanics.mechanics import add_item as add_it, remove_item as rem_it
 
 
 class InventoryComponent:

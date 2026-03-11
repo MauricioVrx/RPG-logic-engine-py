@@ -1,13 +1,12 @@
 from collections import Counter
-from scripts.system import read_json_files
 import copy
 
-from scripts.entities.entity import Entity
+from scripts.world.entities.entity import Entity
 
-from scripts.constants import ABILITY_NAMES, ABILITY_SCORE
-from scripts.config import FREE_ABILITY_POINTS , BASE_HIT_POINTS
+from scripts.game_system.constants import ABILITY_NAMES, ABILITY_SCORE
+from scripts.game_system.constants import FREE_ABILITY_POINTS , BASE_HIT_POINTS
 
-from scripts.exceptions import (
+from scripts.system.exceptions import (
     EntityAbilityNotFoundError,
     EntityParameterNotFoundError, 
     CharacterDisabledParameterError,

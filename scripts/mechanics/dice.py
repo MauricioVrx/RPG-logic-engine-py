@@ -1,7 +1,7 @@
 import random
 import numbers
 
-from scripts.exceptions import HigherRangeValueError, LowerRangeValueDiceThrowError, NonNumericResultError, MultipleDiceQuantityError
+from scripts.system.exceptions import HigherRangeValueError, LowerRangeValueDiceThrowError, NonNumericResultError, MultipleDiceQuantityError
 
 class Dice:
     """

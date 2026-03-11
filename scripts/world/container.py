@@ -1,6 +1,6 @@
 
-from scripts.entities.entity import Entity
-from scripts.items.item import Item
+from scripts.world.entities.entity import Entity
+from scripts.world.items.item import Item
 from scripts.components.inventory_component import InventoryComponent
 from scripts.components.identityComponent import IdentityComponent
 from scripts.components.lockComponent import LockComponent
@@ -21,7 +21,6 @@ class Container(Entity):
 
 
 class Backpack(Item):
-
     def __init__(self, template_id, name):
         super().__init__(template_id, name= None, category="equipment")
         self.name = name

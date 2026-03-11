@@ -1,10 +1,10 @@
 import pytest
-from scripts.exceptions import (
+from scripts.system.exceptions import (
     ItemNotFoundError,
     CharacterIdentityNotFoundError,
 )
-from scripts.items.manager import ItemManager
-from scripts.characters.manager import CharacterManager, CharacterIdentityManager
+from scripts.world.items.manager import ItemManager
+from scripts.world.characters.manager import CharacterManager, CharacterIdentityManager
 
 
 # ===============================

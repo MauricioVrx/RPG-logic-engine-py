@@ -1,5 +1,5 @@
 import pytest
-from scripts.exceptions import (
+from scripts.system.exceptions import (
     DiceNotFoundError, 
     ParserZeroDivisionError, 
     ParserInvalidFormulaError
