@@ -29,6 +29,15 @@ SEASONS = {
     8: "winter",
 }
 
+DAY_PHASES = [
+    (5, "dawn"),
+    (8, "morning"),
+    (12, "afternoon"),
+    (18, "sunset"),
+    (20, "night"),
+    (0, "deep_night")
+]
+
 
 #=========================================================================
 # CD Difficult CD DIFFICULT

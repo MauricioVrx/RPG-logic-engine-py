@@ -1,4 +1,4 @@
-from scripts.game_system.data_config  import (MINUTES_PER_HOUR, HOURS_PER_DAY, DAYS_PER_MONTH, MONTHS_PER_YEAR, DAYS_PER_YEAR, SEASONS)
+from scripts.game_system.data_config  import (MINUTES_PER_HOUR, HOURS_PER_DAY, DAYS_PER_MONTH, MONTHS_PER_YEAR, DAYS_PER_YEAR, SEASONS, DAY_PHASES)
 
 class Calendar:
     MINUTES_PER_HOUR = MINUTES_PER_HOUR
@@ -11,7 +11,16 @@ class Calendar:
     
     SEASONS          = SEASONS
 
+    DAY_PHASES       = DAY_PHASES
+
     @classmethod
     def get_season(cls, month):
         return cls.SEASONS.get(month)
+    
+    @classmethod
+    def get_day_phase(cls, hour):
+        for idx in range(len(DAY_PHASES)-1):
+            if DAY_PHASES[idx][0] <= hour < DAY_PHASES[idx+1][0]:
+                return DAY_PHASES[idx][1]
+        return DAY_PHASES[-1][1]
     
