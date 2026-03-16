@@ -19,8 +19,15 @@ class Calendar:
     
     @classmethod
     def get_day_phase(cls, hour):
+        day_phase = -1
+        pos = 0
         for idx in range(len(DAY_PHASES)-1):
             if DAY_PHASES[idx][0] <= hour < DAY_PHASES[idx+1][0]:
-                return DAY_PHASES[idx][1]
-        return DAY_PHASES[-1][1]
+                day_phase = DAY_PHASES[idx]
+                pos = idx
+                break
+        if day_phase == -1:
+            day_phase = DAY_PHASES[-1]
+        day_phase =  list(day_phase) + [pos]
+        return day_phase
     

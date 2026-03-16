@@ -1,6 +1,8 @@
-from scripts.game_system.data_config import MINUTES_PER_HOUR, HOURS_PER_DAY, DAYS_PER_MONTH, MONTHS_PER_YEAR
-from scripts.world.time.calendar import MONTHS_PER_YEAR, DAYS_PER_MONTH, HOURS_PER_DAY, MINUTES_PER_HOUR
+from scripts.game_system.data_config import MINUTES_PER_HOUR, HOURS_PER_DAY, DAYS_PER_MONTH, MONTHS_PER_YEAR, DAY_PHASES
 
+from scripts.system.exceptions import (
+    TimeFormatError
+)
 
 class TimeSystem:
 
@@ -31,13 +33,48 @@ class TimeSystem:
         time_funcs_list = [self.pass_years, self.pass_months, self.pass_days, self.pass_hours, self.pass_minutes]
         
         pass_to_date    = [years, months, days, hours, minutes]
-        print(initial_date)
-        print(pass_to_date)
+
         pass_time = self.get_time_diff(initial_date, pass_to_date)
 
         for n in range(len(pass_time)):
             time_funcs_list[n](pass_time[n])
 
+
+    def pass_day_phases(self, n_phases = 1):
+
+        len_phases_list = len(DAY_PHASES)
+        actual = self.get_day_phase()[2]
+        to_phase = actual + n_phases
+
+        while to_phase > len_phases_list-1:
+            to_phase -= len_phases_list
+
+        hour = DAY_PHASES[to_phase][0]
+
+        return self.pass_time_next_to(hours=hour, minutes= 0)
+
+    def __pass_to_day_phase(self, name):
+        for phase in DAY_PHASES:
+            if phase[1] == name:
+                return phase[0]
+        # /---/ Make error
+
+    def pass_to_morning(self):
+        hour = self.__pass_to_day_phase("morning")
+        self.pass_time_next_to(hours=hour, minutes= 0)
+         
+    def pass_to_sunset(self):
+        hour = self.__pass_to_day_phase("sunset")
+        self.pass_time_next_to(hours=hour, minutes= 0)
+
+    def pass_to_night(self):
+        hour = self.__pass_to_day_phase("night")
+        self.pass_time_next_to(hours=hour, minutes= 0)
+
+    def get_day_phase(self):
+        phase = self.game_time.get_day_phase("all")
+        return phase
+    
 
     def get_time_diff(self, today, pass_to_date):
         time_range = [MONTHS_PER_YEAR, DAYS_PER_MONTH, HOURS_PER_DAY, MINUTES_PER_HOUR]
@@ -45,6 +82,25 @@ class TimeSystem:
         to_date     = pass_to_date
 
         range_list = len(to_date)
+
+        # Validate time range
+        time_error = []
+        _ , month, day, hour, minute = pass_to_date
+
+        if minute is not None and (minute < 0 or minute >= MINUTES_PER_HOUR):
+            time_error.append("minutes")
+
+        if hour is not None and (hour < 0 or hour >= HOURS_PER_DAY):
+            time_error.append("hours")
+
+        if day is not None and (day <= 0 or day > DAYS_PER_MONTH):
+            time_error.append("days")
+
+        if month is not None and (month <= 0 or month > MONTHS_PER_YEAR):
+            time_error.append("months")
+
+        if time_error:
+            raise TimeFormatError(time_error)
 
         # Last position in lists with diff from today and pass_to_date
         last_position = 0

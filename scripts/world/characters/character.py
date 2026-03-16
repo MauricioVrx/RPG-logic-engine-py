@@ -1,6 +1,4 @@
 from collections import Counter
-import copy
-
 from scripts.world.entities.entity import Entity
 
 from scripts.game_system.constants import ABILITY_NAMES, ABILITY_SCORE
