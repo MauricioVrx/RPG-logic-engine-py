@@ -1,0 +1,32 @@
+{
+  "id": "gustavo_ryner",
+  "components": {
+    "identity": {
+      "type": "character",
+      "trait": ["Humanoid"],
+      "size" : 2
+    },
+    "Social": {
+        "language"  : ["Common"]
+    },
+    "progression": {
+      "level": 1,
+      "experience": 0
+    },
+    "ability": {
+      "core_ability_score": {
+        "STR": 10,
+        "DEX": 10,
+        "CON": 10,
+        "INT": 10,
+        "WIS": 10,
+        "CHA": 10
+      }
+    },
+    "inventory": {
+      "capacity": 20
+    },
+    "equipment": {},
+    "combat": {}
+  }
+}

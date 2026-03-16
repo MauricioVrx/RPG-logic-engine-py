@@ -1,0 +1,205 @@
+{
+  "alchemists_toolkit": {
+    "name": "Alchemist's Toolkit",
+    "category": "gear",
+    "rarity": "Common",
+    "level": 0,
+    "price": "3 gp",
+    "bulk": 2,
+    "mechanics": {},
+    "lore": {}
+  },
+  
+  "artisans_toolkit": {
+    "name": "Artisan's Toolkit",
+    "category": "gear",
+    "rarity": "Common",
+    "level": 0,
+    "price": "4 gp",
+    "bulk": 2,
+    "mechanics": {},
+    "lore": {}
+  },
+
+  "Bedroll": {
+    "name": "Bedroll",
+    "category": "gear",
+    "rarity": "Common",
+    "level": 0,
+    "price": "2 cp",
+    "bulk": "L",
+    "mechanics": {},
+    "lore": {}
+  },
+
+
+  "chain": {
+    "name": "Chain",
+    "category": "gear",
+    "rarity": "Common",
+    "level": 0,
+    "price": "4 gp",
+    "bulk": 1,
+    "mechanics": {
+      "hands": 2
+    },
+    "lore": {"description": "10 ft."}
+  },
+
+  "cookware": {
+    "name": "Cookware",
+    "category": "gear",
+    "rarity": "Common",
+    "level": 0,
+    "price": "1 gp",
+    "bulk": 2,
+    "mechanics": {
+      "hands": 2
+    },
+    "lore": {}
+  },
+
+  "compass": {
+    "name": "Compass",
+    "category": "gear",
+    "rarity": "Common",
+    "level": 0,
+    "price": "1 gp",
+    "bulk": null,
+    "mechanics": {
+      "hands": 1
+    },
+    "lore": {
+      "description": "A compass helps you Sense Direction or navigate, provided you're in a location with uniform magnetic fields. Without a compass, you take a –2 item penalty to these checks (similar to using a shoddy item)."
+    }
+  },
+
+  "disguise_kit": {
+    "name": "Disguise Kit",
+    "category": "gear",
+    "rarity": "Common",
+    "level": 0,
+    "price": "1 gp",
+    "bulk": null,
+    "mechanics": {
+      "hands": 1
+    },
+    "lore": {
+      "description": "This small wooden box contains cosmetics, false facial hair, spirit gum, and a few simple wigs. You usually need a disguise kit to set up a disguise in order to Impersonate someone using the Deception skill. If you've crafted a large number of disguises, you can replenish your cosmetics supply with replacement cosmetics suitable for the type of your disguise kit. You can draw and replace a worn disguise kit as part of the action that uses it."
+    }
+  },
+
+  "tent_pup": {
+    "name": "Tent (Pup)",
+    "category": "gear",
+    "rarity": "Common",
+    "level": 0,
+    "price": "8 sp",
+    "bulk": "L",
+    "mechanics": {
+      "hands": 2
+    },
+    "lore": {
+      "description": "1 person tent"
+    }
+  },
+
+  "tent_four_person": {
+    "name": "Tent four person",
+    "category": "gear",
+    "rarity": "Common",
+    "level": 0,
+    "price": "5 gp",
+    "bulk": 1,
+    "mechanics": {
+      "hands": 2
+    },
+    "lore": {
+      "description": "4 person tent"
+    }
+  },
+
+  "tent_pavilion": {
+    "name": "Tent Pavilion",
+    "category": "gear",
+    "rarity": "Common",
+    "level": 0,
+    "price": "40 gp",
+    "bulk": 12,
+    "mechanics": {
+      "hands": 2
+    },
+    "lore": {
+      "description": "1 person tent"
+    }
+  },
+
+  "repair_toolkit": {
+    "name": "Repair Toolkit",
+    "category": "gear",
+    "rarity": "Common",
+    "level": 0,
+    "price": "2 gp",
+    "bulk": 1,
+    "mechanics": {
+      "hands": 2
+    },
+    "lore": {
+      "description": "A repair toolkit allows you to perform simple repairs while traveling. It contains a portable anvil, tongs, woodworking tools, a whetstone, and oils for conditioning leather and wood. You can use a repair toolkit to Repair items using the Crafting skill. You can draw and replace a worn repair toolkit as part of the action that uses it."
+    }
+  },
+
+  "rope": {
+    "name": "Rope",
+    "category": "gear",
+    "rarity": "Common",
+    "level": 0,
+    "price": "5 sp",
+    "bulk": 2,
+    "mechanics": {
+      "hands": 2
+    },
+    "lore": {
+      "description": "50 ft. rope"
+    }
+  },
+
+  "spyglass": {
+    "name": "Spyglass",
+    "category": "gear",
+    "rarity": "Common",
+    "level": 0,
+    "price": "20 gp",
+    "bulk": "L",
+    "mechanics": {
+      "hands": 2
+    },
+    "lore": {}
+  },
+
+  "hammer": {
+    "name": "Hammer",
+    "category": "gear",
+    "rarity": "Common",
+    "level": 0,
+    "price": "1 sp",
+    "bulk": "L",
+    "mechanics": {
+      "hands": 1
+    },
+    "lore": {}
+  },
+
+  "soap": {
+    "name": "Soap",
+    "category": "gear",
+    "rarity": "Common",
+    "level": 0,
+    "price": "2 cp",
+    "bulk": "L",
+    "mechanics": {
+      "hands": 1
+    },
+    "lore": {}
+  }
+}

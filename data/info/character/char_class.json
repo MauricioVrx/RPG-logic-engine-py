@@ -1,0 +1,170 @@
+{
+    "fighter" : {
+        "name": "Fighter",
+        "type": "class",
+
+        "base_stats": {
+            "hit_points_max": 10
+        },
+
+        "main_ability": ["STR", "DEX"],
+        "secondary_ability": ["CON"],
+
+        "initial_proficiencies": {
+            "skill": {},
+            "skills_trained": 3,
+            "skill_to_choice": {"Acrobatics": 1, "Athletics" : 1},
+            "saving_throws": {"fortitude": 2,"reflex":2,"will":1},
+            "armor": {"armor_unarmored" : 1, "armor_light" : 1, "armor_medium" : 1, "armor_heavy" : 1},
+            "weapons": {"weapon_unarmed" : 2, "weapon_simple": 2, "weapon_martial": 2, "weapon_advanced" : 1},
+            "class_cd" : 1,
+            "perception" : 2
+        },
+
+        "magical_progression": {
+            "spellcasting_ability": null,
+            "tradition": null,
+            "spell_slots": {}
+        },
+
+        "class_features": {
+            "1": {"feats": ["Reactive Strike", "Shield Block"], "class_feats": 1},
+            "2": {},
+            "3": {}
+        },
+
+        "trait": ["Fighter"],
+
+        "rarity": "Common",
+        "status": 1,
+        "source": "base",
+        "description": ""
+    },
+
+    "guardian" : {
+        "name": "Guardian",
+        "type": "class",
+
+        "base_stats": {
+            "hit_points_max": 12
+        },
+
+        "main_ability": ["STR"],
+        "secondary_ability": [],
+
+        "initial_proficiencies": {
+            "skill": {"Athletics":1},
+            "skills_trained": 3,
+            "skill_to_choice": {},
+            "saving_throws": {"fortitude": 2,"reflex":1,"will":2},
+            "armor": {"armor_unarmored" : 1, "armor_light" : 1, "armor_medium" : 1, "armor_heavy" : 1},
+            "weapons": {"weapon_unarmed" : 1, "weapon_simple": 1, "weapon_martial": 1},
+            "class_cd" : 1,
+            "perception" : 1
+            
+        },
+
+        "magical_progression": {
+            "spellcasting_ability": null,
+            "tradition": null,
+            "spell_slots": {}
+        },
+
+         "class_features": {
+            "1":  {"feats": ["Taunt", "Shield Block"], "class_feats": 1},
+            "2": {},
+            "3": {}
+        },
+
+        "trait": ["Guardian"],
+
+        "rarity": "Common",
+        "status": 1,
+        "source": "base",
+        "description": ""
+    },    
+
+    "ranger" : {
+        "name": "Ranger",
+        "type": "class",
+
+        "base_stats": {
+            "hit_points_max": 10
+        },
+
+        "main_ability": ["STR", "DEX"],
+        "secondary_ability": ["CON", "WIS"],
+
+        "initial_proficiencies": {
+            "skill": {"Nature":1, "Survival" : 1},
+            "skills_trained": 4,
+            "skill_to_choice": {},
+            "saving_throws": {"fortitude": 1,"reflex":2,"will":2},
+            "armor": {"armor_unarmored" : 1, "armor_light" : 1},
+            "weapons": {"weapon_unarmed" : 1, "weapon_simple": 1, "weapon_martial": 1},
+            "class_cd" : 1,
+            "perception" : 2
+        },
+
+        "magical_progression": {
+            "spellcasting_ability": "WIS",
+            "tradition": null,
+            "spell_slots": {}
+        },
+
+         "class_features": {
+            "1": {"feats": [], "class_feats": 1},
+            "2": {},
+            "3": {}
+        },
+
+        "trait": ["Ranger"],
+
+        "rarity": "Common",
+        "status": 1,
+        "source": "base",
+        "description": ""
+    },
+
+    "rogue" : {
+        "name": "Rogue",
+        "type": "class",
+
+        "base_stats": {
+            "hit_points_max": 8
+        },
+
+        "main_ability": ["DEX"],
+        "secondary_ability": ["CON", "CHA"],
+
+        "initial_proficiencies": {
+            "skill": {"Stealth":1},
+            "skills_trained": 7,
+            "skill_to_choice": {"FREE" : 1},
+            "saving_throws": {"fortitude": 1,"reflex":2,"will":2},
+            "armor": {"armor_unarmored" : 1, "armor_light" : 1},
+            "weapons": {"weapon_unarmed" : 1, "weapon_simple": 1, "weapon_martial": 1},
+            "class_cd" : 1,
+            "perception" : 2
+        },
+
+        "magical_progression": {
+            "spellcasting_ability": null,
+            "tradition": null,
+            "spell_slots": {}
+        },
+
+        "class_features": {
+            "1": {"feats": ["Sneak Attack", "Surprise Attack"], "class_feats": 1, "skill_feats": 1},
+            "2": {},
+            "3": {}
+        },
+
+        "trait": ["Rogue"],
+
+        "rarity": "Common",
+        "status": 1,
+        "source": "base",
+        "description": ""
+    }
+}

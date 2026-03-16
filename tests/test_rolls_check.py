@@ -1,13 +1,14 @@
 import pytest
-from scripts.exceptions import (
+from scripts.system.exceptions import (
     EntityParameterNotFoundError,
     WeaponNotFoundInInventoryError, 
     EquipmentError
     )
 
-from scripts.constants import SAV_THROWS_NAMES
+from scripts.game_system.constants import SAV_THROWS_NAMES
+from scripts.components.equipment_component import EquipmentComponent
 
-from scripts.mechanics import (
+from scripts.mechanics.mechanics import (
     # Entity
     skill_checks, 
     saving_throw_checks, 
@@ -24,7 +25,7 @@ from scripts.mechanics import (
 
 def test_parameter_checks(full_char, mocker):
     """Test successful skill and saving throw rolls."""
-    mocker.patch('scripts.dice.random.randint', return_value=12)
+    mocker.patch('scripts.mechanics.dice.random.randint', return_value=12)
 
     # SKILL TEST
     skill_acrobatics_result = skill_checks(full_char, "Acrobatics")
@@ -79,11 +80,13 @@ def test_wrong_parameter_checks(full_char):
 
 def test_attack_roll_checks(full_char, npc_human, simple_dagger, longspear, mocker):
     """Test successful attacks with two kind of weapons."""
-    mocker.patch('scripts.dice.random.randint', return_value=12)
+    full_char.get_component("combat").calculate_armor_class()
+    npc_human.get_component("combat").calculate_armor_class()
+    mocker.patch('scripts.mechanics.dice.random.randint', return_value=12)
 
     #Equip weapon> Dagger
-    full_char.add_item(simple_dagger)
-    full_char.equip_weapon_on_hand(simple_dagger)
+    full_char.get_component("inventory").add_item(simple_dagger)
+    full_char.get_component("equipment").equip_weapon_on_hand(simple_dagger)
 
     # 1. Dagger's attack (STR - Finesse)
     attack_1 = attack_roll_checks(full_char, simple_dagger, n_attack=1)
@@ -99,9 +102,9 @@ def test_attack_roll_checks(full_char, npc_human, simple_dagger, longspear, mock
     assert attack_3["result"] == 6
 
     # 2. Longspear's attack (STR)
-    full_char.unequip_weapon_on_hand(simple_dagger)
-    full_char.add_item(longspear)
-    full_char.equip_weapon_on_hand(longspear)
+    full_char.get_component("equipment").unequip_weapon_on_hand(simple_dagger)
+    full_char.get_component("inventory").add_item(longspear)
+    full_char.get_component("equipment").equip_weapon_on_hand(longspear)
 
     attack_1 = attack_roll_checks(full_char, longspear, n_attack=1)
     assert attack_1['roll']   == 12
@@ -126,7 +129,7 @@ def test_attack_roll_checks(full_char, npc_human, simple_dagger, longspear, mock
     assert impact_3['result_diff']      == -7
 
     # Critical success attack
-    mocker.patch('scripts.dice.random.randint', return_value=20)
+    mocker.patch('scripts.mechanics.dice.random.randint', return_value=20)
     attack_1 = attack_roll_checks(full_char, longspear, n_attack=1)
     assert attack_1['roll']   == 20
     assert attack_1["result"] == 22
@@ -137,7 +140,7 @@ def test_attack_roll_checks(full_char, npc_human, simple_dagger, longspear, mock
     assert impact['result_diff']      == 11
 
     # Critical fail attack
-    mocker.patch('scripts.dice.random.randint', return_value=1)
+    mocker.patch('scripts.mechanics.dice.random.randint', return_value=1)
     attack_fail = attack_roll_checks(full_char, longspear, n_attack=2)
     assert attack_fail['roll']   == 1
     assert attack_fail["result"] == -2
@@ -154,7 +157,7 @@ def test_wrong_attack_roll_checks(full_char, simple_dagger):
     with pytest.raises(WeaponNotFoundInInventoryError):
         attack_roll_checks(full_char, simple_dagger, n_attack=1)
 
-    full_char.add_item(simple_dagger)
+    full_char.get_component("inventory").add_item(simple_dagger)
 
     # 2. Attacking with a weapon that is not equipped.
     with pytest.raises(EquipmentError):
@@ -164,7 +167,7 @@ def test_wrong_attack_roll_checks(full_char, simple_dagger):
 def test_perception_check(full_char, mocker):
     """Test successful perception rolls."""
 
-    mocker.patch('scripts.dice.random.randint', return_value=10)
+    mocker.patch('scripts.mechanics.dice.random.randint', return_value=10)
     perception = perception_check(full_char)
     assert perception['roll']   == 10
     assert perception["result"] == 12
@@ -172,13 +175,14 @@ def test_perception_check(full_char, mocker):
 
 def test_armor_class_check(full_char, simple_armor):
     """Test successful armor class rolls."""
+    full_char.get_component("combat").calculate_armor_class()
     ac_check = armor_class_check(full_char)
     
     assert ac_check == 14
+    full_char.get_component("inventory").add_item(simple_armor)
+    full_char.get_component("equipment").equip_armor(simple_armor)
 
-    full_char.add_item(simple_armor)
-    full_char.equip_armor(simple_armor)
-
+    full_char.get_component("combat").calculate_armor_class()
     ac_check = armor_class_check(full_char)
 
     assert ac_check == 14
@@ -188,7 +192,7 @@ def test_class_cd_check(full_char, npc_human, mocker):
     """
     Test class cd checks between 2 differents charactes.
     """
-    mocker.patch('scripts.dice.random.randint', return_value=13)
+    mocker.patch('scripts.mechanics.dice.random.randint', return_value=13)
     assert class_cd_check(full_char, npc_human, SAV_THROWS_NAMES[0], 0)['result']      == 13
     assert class_cd_check(full_char, npc_human, SAV_THROWS_NAMES[0], 0)['passed']      == False
     assert class_cd_check(full_char, npc_human, SAV_THROWS_NAMES[0], 0)['result_diff'] == -1

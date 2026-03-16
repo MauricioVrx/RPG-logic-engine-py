@@ -1,12 +1,12 @@
 import pytest
-from scripts.dice import Dice, CustomDice, RangeDice
-from scripts.parser import FormulaProcessor
+from scripts.mechanics.dice import Dice, CustomDice, RangeDice
+from scripts.mechanics.math_parser import FormulaProcessor
 
-from scripts.entity import Entity
-from scripts.character import Character, CharacterIdentityManager
+from scripts.world.characters.character import Character #, CharacterIdentityManager
+from scripts.world.characters.manager import CharacterManager, CharacterIdentityManager
 
-from scripts.item import ItemManager
-from scripts.storage import Container
+from scripts.world.items.manager import ItemManager
+from scripts.world.container import Container
 
 # ===============================
 # DICE 
@@ -48,16 +48,16 @@ def parser_instance():
 
 @pytest.fixture
 def simple_entity():
-    simple_entity = Entity()
-    simple_entity.hit_points_max     = 10
-    simple_entity.hit_points_current = 5
+    simple_entity = Character()
+    simple_entity.get_component("combat").hit_points_max     = 10
+    simple_entity.get_component("combat").hit_points_current = 5
     return simple_entity
 
 
 # ===============================
 # CHARACTER 
 # ===============================
-char_factory = CharacterIdentityManager(base_path = "tests/schemas/data/info_csv")
+char_factory = CharacterIdentityManager(base_path = "tests/schemas/data/info")
 char_factory.load_all_identity()
 
 @pytest.fixture
@@ -99,8 +99,8 @@ def npc_human():
 
 # 1. Import items from CSV
 
-factory = ItemManager(base_path = "tests/schemas/data/info_csv")
-factory.load_all_items(structure = {
+factory = ItemManager(base_path = "tests/schemas/data/info")
+factory.load_all(structure = {
     "equipment": ["armor", "weapon", "shield"],
     "item": ["consumables"]
 })

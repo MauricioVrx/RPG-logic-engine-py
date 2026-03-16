@@ -1,0 +1,66 @@
+{
+  "id": "gustavo_ryner",
+  "components": {
+    "identity": {
+      "name"   : "Gustavo Ryner",
+      "alias"  : "Promising guardian",
+      "gender" : 1,
+      "years_old"    : 21,
+      "type"   : "character",
+      "appearance" : "broad-shouldered", 
+      "size"   : 2,
+      "speed"  : 25
+    },
+    "social": {
+        "language" : ["Common"]
+    },
+    "progression": {
+      "level"      : 3,
+      "experience" : 0
+    },
+    "ability": {
+      "extra_ability_score": {
+        "STR": 6,
+        "DEX": 4,
+        "CON": 4,
+        "WIS": 4
+      },
+      "custom_skill": {
+        "Athletics"    : 7, 
+        "Intimidation" : 5, 
+        "Diplomacy"    : 3,
+        "Acrobatics"   : 3,
+        "Lore"         : 3
+      },
+      "custom_saving_throws" : {
+        "fortitude"  : 7,
+        "reflex"     : 5,
+        "will"       : 5
+      }
+    },
+    "inventory": { 
+      "capacity": 20,
+      "items" : ["torch", "torch", "healing_potion_minor"]
+    },
+    "equipment": {
+      "equipment" : {
+        "armor" : ["padded_armor"],
+        "hands" : ["greatsword"]
+      }
+    },
+    "combat": {
+      "custom_hit_points"  : 26,
+      "custom_armor_class" : 16,
+      "custom_perception"  : 7
+    }
+  },
+  "ancestry" : {
+    "name" : "human",
+    "empty_values" : true
+  },
+  "class" : {
+    "name" : "guardian",
+    "main_ability" : "STR",
+    "empty_values" : true
+  }
+}

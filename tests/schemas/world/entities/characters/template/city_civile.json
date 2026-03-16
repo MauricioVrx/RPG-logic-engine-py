@@ -1,0 +1,51 @@
+{
+  "id": "city_civile",
+  "components": {
+    "identity": {
+      "name"   : "City Civile",
+      "alias"  : "City Civile",
+      "type"   : "character",
+      "size"   : 2,
+      "speed"  : 25
+    },
+    "Social": {
+        "language" : ["Common"]
+    },
+    "progression": {
+      "level"      : 1,
+      "experience" : 0
+    },
+    "ability": {
+      "extra_ability_score": {
+        "STR": -2,
+        "DEX": 2
+      },
+      "custom_skill": {
+        "Society"    : 2
+      },
+      "custom_saving_throws" : {
+        "fortitude"  : 1,
+        "reflex"     : 1,
+        "will"       : 3
+      }
+    },
+    "inventory": { 
+      "capacity": 20,
+      "items" : ["torch", "candle"]
+    },
+    "equipment": {
+      "equipment" : {
+        "armor" : ["unarmored"]
+      }
+    },
+    "combat": {
+      "custom_hit_points"  : 12,
+      "custom_armor_class" : 7,
+      "custom_perception"  : 7
+    }
+  },
+  "ancestry" : {
+    "name" : "human",
+    "empty_values" : true
+  }
+}
