@@ -1,14 +1,14 @@
 import pytest
-from scripts.exceptions import (
+from scripts.system.exceptions import (
     EntityParameterNotFoundError,
     WeaponNotFoundInInventoryError, 
     EquipmentError
     )
 
-from scripts.constants import SAV_THROWS_NAMES
+from scripts.game_system.constants import SAV_THROWS_NAMES
 from scripts.components.equipment_component import EquipmentComponent
 
-from scripts.mechanics import (
+from scripts.mechanics.mechanics import (
     # Entity
     skill_checks, 
     saving_throw_checks, 
@@ -25,7 +25,7 @@ from scripts.mechanics import (
 
 def test_parameter_checks(full_char, mocker):
     """Test successful skill and saving throw rolls."""
-    mocker.patch('scripts.dice.random.randint', return_value=12)
+    mocker.patch('scripts.mechanics.dice.random.randint', return_value=12)
 
     # SKILL TEST
     skill_acrobatics_result = skill_checks(full_char, "Acrobatics")
@@ -82,7 +82,7 @@ def test_attack_roll_checks(full_char, npc_human, simple_dagger, longspear, mock
     """Test successful attacks with two kind of weapons."""
     full_char.get_component("combat").calculate_armor_class()
     npc_human.get_component("combat").calculate_armor_class()
-    mocker.patch('scripts.dice.random.randint', return_value=12)
+    mocker.patch('scripts.mechanics.dice.random.randint', return_value=12)
 
     #Equip weapon> Dagger
     full_char.get_component("inventory").add_item(simple_dagger)
@@ -129,7 +129,7 @@ def test_attack_roll_checks(full_char, npc_human, simple_dagger, longspear, mock
     assert impact_3['result_diff']      == -7
 
     # Critical success attack
-    mocker.patch('scripts.dice.random.randint', return_value=20)
+    mocker.patch('scripts.mechanics.dice.random.randint', return_value=20)
     attack_1 = attack_roll_checks(full_char, longspear, n_attack=1)
     assert attack_1['roll']   == 20
     assert attack_1["result"] == 22
@@ -140,7 +140,7 @@ def test_attack_roll_checks(full_char, npc_human, simple_dagger, longspear, mock
     assert impact['result_diff']      == 11
 
     # Critical fail attack
-    mocker.patch('scripts.dice.random.randint', return_value=1)
+    mocker.patch('scripts.mechanics.dice.random.randint', return_value=1)
     attack_fail = attack_roll_checks(full_char, longspear, n_attack=2)
     assert attack_fail['roll']   == 1
     assert attack_fail["result"] == -2
@@ -167,7 +167,7 @@ def test_wrong_attack_roll_checks(full_char, simple_dagger):
 def test_perception_check(full_char, mocker):
     """Test successful perception rolls."""
 
-    mocker.patch('scripts.dice.random.randint', return_value=10)
+    mocker.patch('scripts.mechanics.dice.random.randint', return_value=10)
     perception = perception_check(full_char)
     assert perception['roll']   == 10
     assert perception["result"] == 12
@@ -192,7 +192,7 @@ def test_class_cd_check(full_char, npc_human, mocker):
     """
     Test class cd checks between 2 differents charactes.
     """
-    mocker.patch('scripts.dice.random.randint', return_value=13)
+    mocker.patch('scripts.mechanics.dice.random.randint', return_value=13)
     assert class_cd_check(full_char, npc_human, SAV_THROWS_NAMES[0], 0)['result']      == 13
     assert class_cd_check(full_char, npc_human, SAV_THROWS_NAMES[0], 0)['passed']      == False
     assert class_cd_check(full_char, npc_human, SAV_THROWS_NAMES[0], 0)['result_diff'] == -1

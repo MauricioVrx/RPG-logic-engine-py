@@ -1,5 +1,6 @@
-from scripts.config  import DEFAULTS_ACTIONS, MAX_DYING_COUNT
-from scripts.exceptions import (
+
+from scripts.game_system.constants  import DEFAULTS_ACTIONS, MAX_DYING_COUNT
+from scripts.system.exceptions import (
     EntityIsIntegerError, 
     )
 

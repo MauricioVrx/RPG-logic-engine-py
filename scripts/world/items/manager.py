@@ -1,9 +1,9 @@
 import copy
-from scripts.items.loader import ItemLoader
-from scripts.items.item   import Item
-from scripts.config import ITEMS_FILES 
+from scripts.world.items.loader import ItemLoader
+from scripts.world.items.item   import Item
+from scripts.system.loaders_folder_path import ITEMS_FILES 
 
-from scripts.exceptions import (
+from scripts.system.exceptions import (
     ItemNotFoundError
 )
 

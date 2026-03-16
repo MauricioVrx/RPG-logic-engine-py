@@ -1,10 +1,10 @@
 import copy
 import pytest
-from scripts.items.item    import Item
-from scripts.items.manager import ItemManager
-from scripts.mechanics import attempt_transfer
+from scripts.world.items.item    import Item
+from scripts.world.items.manager import ItemManager
+from scripts.mechanics.mechanics import attempt_transfer
 from scripts.components.equipment_component import EquipmentComponent
-from scripts.exceptions import (
+from scripts.system.exceptions import (
     ItemNotFoundError,
     StorageLimitItemsError,
     FileNotFoundError,

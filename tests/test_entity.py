@@ -1,7 +1,6 @@
 import pytest
 
-from scripts.config import MAX_LEVEL, MAX_DYING_COUNT
-from scripts.constants import (
+from scripts.game_system.constants import (
     SKILLS,
     SAV_THROWS,
     PROF_NAMES, 
@@ -12,9 +11,11 @@ from scripts.constants import (
     PROF_RANG_BASE,
     ABILITY_SCORE,
     PARAMETER_DEPENDENCE,
+    MAX_LEVEL, 
+    MAX_DYING_COUNT
 )
 
-from scripts.exceptions import ( 
+from scripts.system.exceptions import ( 
     EntityParameterNotFoundError, 
     EntityAbilityNotFoundError, 
     EntityProficiencyNotFoundError, 

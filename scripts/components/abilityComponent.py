@@ -1,8 +1,8 @@
-from scripts.constants  import ABILITY_SCORE, PROF_NAMES, PROF_RANG_BASE, SKILLS_BASE, SAV_THROWS_BASE, SKILLS, SAV_THROWS, PARAMETER_DEPENDENCE, SKILLS_NAMES, SAV_THROWS_NAMES
+from scripts.game_system.constants  import ABILITY_SCORE, PROF_NAMES, PROF_RANG_BASE, SKILLS_BASE, SAV_THROWS_BASE, SKILLS, SAV_THROWS, PARAMETER_DEPENDENCE, SKILLS_NAMES, SAV_THROWS_NAMES
 from collections import Counter
 
-from scripts.mechanics  import calculate_ability_modifier, calculate_proficiency_bonus
-from scripts.exceptions import (
+from scripts.mechanics.mechanics  import calculate_ability_modifier, calculate_proficiency_bonus
+from scripts.system.exceptions import (
     EntityParameterNotFoundError, 
     EntityAbilityNotFoundError, 
     EntityProficiencyNotFoundError, 

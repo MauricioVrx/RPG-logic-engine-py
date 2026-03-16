@@ -1,6 +1,6 @@
 import pytest
-from scripts.dice import Dice
-from scripts.exceptions import NonNumericResultError
+from scripts.mechanics.dice import Dice
+from scripts.system.exceptions import NonNumericResultError
 
 def test_dice_roll_range(d6):
     """Verify that a d6 always rolls between 1 and 6 (inclusive)."""

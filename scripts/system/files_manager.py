@@ -1,6 +1,6 @@
 import os
 import json
-from scripts.exceptions import FileNotFoundError
+from scripts.system.exceptions import FileNotFoundError
 
 def read_json_files(file_path, folder_name, file_name):
     path = os.path.join(file_path, folder_name ,f"{file_name}.json")

@@ -1,7 +1,7 @@
 import math
 
-from scripts.dice import Dice
-from scripts.exceptions import DiceNotFoundError, ParserInvalidFormulaError, ParserIncompleteResultError, ParserZeroDivisionError, ParserConvertRPNError, ParserTokenizeExceedIterator
+# from scripts.world.dice import Dice
+from scripts.system.exceptions import DiceNotFoundError, ParserInvalidFormulaError, ParserIncompleteResultError, ParserZeroDivisionError, ParserConvertRPNError, ParserTokenizeExceedIterator
 
 class FormulaProcessor:
     """

@@ -1,6 +1,6 @@
 # Items and Characters Identity library
-from scripts.items.manager import ItemManager
-from scripts.characters.manager import CharacterManager, CharacterIdentityManager
+from scripts.world.items.manager import ItemManager
+from scripts.world.characters.manager import CharacterManager, CharacterIdentityManager
 # from scripts.characters.character import CharacterIdentityManager
 
 #
@@ -29,11 +29,11 @@ print(character_loaded.characters_template)
 
 print("******"*4)
 char1 =  character_loaded.spawn("template", "city_civile")
-print(char1.__dict__)
-print("******"*4)
+# print(char1.__dict__)
+# print("******"*4)
 
 dorian = character_loaded.spawn("unique", "dorian_ashford")
-print(dorian.__dict__)
+print(dorian.get_component('inventory').__dict__)
 
 
 # print(character_loaded.characters)

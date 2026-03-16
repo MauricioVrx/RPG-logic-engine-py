@@ -1,4 +1,4 @@
-from scripts.constants import ABILITY_NAMES
+from scripts.game_system.constants import ABILITY_NAMES
 
 # General basis of the project
 class GameBaseError(Exception): pass
@@ -788,10 +788,33 @@ class FileNotFoundError(SystemError):
         self.error_code  = "ERR_FILE_NOT_FOUND"
         super().__init__(f"'{file_name}.{file_format}' not found in '{folder}' folder")
     
-        def to_dict(self):
+    def to_dict(self):
             return {
                 "error"       : self.__class__.__name__,
                 "file_name"   : self.file_name ,
                 "folder"      : self.folder ,
-                "file_format" : self.file_format
+                "file_format" : self.file_format,
+                "code"           : self.error_code
+        }
+
+# =============================================================================
+# CALENDAR EXCEPTION
+# =============================================================================
+
+class CalendarError(GameBaseError): 
+    """Base class for exceptions in this module."""
+    pass
+
+class TimeFormatError(SystemError):
+    """Exception raised when time values exceend range limits"""
+    def __init__(self, names):
+        self.names       = names
+        self.error_code  = "ERR_TIME_FORMAT"
+        super().__init__(f"'Time error: {names}.")
+    
+    def to_dict(self):
+            return {
+                "error"   : self.__class__.__name__,
+                "names"   : self.names ,
+                "code"    : self.error_code
         }
