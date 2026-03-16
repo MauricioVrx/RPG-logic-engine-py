@@ -1,0 +1,55 @@
+{   
+    "gnome": {
+        "name": "Gnome",
+        "hit_points_max": 8,
+        "speed": 25,
+        "size": 1,
+        "ability_boosts": {
+            "CON": 1,
+            "CHA": 1,
+            "STR": -1,
+            "FREE": 1
+        },
+        "trait": ["Gnome", "Humanoid"],
+        "language": ["Common", "Gnomish", "Fey"],
+        "sense": ["Low-Light Vision"],
+        "status": 1,
+        "from": "base",
+        "description": ""
+    },
+    "elf": {
+        "name": "Elf",
+        "hit_points_max": 6,
+        "speed": 25,
+        "size": 2,
+        "ability_boosts": {
+            "DEX": 1,
+            "INT": 1,
+            "CON": -1,
+            "FREE": 1
+        },
+        "trait": ["Elf", "Humanoid"],
+        "language": ["Common", "Elven"],
+        "sense": null,
+        "status": 1,
+        "from": "base",
+        "description": ""
+    },
+    
+    "human": {
+        "name": "Human",
+        "hit_points_max": 8,
+        "speed": 25,
+        "size": 2,
+        "ability_boosts": {
+            "FREE": 2
+        },
+        "trait": ["Human", "Humanoid"],
+        "language": ["Common", "FREE"],
+        "sense": ["Low-Light Vision"],
+        "status": 1,
+        "from": "base",
+        "description": ""
+    }
+}
+

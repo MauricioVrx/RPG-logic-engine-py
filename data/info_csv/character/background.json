@@ -1,0 +1,67 @@
+{
+    "acrobat" : {
+        "name": "Acrobat",
+        "type": "background",
+
+        "rarity": "Common",
+
+        "ability_boosts": {
+            "choices": ["STR", "DEX"],
+            "boosts": 2
+        },
+
+        "trained_skills": ["Acrobatics"],
+        "trained_lore": ["Circus"],
+        "granted_feats": ["Steady Balance"],
+
+        "additional_effects": {},
+
+        "status": 1,
+        "source": "base",
+        "description": "In a circus or on the streets, you earned your pay by performing as an acrobat. You might have turned to adventuring when the money dried up, or simply decided to put your skills to better use."
+    },
+
+    "hunter" : {
+        "name": "Hunter",
+        "type": "background",
+
+        "rarity": "Common",
+
+        "ability_boosts": {
+            "choices": ["DEX", "WIS"],
+            "boosts": 2
+        },
+
+        "trained_skills": ["Survival"],
+        "trained_lore": ["Tanning"],
+        "granted_feats": ["Survey Wildlife"],
+
+        "additional_effects": {},
+
+        "status": 1,
+        "source": "base",
+        "description": "You stalked and took down animals and other creatures of the wild. Skinning animals, harvesting their flesh, and cooking them were also part of your training, all of which can give you useful resources while you adventure."
+    },
+
+    "merchant" : {
+        "name": "Merchant",
+        "type": "background",
+
+        "rarity": "Common",
+
+        "ability_boosts": {
+            "choices": ["INT", "CHA"],
+            "boosts": 2
+        },
+
+        "trained_skills": ["Diplomacy"],
+        "trained_lore": ["Mercantile"],
+        "granted_feats": ["Bargain Hunter"],
+
+        "additional_effects": {},
+
+        "status": 1,
+        "source": "base",
+        "description": "In a dusty shop, market stall, or merchant caravan, you bartered wares for coin and trade goods. The skills you picked up still apply in the adventuring life, in which a good deal on a suit of armor could prevent your death."
+    }
+}

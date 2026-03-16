@@ -1,0 +1,81 @@
+{
+  "buckler": {
+    "name": "Buckler",
+    "category": "shield",
+    "rarity": "Common",
+    "traits": [],
+    "level": 0,
+    "price": 100,
+    "bulk": "L",
+    "mechanics": {
+      "ac_bonus": 1,
+      "speed_penalty": null,
+      "hardness": 3,
+      "hp": 6,
+      "break_threshold": 3
+    },
+    "lore": {
+      "description": "A small shield strapped to the forearm."
+    }
+  },
+
+  "wooden_shield": {
+    "name": "Wooden Shield",
+    "category": "shield",
+    "rarity": "Common",
+    "traits": [],
+    "level": 0,
+    "price": 100,
+    "bulk": "1",
+    "mechanics": {
+      "ac_bonus": 2,
+      "speed_penalty": null,
+      "hardness": 3,
+      "hp": 12,
+      "break_threshold": 6
+    },
+    "lore": {
+      "description": "A sturdy shield made of reinforced wood."
+    }
+  },
+
+  "steel_shield": {
+    "name": "Steel Shield",
+    "category": "shield",
+    "rarity": "Common",
+    "traits": [],
+    "level": 0,
+    "price": 200,
+    "bulk": "1",
+    "mechanics": {
+      "ac_bonus": 2,
+      "speed_penalty": null,
+      "hardness": 5,
+      "hp": 20,
+      "break_threshold": 10
+    },
+    "lore": {
+      "description": "A heavy steel shield favored by professional soldiers."
+    }
+  },
+
+  "tower_shield": {
+    "name": "Tower Shield",
+    "category": "shield",
+    "rarity": "Common",
+    "traits": [],
+    "level": 0,
+    "price": 1000,
+    "bulk": "4",
+    "mechanics": {
+      "ac_bonus": 2,
+      "speed_penalty": -5,
+      "hardness": 5,
+      "hp": 20,
+      "break_threshold": 10
+    },
+    "lore": {
+      "description": "A massive shield providing superior cover but limiting mobility."
+    }
+  }
+}

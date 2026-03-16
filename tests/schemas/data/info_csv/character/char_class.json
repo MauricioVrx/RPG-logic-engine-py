@@ -1,0 +1,115 @@
+{
+    "fighter" : {
+        "name": "Fighter",
+        "type": "class",
+
+        "base_stats": {
+            "hit_points_max": 10
+        },
+
+        "main_ability": ["STR", "DEX"],
+        "secondary_ability": ["CON"],
+
+        "initial_proficiencies": {
+            "skills_trained": 3,
+            "saving_throws": [],
+            "armor": [],
+            "weapons": []
+        },
+
+        "magical_progression": {
+            "spellcasting_ability": null,
+            "tradition": null,
+            "spell_slots": {}
+        },
+
+        "class_features": {
+            "1": [],
+            "2": [],
+            "3": []
+        },
+
+        "traits": ["Fighter"],
+
+        "rarity": "Common",
+        "status": 1,
+        "source": "base",
+        "description": ""
+    },
+
+    "rogue" : {
+        "name": "Rogue",
+        "type": "class",
+
+        "base_stats": {
+            "hit_points_max": 8
+        },
+
+        "main_ability": ["DEX"],
+        "secondary_ability": ["CON", "CHA"],
+
+        "initial_proficiencies": {
+            "skills_trained": 7,
+            "saving_throws": [],
+            "armor": [],
+            "weapons": []
+        },
+
+        "magical_progression": {
+            "spellcasting_ability": null,
+            "tradition": null,
+            "spell_slots": {}
+        },
+
+        "class_features": {
+            "1": [],
+            "2": [],
+            "3": []
+        },
+
+        "traits": ["Rogue"],
+
+        "rarity": "Common",
+        "status": 1,
+        "source": "base",
+        "description": ""
+    },
+
+    "ranger" : {
+        "name": "Ranger",
+        "type": "class",
+
+        "base_stats": {
+            "hit_points_max": 10
+        },
+
+        "main_ability": ["STR", "DEX"],
+        "secondary_ability": ["CON", "WIS"],
+
+        "initial_proficiencies": {
+            "skills_trained": 4,
+            "saving_throws": [],
+            "armor": [],
+            "weapons": []
+        },
+
+        "magical_progression": {
+            "spellcasting_ability": "WIS",
+            "tradition": null,
+            "spell_slots": {}
+        },
+
+        "class_features": {
+            "1": [],
+            "2": [],
+            "3": []
+        },
+
+        "traits": ["Ranger"],
+
+        "rarity": "Common",
+        "status": 1,
+        "source": "base",
+        "description": ""
+    }
+}

@@ -170,7 +170,7 @@ def test_perception_check(full_char, mocker):
     assert perception["result"] == 12
 
 
-def test_armor_class_check(full_char, simple_armor,mocker):
+def test_armor_class_check(full_char, simple_armor):
     """Test successful armor class rolls."""
     ac_check = armor_class_check(full_char)
     
