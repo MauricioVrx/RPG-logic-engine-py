@@ -32,11 +32,12 @@ from scripts.components import (
     InventoryComponent
 )
 
-# class Character(Entity):
 class Character(Entity):
-    # def __init__(self):
+    """Class representing a player character or NPC. 
+    Manages inheritance from Entity and composition of multiple system components."""
     def __init__(self, template_id = None, name = None):
         super().__init__(template_id)
+        # Component registration for system modularity
         self.add_component(IdentityComponent(self))
         self.add_component(NarrativeComponent(self))
         self.add_component(SocialComponent(self))
@@ -64,14 +65,21 @@ class Character(Entity):
         self._background_boosts = {}
         self._free_boosts       = {}
 
+        # Abilities selected in the identity configurator
         self._ability_choices = {}
 
         self.recalculate_all()
 
     def recalculate_all(self):
+        """ Triggers a cascading calculation of all derived parameters.
+        * Parameters by ability
+        * Armor class
+        * Perception
+        """
         self.get_component("ability").update_parameters_by_ability()
         self.get_component("combat").calculate_armor_class()
         self.get_component("combat").calculate_perception()
+
 
     def recalculate_hit_points_max(self):
         base_character_hp = BASE_HIT_POINTS
@@ -85,14 +93,31 @@ class Character(Entity):
 
         self.get_component("combat").hit_points_max = self.get_component("combat").entity_hit_points + base_character_hp + ancestry_hp_bonus + class_hp_bonus
 
+
     # ==============================================================
     # ANCESTRY / CLASS / BACKGROUND / FREE - POINTS FUNCTIONS
     # ==============================================================
     def set_ancestry(self, ancestry, extra_abilities = [], identity_list=None, empty_values = False):
         """
         Sets the character's ancestry and applies related boosts and stats.
+        
+        Parameters
+        ----------
+            ancestry : str or ancestry
+                ancestry name or ancestry instance 
+            
+            extra_abilities : list
+                list with abilities names to asign to selected ancestry
+            
+            identity_list: None or CharacterIdentityManager 
+                None if ancestry is a Ancestry instance, or CharacterIdentityManager if ancestry is a str
+            
+            empty_values :Boolean
+                True if is a custom character  
         """
+
         ancestry_instance = ancestry
+        # Fail Early' pattern to prevent inconsistent states
         if isinstance(ancestry_instance, str) and identity_list != None:
             ancestry_instance = identity_list.spawn("ancestry" , ancestry_instance)
 
@@ -107,7 +132,6 @@ class Character(Entity):
         
         if empty_values == False:
             # Validate Free Boosts limit
-            # ability_boosts = json.loads(ancestry_instance.ability_boosts)
             ability_boosts = ancestry_instance.ability_boosts
             max_free = ability_boosts.get('FREE', 0)
             if len(extra_abilities) > max_free:
@@ -148,8 +172,24 @@ class Character(Entity):
     def set_class(self, class_ins, main_ability, identity_list=None, empty_values = False):
         """
         Sets the character's class and the key ability boost.
+
+        Parameters
+        ----------
+            class_ins : str or class_ins
+                Character class name or character class  instance 
+            
+            main_ability : str
+                Class ability name selected
+            
+            identity_list : None or CharacterIdentityManager
+                None if character class is a character class instance, or CharacterIdentityManager if character class is a str
+            
+            empty_values : Boolean
+                True if is a custom character  
         """
+
         class_instance = class_ins
+        # Fail Early' pattern to prevent inconsistent states
         if isinstance(class_instance, str) and identity_list != None:
             class_instance = identity_list.spawn("class" , class_instance)
 
@@ -169,6 +209,7 @@ class Character(Entity):
             raise ClassMainAbilityRequiredError(main_ability, class_instance)
         
         if empty_values == False:
+            # Process boosts (1 boost = 2 points)
             self._class_boosts   = {main_ability:2}
             self._ability_choices['class'] = [main_ability]
 
@@ -182,11 +223,28 @@ class Character(Entity):
         self.recalculate_hit_points_max()
         return True
 
+
     def set_background(self, background, chosen_boosts = [], identity_list = None, empty_values = False):
         """
         Sets background and applies proficiency in skills/lore.
+
+        Parameters
+        ----------
+            background : str or background
+                background name or background  instance 
+
+            main_ability : str
+                class ability name selected
+
+            identity_list : None or CharacterIdentityManager
+                None if background is a background instance, or CharacterIdentityManager if character background is a str
+            
+            empty_values : Boolean
+                True if is a custom character  
         """
+
         background_instance = background
+        # Fail Early' pattern to prevent inconsistent states
         if isinstance(background_instance, str) and identity_list != None:
             background_instance = identity_list.spawn("background" , background_instance)
 
@@ -220,6 +278,8 @@ class Character(Entity):
                     min_ability_count += 1
             if min_ability_count < 1:
                 raise BackgroundMinAbilityRequiredError(background_instance, background_instance.ability)
+            
+            # Process boosts (1 boost = 2 points)
             sum_ability =  {ability: 2 for ability in chosen_boosts}
             if sum(sum_ability.values()) != len(chosen_boosts) * 2:
                 raise CharacterInvalidDistributionError(chosen_boosts)
@@ -241,6 +301,14 @@ class Character(Entity):
 
 
     def set_free_ability_points(self, ability_points):
+        """
+        Sets the free ability points characters.
+
+        Parameters
+        ----------
+            ability_points : list 
+                list of ability names 
+        """
         for ability in ability_points:
             if ability not in ABILITY_NAMES:
                 raise EntityAbilityNotFoundError(ability)
@@ -296,6 +364,7 @@ class Character(Entity):
 # Character Identity Library :  Ancestry, Class, Background
 # ==============================================================
 class Ancestry:
+    """Character ancestry or race"""
     def __init__(self, ancestries_id, name, category = "Ancestry", id_value = None, hit_points_max = None, size = None, speed = None, 
                  ability_boosts = None, trait= None, language= None, sense= None, status= None, 
                  description= None):
@@ -322,6 +391,7 @@ class Ancestry:
         return self.stats.get(key, default)
     
 class CharClass:
+    """Character class"""
     def __init__(self, class_id, name, category = "Class", id_value = None, hit_points_max = None, size = None, main_ability = None, 
                  secondary_ability = None, trait= None, magical_aptitude= None, status= None, 
                  ):
@@ -341,17 +411,18 @@ class CharClass:
     def __repr__(self):
         return f"<{self.category.upper()}: {self.name}>"
 
-
     def get_stat(self, key, default=None):
         """Safely retrieves a stat from the class."""
         return self.stats.get(key, default)  
 
+
 class Background:
+    """Character background"""
     def __init__(self, background_id, name, category = "Background", id_value = None, ability = None, boosts_count = None, trained_skills = None, 
                  trained_lore = None, granted_feats= None, additional_effects= None, status= None, 
                  ):
         self.background_id = background_id
-        self.name = name
+        self.name     = name
         self.category = category
         self.id_value = id_value
         self.ability  = ability

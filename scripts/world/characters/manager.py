@@ -10,6 +10,22 @@ from scripts.system.exceptions import (
 )
 
 class CharacterManager:
+    """
+    Manages the loading, storage and instantiation of character objects.
+
+    This manager loads both unique characters and character templates from
+    JSON files using CharacterLoader. Loaded characters are stored internally
+    and can be instantiated later using the spawn() method.
+
+    Templates act as blueprints and are deep-copied when a new instance
+    is requested.
+
+    Responsibilities:
+    - Load character data from JSON files
+    - Build Character objects with their components
+    - Manage template and unique character collections
+    - Spawn independent character instances
+    """
     def __init__(self, identity_factory, item_factory, base_path="data/world/entities/characters/"):
         self.loader = CharacterLoader(base_path)
         self.characters          = {}
@@ -19,9 +35,20 @@ class CharacterManager:
 
 
     def load_all(self , character_list = None):
+        """
+        Loads character definitions from JSON files.
 
+        Depending on the argument, this method loads either unique characters
+        or character templates.
+
+        Parameters
+        ----------
+        character_list : str | None
+            - None or "unique": loads unique characters
+            - "template": loads character templates
+        """
         template = False
-        if character_list == None or character_list ==  'unique':
+        if character_list is None or character_list ==  'unique':
             structure = CHARACTER_UNIQUE
             char_dict = self.characters
         else:
@@ -36,6 +63,10 @@ class CharacterManager:
             if template:
                 char.template_id = info['id']
             char.unique_id = info['id']
+
+            # ==============================================================
+            # COMPONENTS
+            # ==============================================================
             for component in info['components']:
                 if char.components.get(component) != None:
                     if component == "inventory" or component == "equipment":
@@ -43,6 +74,9 @@ class CharacterManager:
                         continue
                     char.components[component].load_from_dict(info['components'][component])
 
+            # ==============================================================
+            # CHARACTER ANCESTRY
+            # ==============================================================
             if info.get('ancestry') != None:
                 ancestry        = info['ancestry'].get('name')
                 extra_abilities = info['ancestry'].get('extra_abilities', [])
@@ -51,6 +85,9 @@ class CharacterManager:
 
                 char.set_ancestry(ancestry, extra_abilities, identity_list, empty_values)
 
+            # ==============================================================
+            # CHARACTER CLASS
+            # ==============================================================
             if info.get('class') != None:
                 class_ins       = info['class'].get('name')
                 main_ability    = info['class'].get('main_ability')
@@ -58,6 +95,9 @@ class CharacterManager:
                 empty_values    = info['class'].get('empty_values', False)
                 char.set_class(class_ins, main_ability, identity_list, empty_values)
                 
+            # ==============================================================
+            # CHARACTER BACKGROUND
+            # ==============================================================
             if info.get('background') != None:
                 background      = info['background'].get('name')
                 chosen_boosts   = info['background'].get('chosen_boosts', [])
@@ -65,6 +105,9 @@ class CharacterManager:
                 empty_values    = info['background'].get('empty_values', False)
                 char.set_background(background, chosen_boosts, identity_list, empty_values)
 
+            # ==============================================================
+            # CHARACTER FREE POINTS
+            # ==============================================================
             if info.get('free_ability_points') != None:
                 char.set_free_ability_points(info['free_ability_points'].get('ability_points'))
 
@@ -76,9 +119,20 @@ class CharacterManager:
 
     def spawn(self, character_type = None, character_name = ''):
         """
-        Creates and returns a unique, independent copy of an character.
+        Creates and returns an independent instance of a character.
+
+        The method searches for a template or unique character by name and
+        returns a deep copy of the stored object.
+
+        Parameters
+        ----------
+        character_type : str
+            "template" or "unique"
+
+        character_name : str
+            Identifier of the character to spawn.
         """
-        if character_type == None or character_type == 'template':
+        if character_type is None or character_type == 'template':
             template = self.characters_template.get(character_name)
         elif character_type == 'unique':
             template = self.characters.get(character_name)
@@ -92,7 +146,13 @@ class CharacterManager:
 
 
 class CharacterIdentityManager:
-    # def __init__(self, base_path="data/info"):
+    """
+    Loads and manages character identity data such as ancestries,
+    classes and backgrounds.
+
+    These identities represent static game definitions that are used
+    during character creation.
+    """
     def __init__(self, base_path="data/info"):
         self.loader = CharacterIdentityLoader(base_path)
         self.ancestry   = {}
@@ -100,7 +160,6 @@ class CharacterIdentityManager:
         self.background = {}
 
     def load_all_ancestries(self, file_name= "ancestry"):
-        # data = read_json_files(self.base_path,"character/", file_name )
         data = self.loader.load_characters_identity("character", file_name)
 
         for n, info in enumerate(data.items()):
@@ -127,8 +186,6 @@ class CharacterIdentityManager:
     def load_all_class(self, file_name= "char_class"):
         data = self.loader.load_characters_identity("character", file_name)
 
-        # data = read_json_files(self.base_path,"character", file_name )
-
         for n, info in enumerate(data.items()):
             class_id        = info[0]
             char_class_data = info[1]
@@ -148,7 +205,7 @@ class CharacterIdentityManager:
                 )
 
     def load_all_background(self, file_name= "background"):
-        # data = read_json_files(self.base_path,"character", file_name )
+
         data = self.loader.load_characters_identity("character", file_name)
 
         for n, info in enumerate(data.items()):
@@ -171,6 +228,9 @@ class CharacterIdentityManager:
                 )
 
     def load_all_identity(self):
+        """
+        Load ancestries, classes and backgrounds
+        """
         self.load_all_ancestries()
         self.load_all_class()
         self.load_all_background()
@@ -191,4 +251,4 @@ class CharacterIdentityManager:
 
         if template:
             # deepcopy ensures the new item doesn't share memory with the template
-            return copy.deepcopy(template) if template else None
+            return copy.deepcopy(template)

@@ -1,7 +1,8 @@
 from scripts.game_system.data_config import MINUTES_PER_HOUR, HOURS_PER_DAY, DAYS_PER_MONTH, MONTHS_PER_YEAR, DAY_PHASES
 
 from scripts.system.exceptions import (
-    TimeFormatError
+    TimeFormatError,
+    TimeNamePhaseNotFoundError
 )
 
 class TimeSystem:
@@ -9,25 +10,39 @@ class TimeSystem:
     def __init__(self, game_time):
         self.game_time = game_time
 
+    # ==============================================================
+    # TIME PASS FUNCTIONS
+    # ==============================================================
+
     def advance_minutes(self, minutes):
+        """Add minutes to the playing time"""
         self.game_time.total_minutes += minutes
 
     def pass_minutes(self, minutes):
+        """Add minutes to the playing time"""
         self.advance_minutes(minutes)
 
     def pass_hours(self, hours):
+        """Add hours to the playing time"""
         self.pass_minutes(hours * MINUTES_PER_HOUR)
 
     def pass_days(self, days):
+        """Add days to the playing time"""
         self.pass_hours(days * HOURS_PER_DAY)
 
     def pass_months(self, months):
+        """Add months to the playing time"""
         self.pass_days(months * DAYS_PER_MONTH)
 
     def pass_years(self, years):
+        """Add years to the playing time"""
         self.pass_months(years * MONTHS_PER_YEAR)
 
     def pass_time_next_to(self, years = None, months = None, days = None, hours = None, minutes= None):
+        """
+        Pass playing time to next coincidence with input time
+        """
+
         initial_date = self.game_time.get_date()
 
         time_funcs_list = [self.pass_years, self.pass_months, self.pass_days, self.pass_hours, self.pass_minutes]
@@ -41,7 +56,7 @@ class TimeSystem:
 
 
     def pass_day_phases(self, n_phases = 1):
-
+        """Pass day phase n times"""
         len_phases_list = len(DAY_PHASES)
         actual = self.get_day_phase()[2]
         to_phase = actual + n_phases
@@ -57,21 +72,25 @@ class TimeSystem:
         for phase in DAY_PHASES:
             if phase[1] == name:
                 return phase[0]
-        # /---/ Make error
+        raise TimeNamePhaseNotFoundError(name)
 
     def pass_to_morning(self):
+        """Pass day phase to morning"""
         hour = self.__pass_to_day_phase("morning")
         self.pass_time_next_to(hours=hour, minutes= 0)
          
     def pass_to_sunset(self):
+        """Pass day phase to sunset"""
         hour = self.__pass_to_day_phase("sunset")
         self.pass_time_next_to(hours=hour, minutes= 0)
 
     def pass_to_night(self):
+        """Pass day phase to night"""
         hour = self.__pass_to_day_phase("night")
         self.pass_time_next_to(hours=hour, minutes= 0)
 
     def get_day_phase(self):
+        """Get day phase list [hour, name, index]"""
         phase = self.game_time.get_day_phase("all")
         return phase
     

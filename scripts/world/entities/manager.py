@@ -1,6 +1,6 @@
 import copy
-from scripts.entities.loader import EntityLoader
-from scripts.entities.entity import Entity
+from scripts.world.entities.loader import EntityLoader
+from scripts.world.entities.entity import Entity
 
 class EntityManager:
 
