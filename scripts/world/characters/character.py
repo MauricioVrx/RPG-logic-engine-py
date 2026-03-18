@@ -70,6 +70,9 @@ class Character(Entity):
 
         self.recalculate_all()
 
+    def get_ability_choices(self):
+        return self._ability_choices
+
     def recalculate_all(self):
         """ Triggers a cascading calculation of all derived parameters.
         * Parameters by ability
@@ -82,6 +85,11 @@ class Character(Entity):
 
 
     def recalculate_hit_points_max(self):
+        """
+        Calculate the character's hit points max.
+
+        This function calculates the total based on custom hit points, base hit points, ancestry hit points, and class hit points.
+        """
         base_character_hp = BASE_HIT_POINTS
         ancestry_hp_bonus = 0
         class_hp_bonus = 0
@@ -153,6 +161,7 @@ class Character(Entity):
             self.update_character_ability_points()
             self._ancestry_boosts = {ability: val * 2 for ability, val in final_boost_map.items()}
             
+            # Append character extra abilities
             self._ability_choices['ancestry'] = extra_abilities
 
         # Assign core stats
@@ -162,7 +171,7 @@ class Character(Entity):
         self.get_component("social").sense     += ancestry_instance.sense   
         self.get_component("social").language  += ancestry_instance.language 
 
-        self.ancestry         = ancestry_instance
+        self.ancestry  = ancestry_instance
 
         self.recalculate_hit_points_max()
 
@@ -211,6 +220,7 @@ class Character(Entity):
         if empty_values == False:
             # Process boosts (1 boost = 2 points)
             self._class_boosts   = {main_ability:2}
+            # Append character extra abilities
             self._ability_choices['class'] = [main_ability]
 
         self.character_class                   = class_instance 
@@ -284,18 +294,18 @@ class Character(Entity):
             if sum(sum_ability.values()) != len(chosen_boosts) * 2:
                 raise CharacterInvalidDistributionError(chosen_boosts)
 
+            # Update ability points
             self._background_boosts = sum_ability
-
 
         self.background         = background_instance
         self.lore              += background_instance.trained_lore
         self.get_component("ability").acquired_feats += background_instance.granted_feats
 
+        # Append character extra abilities 
         self._ability_choices['background'] = chosen_boosts
-        self.recalculate_hit_points_max()
 
-        # Update ability points
         self.update_character_ability_points()
+        self.recalculate_hit_points_max()
 
         return True
 
@@ -321,6 +331,8 @@ class Character(Entity):
         if sum(sum_ability.values()) != len(ability_points) * 2:
             raise CharacterInvalidDistributionError(ability_points)
 
+        # Append character extra abilities
+        self._ability_choices['free_boosts'] = ability_points
         self._free_boosts = sum_ability
 
         # Update ability points
@@ -328,6 +340,7 @@ class Character(Entity):
 
         return True
     
+
     # ==============================================================
     # UPDATE FUNCTIONS
     # ==============================================================
@@ -385,10 +398,10 @@ class Ancestry:
     def __repr__(self):
         return f"<{self.category.upper()}: {self.name}>"
 
-
     def get_stat(self, key, default=None):
         """Safely retrieves a stat from the ancestry."""
         return self.stats.get(key, default)
+    
     
 class CharClass:
     """Character class"""

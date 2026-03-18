@@ -10,6 +10,48 @@ from scripts.system.exceptions import (
     )
 
 class EquipmentComponent:
+    """
+    Handles equipmet for an entity.
+
+    This component allows equip and unequip armors, weapons from inventory.
+
+    Responsibilities
+    ----------------
+    - equip and unequip armors
+    - equip and unequip weapons
+
+    Dependencies
+    ------------
+    - Inventory component 
+    - Identity component 
+    - Ability component 
+    - Combat component 
+
+    Attributes
+    ----------
+    entity : Entity
+        Reference to the entity that owns this inventory.
+
+    equipment : dict
+        dict of character equipment (armor, accesory, hands, back).
+    
+    Methods
+    -------
+    equip_armor(armor_instance)
+        Equip an armor to entity from inventory.
+    
+    unequip_armor()
+        Unequip the equiped armor to entity.
+    
+    equip_weapon_on_hand(weapon_instance)
+        Equip an weapon to entity. The entity must have hands available to equip the weapon.
+
+    unequip_weapon_on_hand
+        Unequip the equiped weapons to entity.
+
+    load_from_dict(data)
+        Loads items from JSON data using the item factory.
+    """
     component_name = "equipment"
     def __init__(self, entity):
 
@@ -64,7 +106,7 @@ class EquipmentComponent:
 
     def unequip_armor(self):
         """
-        Equip the equiped armor to entity.
+        Unequip the equiped armor to entity.
         """ 
         if self.equipment['armor'] != None:
             self.equipment['armor'].status = None
@@ -117,7 +159,11 @@ class EquipmentComponent:
 
         return True
     
+
     def unequip_weapon_on_hand(self, weapon_instance):
+        """
+        Unequip the equiped weapons to entity.
+        """
         # check inventory item, 
         if weapon_instance not in self.entity.get_component("inventory").items:
             raise WeaponNotFoundInInventoryError(self.entity.get_component("identity").name, weapon_instance)

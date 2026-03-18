@@ -2,7 +2,19 @@ from scripts.world.time.calendar     import Calendar
 from scripts.game_system.data_config import INIT_YEAR, INIT_MONTH, INIT_DAY, INIT_HOUR
 
 class GameTime:
+    """
+    Core time representation of the game.
 
+    Stores time internally as total minutes and provides utilities
+    to convert between absolute time and structured date formats.
+
+    Responsibilities
+    ----------------
+    - Store total elapsed time
+    - Convert between minutes and date formats
+    - Provide current date and time
+    - Calculate elapsed playtime
+    """
     def __init__(self, year=INIT_YEAR, month=INIT_MONTH, day=INIT_DAY, hour=INIT_HOUR):
         self.total_minutes = self.to_minutes(year, month, day, hour)
         self.initial_date  = year, month, day, hour, 0
@@ -22,7 +34,14 @@ class GameTime:
 
     def get_date(self, initial_minutes = 0):
         """
-        Get up-to-date or personalized information about a day based on the total number of minutes.
+        Converts total minutes into a structured date.
+
+        Returns current or custom time based on provided minutes.
+
+        Returns
+        -------
+        tuple
+            (year, month, day, hour, minute)
         """
         if initial_minutes == 0:
             minutes = self.total_minutes
