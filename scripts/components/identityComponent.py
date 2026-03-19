@@ -28,25 +28,25 @@ class IdentityComponent:
         For identify if is a player, character or other entity.
 
     appearance : str
-        Physical appearance
+        Physical appearance.
 
     years_old : int or None
-        Count of entity age
+        Count of entity age.
 
     gender : int
-        Entity gender. 0 = None, 1 = Male, 2 = Female, 3 
+        Entity gender. 0 = None, 1 = Male, 2 = Female, 3.
 
     location : str
-        location id or description
+        location id or description.
 
     trait : list
         List of all entity tags, including ancestry, class, background and others.
 
     size : int
-        size id of size (exampl: ['Tiny', 'Small', 'Medium', 'Large', 'Huge', 'Gargantuan'])
+        size id of size (exampl: ['Tiny', 'Small', 'Medium', 'Large', 'Huge', 'Gargantuan']).
 
     speed : int
-        Entity movement 
+        Entity movement.
 
     
     Methods
