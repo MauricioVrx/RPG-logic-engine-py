@@ -64,7 +64,7 @@ class GameTime:
 
     def get_season(self, month):
         """
-        Get current season by month
+        Get current season by month.
         """
         n_month = month
         if isinstance(n_month, tuple):
@@ -74,7 +74,7 @@ class GameTime:
 
     def get_day_phase(self, phase_type = "name"):
         """
-        Get current day phase 
+        Get current day phase.
         """
         _ , _, _, hour, _ = self.get_date()
         actual_position = Calendar.get_day_phase(hour)
@@ -89,7 +89,7 @@ class GameTime:
         
     def get_game_time(self):
         """
-        Get the total time spent playing the game since it started
+        Get the total time spent playing the game since it started.
         """
         now_year, now_month, now_day, now_hour, now_minute = self.get_date()
         initial_year, initial_month, initial_day, initial_hour, initial_minute = self.initial_date
