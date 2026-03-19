@@ -35,23 +35,23 @@ class TimeSystem:
     # ==============================================================
 
     def advance_minutes(self, minutes):
-        """Add minutes to the playing time"""
+        """Add minutes to the playing time."""
         self.game_time.total_minutes += minutes
 
     def pass_minutes(self, minutes):
-        """Add minutes to the playing time"""
+        """Add minutes to the playing time."""
         self.advance_minutes(minutes)
 
     def pass_hours(self, hours):
-        """Add hours to the playing time"""
+        """Add hours to the playing time."""
         self.pass_minutes(hours * MINUTES_PER_HOUR)
 
     def pass_days(self, days):
-        """Add days to the playing time"""
+        """Add days to the playing time."""
         self.pass_hours(days * HOURS_PER_DAY)
 
     def pass_months(self, months):
-        """Add months to the playing time"""
+        """Add months to the playing time."""
         self.pass_days(months * DAYS_PER_MONTH)
 
     def pass_years(self, years):
@@ -130,22 +130,22 @@ class TimeSystem:
         raise TimeNamePhaseNotFoundError(name)
 
     def pass_to_morning(self):
-        """Pass day phase to morning"""
+        """Pass day phase to morning."""
         hour = self.__pass_to_day_phase("morning")
         self.pass_time_next_to(hours=hour, minutes= 0)
          
     def pass_to_sunset(self):
-        """Pass day phase to sunset"""
+        """Pass day phase to sunset."""
         hour = self.__pass_to_day_phase("sunset")
         self.pass_time_next_to(hours=hour, minutes= 0)
 
     def pass_to_night(self):
-        """Pass day phase to night"""
+        """Pass day phase to night."""
         hour = self.__pass_to_day_phase("night")
         self.pass_time_next_to(hours=hour, minutes= 0)
 
     def get_day_phase(self):
-        """Get day phase list [hour, name, index]"""
+        """Get day phase list [hour, name, index]."""
         phase = self.game_time.get_day_phase("all")
         return phase
     
@@ -163,20 +163,20 @@ class TimeSystem:
         Parameters
         ----------
         today : tuple
-            Current date (year, month, day, hour, minute)
+            Current date (year, month, day, hour, minute).
 
         pass_to_date : tuple
-            Target date with optional None values
+            Target date with optional None values.
 
         Returns
         -------
         list
-            Time difference in each unit [years, months, days, hours, minutes]
+            Time difference in each unit [years, months, days, hours, minutes].
 
         Raises
         ------
         TimeFormatError
-            If any value is outside valid range
+            If any value is outside valid range.
         """
         time_range = [MONTHS_PER_YEAR, DAYS_PER_MONTH, HOURS_PER_DAY, MINUTES_PER_HOUR]
         actual_date = today
