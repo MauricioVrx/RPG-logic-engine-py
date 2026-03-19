@@ -30,13 +30,13 @@ class CombatComponent:
         health points different to class, ancestry and background values.
 
     hit_points_max : int
-        Maximum health points of the entity 
+        Maximum health points of the entity.
 
     hit_points_current : int
-        Current health points of the entity
+        Current health points of the entity.
 
     dying : int
-        Counts of times or turn without hit points
+        Counts of times or turn without hit points.
 
     state : str
         State if entity is alive, dead or another condition.
@@ -48,31 +48,31 @@ class CombatComponent:
        Specific abilities(from class or creatures) that force other creatures to attempt a saving throw {"value" : 0, "custom" :0}. 
 
     perception: dict
-        Entity's general awareness and ability to notice their surroundings
+        Entity's general awareness and ability to notice their surroundings.
 
     actions : dict
-        Actions per turn for character
+        Actions per turn for character.
 
     resistance: list
-        Types of resistance or vulnerability according to level: Vulnerability(>0), Resisitance(<0), Immunity(==0)
+        Types of resistance or vulnerability according to level: Vulnerability(>0), Resisitance(<0), Immunity(==0).
 
     
     Methods
     -------
     sum_hit_points(value)
-        Recovers or damages the entity
+        Recovers or damages the entity.
 
     calculate_armor_class()
-        Calculate armor class result
+        Calculate armor class result.
 
     get_armor_class()
-        Get armor class result
+        Get armor class result.
 
     calculate_perception()
-        Calculate perception result
+        Calculate perception result.
 
     get_perception()
-        Get perception result
+        Get perception result.
 
     load_from_dict(data)
         Loads items from JSON data using the item factory.
