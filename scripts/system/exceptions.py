@@ -818,3 +818,18 @@ class TimeFormatError(SystemError):
                 "names"   : self.names ,
                 "code"    : self.error_code
         }
+
+
+class TimeNamePhaseNotFoundError(SystemError):
+    """Exception raised when try to find a wrong day phase."""
+    def __init__(self, name):
+        self.name   = name
+        self.error_code  = "ERR_TIME_PHASE_NOT_FOUND"
+        super().__init__(f"Day phase'{name}' not found.")
+    
+    def to_dict(self):
+            return {
+                "error"       : self.__class__.__name__,
+                "name"        : self.name ,
+                "code"        : self.error_code
+        }

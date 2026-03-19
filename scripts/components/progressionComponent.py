@@ -36,4 +36,3 @@ class ProgressionComponent:
             raise EntityIsIntegerError("The experience points must be a integer.")
         self.exp = 0 if self.exp + value < 0 else self.exp + value
         return (self.exp)
-    

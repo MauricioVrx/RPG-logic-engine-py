@@ -5,6 +5,78 @@ from scripts.system.exceptions import (
     )
 
 class CombatComponent:
+    """
+    Handles Combat parameters for Entity.
+
+    This component allows get and calculate an entity combat stats and parameters.
+
+    Responsibilities
+    ----------------
+    - Contain health, entity state and combat parameters 
+    - Calculate and get armor class and perception
+
+    Dependencies
+    ------------
+    - Ability component (required for Ability entity value)
+    - Equipment component (required for calculate armor class)
+
+
+    Attributes
+    ----------
+    entity : Entity
+        Reference to the entity that owns this inventory.
+
+    entity_hit_points : int 
+        health points different to class, ancestry and background values.
+
+    hit_points_max : int
+        Maximum health points of the entity.
+
+    hit_points_current : int
+        Current health points of the entity.
+
+    dying : int
+        Counts of times or turn without hit points.
+
+    state : str
+        State if entity is alive, dead or another condition.
+
+    armor_class: dict
+        Difficult a character is to hit in combat {"value" : 0, "custom" :0}. 
+ 
+    class_cd: dict
+       Specific abilities(from class or creatures) that force other creatures to attempt a saving throw {"value" : 0, "custom" :0}. 
+
+    perception: dict
+        Entity's general awareness and ability to notice their surroundings.
+
+    actions : dict
+        Actions per turn for character.
+
+    resistance: list
+        Types of resistance or vulnerability according to level: Vulnerability(>0), Resisitance(<0), Immunity(==0).
+
+    
+    Methods
+    -------
+    sum_hit_points(value)
+        Recovers or damages the entity.
+
+    calculate_armor_class()
+        Calculate armor class result.
+
+    get_armor_class()
+        Get armor class result.
+
+    calculate_perception()
+        Calculate perception result.
+
+    get_perception()
+        Get perception result.
+
+    load_from_dict(data)
+        Loads items from JSON data using the item factory.
+    """
     component_name = "combat"
     def __init__(self, entity):
         self.entity = entity
@@ -75,12 +147,11 @@ class CombatComponent:
 
     def calculate_armor_class(self): 
         """
-        Get armor class result
+        Calculate armor class result
         """
         ac = self.entity.get_component("ability").ability_calculation('DEX') + 10
         equipment = self.entity.get_component("equipment").equipment
       
-
         if equipment['armor'] not in [None, "armor_unarmored"]: 
         # if equipment['armor'] not in [None]: 
             if type(equipment['armor']) != type(None): 
@@ -104,17 +175,29 @@ class CombatComponent:
         self.armor_class['value'] = ac
         return ac
     
+
     def get_armor_class(self):
+        """
+        Get armor class result
+        """
         return self.armor_class['value']
 
+
     def calculate_perception(self): 
+        """
+        Calculate perception result
+        """
         perception = self.entity.get_component("ability").ability_calculation('WIS')
         if 'perception' in self.entity.get_component("ability").proficiency_rank :
             perception += self.entity.get_component("ability").proficiency_value('perception')
         self.perception['value'] = perception
         return perception
     
+
     def get_perception(self):
+        """
+        Get perception result
+        """
         if self.armor_class['custom'] != 0:
             return self.perception['custom']
         else:

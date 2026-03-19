@@ -12,6 +12,72 @@ from scripts.system.exceptions import (
     )
 
 class AbilityComponent:
+    """
+    Handles Ability stats for an entity.
+
+    This component allows set, get and calculate an entity stats.
+
+    Responsibilities
+    ----------------
+    - Calculate Abilities, Skills, saving_throws and proficiency values
+    - Gets status values
+    - Promotion proficiency
+    - Provide access to feats
+
+    Dependencies
+    ------------
+    - Progression component (required for Level)
+    - Identity component (required for Entity name)
+
+    Attributes
+    ----------
+    entity : Entity
+        Reference to the entity that owns this inventory.
+
+    proficiency_rank : dict
+        list of all of proficiency with rank.
+
+    core_ability_score : dict
+        Dict of all ability with base value.
+    
+    extra_ability_score : dict
+        Copy of core_ability_score dict for custom values.
+
+    skill : dict
+        Dict of character's skills with ability mod value, skill proficiency calculation and custom values.
+
+    saving_throws : dict
+        Dict of character's saving throws with ability mod value, saving throw proficiency calculation and custom values.
+
+    acquired_feats : list
+        List of existed feats aquired.
+
+    custom_feats : dict
+        Dict of custom feats for that entity.
+    
+    Methods
+    -------
+    ability_calculation(name)
+        Convert ability base points into modifier value.
+    
+    get_ability_value, get_skill_value(name), get_saving_throws_value(name), proficiency_value(name)
+        Sum entity a base value ability with the extra ability value.
+    
+    get_ability_score()
+        Sum entity all bases values abilities with the extras abilities values
+
+    proficiency_promotion(name, force_promotion = False)
+        Ascend one entity's proficiency rank.
+
+    update_parameter_point(ability, proficiency, custom)
+        Update the parameter points.
+
+    update_skill(name, custom=None), update_saving_throw(name, custom=None)
+        Updates a specific parameter's bonuses and recalculates its modifier.
+
+    load_from_dict(data)
+        Loads items from JSON data using the item factory.
+    """
     component_name = "ability"
     def __init__(self, entity):
         self.entity = entity
@@ -22,6 +88,7 @@ class AbilityComponent:
         self.saving_throws       = self.__initial_insert_parameters_points(SAV_THROWS_BASE.copy()) # Saving parameters with dependences values
         self.acquired_feats      = [] # Feats 
         self.custom_feats        = {} # Feats created just for this entity
+
 
     def load_from_dict(self, data: dict):
         for key, value in data.items():
@@ -64,6 +131,7 @@ class AbilityComponent:
         else:
             return parameters['custom']
     
+
     def ability_calculation(self, name): 
         """
         Convert ability base points into modifier value
@@ -80,11 +148,13 @@ class AbilityComponent:
             raise EntityAbilityNotFoundError(name)
         return self.core_ability_score[name] + self.extra_ability_score[name]
 
+
     def get_ability_score(self):
         """
         Sum entity all bases values abilities with the extras abilities values
         """
         return dict(Counter(self.core_ability_score) + Counter(self.extra_ability_score))
+
 
     def get_skill_value(self, name):
         """
@@ -94,6 +164,7 @@ class AbilityComponent:
             raise EntityParameterNotFoundError(name, "skill")
         return self.__sum_parameters_points(self.skill[name])
 
+
     def get_saving_throws_value(self, name): 
         """
         Obtain single saving throw value
@@ -102,8 +173,10 @@ class AbilityComponent:
             raise EntityParameterNotFoundError(name, "saving_throws")
         return self.__sum_parameters_points(self.saving_throws[name])   
 
+
     def _get_level(self):
         return self.entity.get_component("progression").level
+
 
     def proficiency_value(self, name):
         """
@@ -114,7 +187,6 @@ class AbilityComponent:
         rank = self.proficiency_rank[name]
         sum_points = calculate_proficiency_bonus(self._get_level(), rank)
         return sum_points
-
 
 
     def proficiency_promotion(self, proficiency_name, force_promotion = False): 
@@ -133,12 +205,14 @@ class AbilityComponent:
         else:
             raise EntityProficiencyLimitError(self.entity.get_component("identity").name, proficiency_name, PROF_NAMES[-1])
 
+
     def update_parameter_point(self, ability, proficiency, custom): 
         """
         Update the parameter points
         """
         parameter = {'mod': self.ability_calculation(ability),'proficiency': self.proficiency_value(proficiency), 'custom' : custom}
         return parameter
+
 
     def _update_sub_parameter(self, param_dict, name, custom=None, source_label="parameter"):
         """
@@ -159,6 +233,7 @@ class AbilityComponent:
         if custom is not None:
             param_dict[name]['custom'] = custom
 
+
     def update_skill(self, name, custom=None):
         """
         Updates a specific skill's bonuses and recalculates its ability modifier dependency.
@@ -166,6 +241,7 @@ class AbilityComponent:
         self._update_sub_parameter(self.skill, name, custom, "skill")
         related_ability = SKILLS[name]
         self.skill[name]['mod'] = self.ability_calculation(related_ability)  
+
 
     def update_saving_throw(self, name, custom=None):
         """
@@ -175,7 +251,6 @@ class AbilityComponent:
         related_ability = SAV_THROWS[name]
         self.saving_throws[name]['mod'] = self.ability_calculation(related_ability)
 
-        
 
     def update_extra_ability_score(self, name, value):
         """
@@ -196,6 +271,7 @@ class AbilityComponent:
             
         return self.extra_ability_score[name]
 
+
     def update_parameters_by_ability(self, skills = SKILLS_NAMES, saving_throws = SAV_THROWS_NAMES): 
         """
         Update skills/saving_throw mods values by its ability 
@@ -207,4 +283,3 @@ class AbilityComponent:
             self.update_saving_throw(save_name)
 
         return True
-   

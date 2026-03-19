@@ -148,7 +148,6 @@ def _parameter_checks(entity, parameter_name, parameter_list , parameter_type="p
     if not parameter_name in parameter_list:
         raise EntityParameterNotFoundError(parameter_name, parameter_type)
 
-
     val = 0
     if parameter_type == "Skill":
         val = entity.get_component("ability").get_skill_value(parameter_name)
@@ -210,7 +209,6 @@ def attack_roll_checks(entity, weapon, n_attack= 1, distance=False, force = Fals
             raise EquipmentError()
 
     result = 0
-
 
     # Weapon proficiency
     if hasattr(weapon.mechanics, 'weapon_category'): # Weapon

@@ -1,33 +1,84 @@
 from scripts.game_system.data_config import MINUTES_PER_HOUR, HOURS_PER_DAY, DAYS_PER_MONTH, MONTHS_PER_YEAR, DAY_PHASES
 
 from scripts.system.exceptions import (
-    TimeFormatError
+    TimeFormatError,
+    TimeNamePhaseNotFoundError
 )
 
 class TimeSystem:
+    """
+    High-level controller for game time progression.
 
+    This system provides methods to advance time in different units
+    (minutes, hours, days, etc.) and to move time forward until a
+    specific target moment is reached.
+
+    It acts as a bridge between gameplay systems and the GameTime class.
+
+    Responsibilities
+    ----------------
+    - Advance time in multiple units
+    - Move time to specific targets (absolute or partial)
+    - Handle day phase transitions
+    - Provide utilities for time-based mechanics
+
+    Dependencies
+    ------------
+    - GameTime
+    - Global time constants (MINUTES_PER_HOUR, etc.)
+    """
     def __init__(self, game_time):
         self.game_time = game_time
 
+    # ==============================================================
+    # TIME PASS FUNCTIONS
+    # ==============================================================
+
     def advance_minutes(self, minutes):
+        """Add minutes to the playing time."""
         self.game_time.total_minutes += minutes
 
     def pass_minutes(self, minutes):
+        """Add minutes to the playing time."""
         self.advance_minutes(minutes)
 
     def pass_hours(self, hours):
+        """Add hours to the playing time."""
         self.pass_minutes(hours * MINUTES_PER_HOUR)
 
     def pass_days(self, days):
+        """Add days to the playing time."""
         self.pass_hours(days * HOURS_PER_DAY)
 
     def pass_months(self, months):
+        """Add months to the playing time."""
         self.pass_days(months * DAYS_PER_MONTH)
 
     def pass_years(self, years):
+        """Add years to the playing time"""
         self.pass_months(years * MONTHS_PER_YEAR)
 
     def pass_time_next_to(self, years = None, months = None, days = None, hours = None, minutes= None):
+        """
+         Advances time until the next occurrence of the specified target.
+
+        This method supports partial inputs. Any value set to None will be ignored,
+        allowing flexible targeting (e.g., only hours and minutes).
+
+        Examples
+        --------
+        pass_time_next_to(hours=8, minutes=0)
+            > Advances to next 08:00
+
+        pass_time_next_to(days=1, hours=6)
+            > Advances to next day at 06:00
+
+        Parameters
+        ----------
+        years, months, days, hours, minutes : int | None
+            Target time values. None means "ignore this unit".
+        """
+
         initial_date = self.game_time.get_date()
 
         time_funcs_list = [self.pass_years, self.pass_months, self.pass_days, self.pass_hours, self.pass_minutes]
@@ -41,7 +92,17 @@ class TimeSystem:
 
 
     def pass_day_phases(self, n_phases = 1):
+        """
+        Advances time by a number of day phases.
 
+        The system cycles through predefined day phases (e.g., morning,
+        afternoon, night) and moves time forward accordingly.
+
+        Parameters
+        ----------
+        n_phases : int
+            Number of phases to advance.
+        """
         len_phases_list = len(DAY_PHASES)
         actual = self.get_day_phase()[2]
         to_phase = actual + n_phases
@@ -53,30 +114,70 @@ class TimeSystem:
 
         return self.pass_time_next_to(hours=hour, minutes= 0)
 
+
     def __pass_to_day_phase(self, name):
+        """
+        Returns the current day phase information.
+
+        Returns
+        -------
+        list
+            [hour, name, index]
+        """
         for phase in DAY_PHASES:
             if phase[1] == name:
                 return phase[0]
-        # /---/ Make error
+        raise TimeNamePhaseNotFoundError(name)
 
     def pass_to_morning(self):
+        """Pass day phase to morning."""
         hour = self.__pass_to_day_phase("morning")
         self.pass_time_next_to(hours=hour, minutes= 0)
          
     def pass_to_sunset(self):
+        """Pass day phase to sunset."""
         hour = self.__pass_to_day_phase("sunset")
         self.pass_time_next_to(hours=hour, minutes= 0)
 
     def pass_to_night(self):
+        """Pass day phase to night."""
         hour = self.__pass_to_day_phase("night")
         self.pass_time_next_to(hours=hour, minutes= 0)
 
     def get_day_phase(self):
+        """Get day phase list [hour, name, index]."""
         phase = self.game_time.get_day_phase("all")
         return phase
     
 
     def get_time_diff(self, today, pass_to_date):
+        """
+         Calculates the time difference required to reach a target date.
+
+        This function supports partial target dates (None values) and
+        computes the minimal forward progression needed.
+
+        It ensures correct wrapping between time units (minutes -> hours,
+        hours -> days, etc.).
+
+        Parameters
+        ----------
+        today : tuple
+            Current date (year, month, day, hour, minute).
+
+        pass_to_date : tuple
+            Target date with optional None values.
+
+        Returns
+        -------
+        list
+            Time difference in each unit [years, months, days, hours, minutes].
+
+        Raises
+        ------
+        TimeFormatError
+            If any value is outside valid range.
+        """
         time_range = [MONTHS_PER_YEAR, DAYS_PER_MONTH, HOURS_PER_DAY, MINUTES_PER_HOUR]
         actual_date = today
         to_date     = pass_to_date

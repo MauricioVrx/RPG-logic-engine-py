@@ -93,12 +93,12 @@ def npc_human():
     human_char.update_character_ability_points()
     return human_char
 
+
 # ===============================
 # ITEMS AND STORAGE
 # ===============================
 
 # 1. Import items from CSV
-
 factory = ItemManager(base_path = "tests/schemas/data/info")
 factory.load_all(structure = {
     "equipment": ["armor", "weapon", "shield"],
