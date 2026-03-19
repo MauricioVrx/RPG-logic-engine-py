@@ -28,7 +28,7 @@ class JobComponent:
         }
 
     extra : dict
-        Dict for custom jobs 
+        Dict for custom jobs.
     
     Methods
     -------
