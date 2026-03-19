@@ -24,7 +24,7 @@ class CharacterLoader:
 class CharacterIdentityLoader:
     """
     Loads JSON files containing character identity definitions such as
-    ancestries, classes and backgrounds
+    ancestries, classes and backgrounds.
     """
     def __init__(self, base_path):
         self.base_path = base_path
