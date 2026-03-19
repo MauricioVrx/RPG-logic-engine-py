@@ -16,31 +16,31 @@ class NarrativeComponent:
         Reference to the entity that owns this inventory.
 
     backstory : str 
-        Previous and start history
+        Previous and start history.
 
     alignment : str 
-        Alignment preferences
+        Alignment preferences.
 
     belief : str 
-        If beliebe in something or someone
+        If beliebe in something or someone.
 
     attitude : str 
-        Base attitud
+        Base attitud.
 
     condition : list 
-        Altered conditions 
+        Altered conditions .
 
     like : list 
-        Preferences something or someone
+        Preferences something or someone.
 
     dislike : list 
-        Aversion something or someone
+        Aversion something or someone.
 
     ally : list 
-        Allied individuals or group
+        Allied individuals or group.
 
     enemy : list 
-        Enemy individuals or groups
+        Enemy individuals or groups.
 
     Methods
     -------
