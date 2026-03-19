@@ -50,27 +50,27 @@ class AbilityComponent:
         Dict of character's saving throws with ability mod value, saving throw proficiency calculation and custom values.
 
     acquired_feats : list
-        List of existed feats aquired 
+        List of existed feats aquired.
 
     custom_feats : dict
-        Dict of custom feats for that entity
+        Dict of custom feats for that entity.
     
     Methods
     -------
     ability_calculation(name)
-        Convert ability base points into modifier value
+        Convert ability base points into modifier value.
     
     get_ability_value, get_skill_value(name), get_saving_throws_value(name), proficiency_value(name)
-        Sum entity a base value ability with the extra ability value
+        Sum entity a base value ability with the extra ability value.
     
     get_ability_score()
         Sum entity all bases values abilities with the extras abilities values
 
     proficiency_promotion(name, force_promotion = False)
-        Ascend one entity's proficiency rank
+        Ascend one entity's proficiency rank.
 
     update_parameter_point(ability, proficiency, custom)
-        Update the parameter points
+        Update the parameter points.
 
     update_skill(name, custom=None), update_saving_throw(name, custom=None)
         Updates a specific parameter's bonuses and recalculates its modifier.
