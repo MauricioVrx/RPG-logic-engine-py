@@ -1,8 +1,8 @@
 from collections import Counter
 from scripts.world.entities.entity import Entity
 
-from scripts.game_system.constants import ABILITY_NAMES, ABILITY_SCORE
-from scripts.game_system.constants import FREE_ABILITY_POINTS , BASE_HIT_POINTS
+from scripts.game_config.constants import ABILITY_NAMES, ABILITY_SCORE
+from scripts.game_config.constants import FREE_ABILITY_POINTS , BASE_HIT_POINTS
 
 from scripts.system.exceptions import (
     EntityAbilityNotFoundError,

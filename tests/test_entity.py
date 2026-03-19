@@ -1,6 +1,6 @@
 import pytest
 
-from scripts.game_system.constants import (
+from scripts.game_config.constants import (
     SKILLS,
     SAV_THROWS,
     PROF_NAMES, 

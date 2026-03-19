@@ -1,4 +1,4 @@
-from scripts.game_system.constants import MAX_LEVEL 
+from scripts.game_config.constants import MAX_LEVEL 
 from scripts.system.exceptions import (
     EntityLevelLimitError, 
     EntityIsIntegerError, 

@@ -1,4 +1,4 @@
-from scripts.game_system.constants  import ABILITY_SCORE, PROF_NAMES, PROF_RANG_BASE, SKILLS_BASE, SAV_THROWS_BASE, SKILLS, SAV_THROWS, PARAMETER_DEPENDENCE, SKILLS_NAMES, SAV_THROWS_NAMES
+from scripts.game_config.constants  import ABILITY_SCORE, PROF_NAMES, PROF_RANG_BASE, SKILLS_BASE, SAV_THROWS_BASE, SKILLS, SAV_THROWS, PARAMETER_DEPENDENCE, SKILLS_NAMES, SAV_THROWS_NAMES
 from collections import Counter
 
 from scripts.mechanics.mechanics  import calculate_ability_modifier, calculate_proficiency_bonus

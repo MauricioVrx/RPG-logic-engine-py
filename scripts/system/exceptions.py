@@ -1,4 +1,4 @@
-from scripts.game_system.constants import ABILITY_NAMES
+from scripts.game_config.constants import ABILITY_NAMES
 
 # General basis of the project
 class GameBaseError(Exception): pass
