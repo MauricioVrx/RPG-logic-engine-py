@@ -112,16 +112,16 @@ class Character(Entity):
         Parameters
         ----------
             ancestry : str or ancestry
-                ancestry name or ancestry instance 
+                ancestry name or ancestry instance.
             
             extra_abilities : list
-                list with abilities names to asign to selected ancestry
+                list with abilities names to asign to selected ancestry.
             
             identity_list: None or CharacterIdentityManager 
-                None if ancestry is a Ancestry instance, or CharacterIdentityManager if ancestry is a str
+                None if ancestry is a Ancestry instance, or CharacterIdentityManager if ancestry is a str.
             
             empty_values :Boolean
-                True if is a custom character  
+                True if is a custom character.  
         """
 
         ancestry_instance = ancestry
@@ -185,16 +185,16 @@ class Character(Entity):
         Parameters
         ----------
             class_ins : str or class_ins
-                Character class name or character class  instance 
+                Character class name or character class  instance.
             
             main_ability : str
-                Class ability name selected
+                Class ability name selected.
             
             identity_list : None or CharacterIdentityManager
-                None if character class is a character class instance, or CharacterIdentityManager if character class is a str
+                None if character class is a character class instance, or CharacterIdentityManager if character class is a str.
             
             empty_values : Boolean
-                True if is a custom character  
+                True if is a custom character.
         """
 
         class_instance = class_ins
@@ -241,16 +241,16 @@ class Character(Entity):
         Parameters
         ----------
             background : str or background
-                background name or background  instance 
+                background name or background  instance.
 
             main_ability : str
-                class ability name selected
+                class ability name selected.
 
             identity_list : None or CharacterIdentityManager
-                None if background is a background instance, or CharacterIdentityManager if character background is a str
+                None if background is a background instance, or CharacterIdentityManager if character background is a str.
             
             empty_values : Boolean
-                True if is a custom character  
+                True if is a custom character.
         """
 
         background_instance = background
