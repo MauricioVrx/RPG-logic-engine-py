@@ -1,4 +1,6 @@
 from scripts.game.game_engine import GameEngine
+from scripts.actions.dispatcher import execute_action
+from scripts.actions.parser import parse_command
 
 class GameLoop:
 
@@ -11,31 +13,30 @@ class GameLoop:
             print()
             self.process_input()
             self.update()
+            print()
             self.render()
 
 
     def process_input(self):
+
         command = input("> ")
 
-        if command == "exit":
+        action_name, params = parse_command(command)
+
+        if action_name == "exit":
             self.state.is_running = False
+            
+        result = execute_action(action_name, self.state, **params)
 
-        elif command == "wait":
-            self.state.time_system.pass_hours(1)
-
-        elif command == "sunset":
-            self.state.time_system.pass_to_sunset()
-
-        elif command == "sleep":
-            self.state.time_system.pass_to_morning()
+        print(result["message"])
 
 
     def update(self):
         # future:
-        # scheduler.update()
-        # npc_manager.update()
-        # item_manager.update()
-        # world_events.update()
+        #    scheduler.update()
+        #    npc_manager.update()
+        #    item_manager.update()
+        #    world_events.update()
         pass
 
 

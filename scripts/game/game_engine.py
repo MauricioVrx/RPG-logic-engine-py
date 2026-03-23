@@ -39,9 +39,22 @@ class GameEngine:
         character_manager.load_all("template")
 
         self.state.character_manager = character_manager
+        self.state.identity_manager  = identity_manager
+        self.state.item_manager      = item_factory
 
         # =========================
         # PLAYER
         # =========================
         player = character_manager.spawn("template", "player_base")
         self.state.player = player
+        self.state.active_npcs['player'] = self.state.player
+
+
+def find_npc_by_name(game_state, name):
+    results = []
+
+    for npc in game_state.active_npcs.values():
+        if name.lower() in npc.name.lower():
+            results.append(npc)
+
+    return results

@@ -25,6 +25,15 @@
       "equipment" : {
         "armor" : ["unarmored"]
       }
+    },
+    "combat" : {
+    },
+    "job" : {
     }
+  },
+  "ancestry" : {
+      "name" : "human",
+      "extra_abilities" : ["STR", "WIS"],
+      "empty_values" : false
   }
 }

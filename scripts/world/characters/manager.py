@@ -111,8 +111,11 @@ class CharacterManager:
             if info.get('free_ability_points') != None:
                 char.set_free_ability_points(info['free_ability_points'].get('ability_points'))
 
+
             char.recalculate_all()
             char.update_character_ability_points()
+            char.recalculate_hit_points_max()
+            char.get_component("combat").hit_points_current = char.get_component("combat").hit_points_max
 
             char_dict[char_id] = char
 

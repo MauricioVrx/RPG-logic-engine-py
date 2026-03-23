@@ -70,6 +70,16 @@ class Character(Entity):
 
         self.recalculate_all()
 
+    def get_info(self):
+        """/---/ Temporal"""
+        info = {}
+        info["name"] = self.get_component('identity').name
+        info["hit points"] = f"{self.get_component('combat').hit_points_current}/{self.get_component('combat').hit_points_max}"
+        if self.ancestry != None:
+            info["ancestry"] = self.ancestry 
+        return info 
+    
+    
     def get_ability_choices(self):
         return self._ability_choices
 
