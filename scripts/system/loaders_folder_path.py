@@ -4,7 +4,7 @@
 # Items files
 ITEMS_FILES = {
     "equipment": ["armor", "weapon", "shield"],
-    "item": ["adventuring_gear", "consumables"]
+    "item": ["adventuring_gear", "consumable"]
 }
 
 # UNIQUES CHARACTERS files

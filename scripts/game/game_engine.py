@@ -47,8 +47,17 @@ class GameEngine:
         # =========================
         player = character_manager.spawn("template", "player_base")
         self.state.player = player
-        self.state.active_npcs['player'] = self.state.player
 
+
+        #Temporal - add instances
+        print(self.state.character_manager.characters_template)
+        usu1= self.state.character_manager.spawn('template', 'city_civile')
+        self.state.active_npcs[usu1.template_id] = usu1
+        usu2= self.state.character_manager.spawn('template', 'city_civile')
+        self.state.active_npcs[usu2.template_id] = usu2
+        print()
+        print(self.state.active_npcs)
+        # print(usu1.template_id)
 
 def find_npc_by_name(game_state, name):
     results = []

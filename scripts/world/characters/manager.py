@@ -146,6 +146,21 @@ class CharacterManager:
             raise CharacterNotFoundError(character_name)
             
         return copy.deepcopy(template) if template else None
+    
+    
+    # /---/ locations system required
+    def update_active_npcs(self, game_state):
+        """
+        /---/
+        """
+        game_state.active_npcs = {}
+
+        for npc in game_state.npcs.values():
+            if npc.location == game_state.current_location:
+                npc.is_active = True
+                game_state.active_npcs[npc.id] = npc
+            else:
+                npc.is_active = False
 
 
 class CharacterIdentityManager:

@@ -58,8 +58,9 @@ class Item:
     
         """
 
-        self.id   = item_id
-        self.name = name
+        self.id       = item_id
+        self.key_name = item_id
+        self.name     = name
         self.category = category
         self.id_value = id_value
         self.rarity = rarity

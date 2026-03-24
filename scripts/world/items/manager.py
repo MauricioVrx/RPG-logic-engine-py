@@ -29,6 +29,7 @@ class ItemManager:
     def __init__(self, base_path="data/info"):
         self.loader = ItemLoader(base_path)
         self.templates = {}
+        self.category_list = []
 
 
     def load_all(self , structure = ITEMS_FILES):
@@ -61,6 +62,10 @@ class ItemManager:
                 mechanics = info.get("mechanics", {}),
                 lore      = info.get("lore", {})
             )
+
+        for _ , structure_category in ITEMS_FILES.items():
+            for item_category in structure_category:
+                self.category_list.append(item_category)
 
 
     def spawn(self, item_name):

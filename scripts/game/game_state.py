@@ -10,21 +10,10 @@ class GameState:
 
         self.character_manager = None
         self.identity_manager  = None
-        self.item_factory      = None
+        self.item_manager      = None
 
         self.world             = None
         self.player            = None
 
         self.is_running = True
 
-
-    # /---/ locations system required
-    def update_active_npcs(self):
-        self.active_npcs = {}
-
-        for npc in self.npcs.values():
-            if npc.location == self.current_location:
-                npc.is_active = True
-                self.active_npcs[npc.id] = npc
-            else:
-                npc.is_active = False

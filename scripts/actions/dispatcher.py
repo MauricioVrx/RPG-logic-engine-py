@@ -5,14 +5,21 @@ from scripts.actions.core.wait import (
     )
 
 from scripts.actions.core.inventory import (
-    AddItemAction
+    AddItemAction,
+    ListItemAction,
+    RemoveItemAction,
     )
 
 ACTIONS = {
+    # TIME
     "wait"            : WaitAction,
     "sleep"           : SleepAction,
     "wait_to_morning" : WaitToMorningAction,
-    "add_item"        : AddItemAction
+
+    # ITEMS
+    "add_item"        : AddItemAction,
+    "list_items"      : ListItemAction,
+    "remove_item"     : RemoveItemAction
 }
 
 def execute_action(action_name, state, **kwargs):

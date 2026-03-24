@@ -15,7 +15,7 @@ def test_item_factory():
     item_factory = ItemManager(base_path = "tests/schemas/data/info")
     item_factory.load_all(structure = {
         "equipment": ["armor", "weapon", "shield"],
-        "item": ["consumables", "adventuring_gear"]
+        "item": ["consumable", "adventuring_gear"]
     })
     len(item_factory.templates) > 0
 

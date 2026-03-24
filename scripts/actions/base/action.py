@@ -25,6 +25,7 @@ class Action:
         """
         raise NotImplementedError
 
+
     def run(self):
         """
         Full execution pipeline.

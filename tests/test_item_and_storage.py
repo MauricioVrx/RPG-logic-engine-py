@@ -44,7 +44,7 @@ def test_format_read_csv_files():
     factory = ItemManager(base_path = "tests/schemas/data/info")
     factory.load_all(structure = {
         "equipment": ["armor", "weapon"],
-        "item": ["consumables"]
+        "item": ["consumable"]
     })
 
 

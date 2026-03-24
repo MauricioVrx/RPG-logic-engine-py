@@ -102,7 +102,7 @@ def npc_human():
 factory = ItemManager(base_path = "tests/schemas/data/info")
 factory.load_all(structure = {
     "equipment": ["armor", "weapon", "shield"],
-    "item": ["consumables"]
+    "item": ["consumable"]
 })
 
 @pytest.fixture
