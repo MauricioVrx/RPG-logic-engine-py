@@ -1,7 +1,7 @@
 import copy
 from scripts.world.items.loader import ItemLoader
 from scripts.world.items.item   import Item
-from scripts.system.loaders_folder_path import ITEMS_FILES 
+from scripts.system.core.loaders_folder_path import ITEMS_FILES 
 
 from scripts.system.exceptions import (
     ItemNotFoundError
@@ -49,6 +49,7 @@ class ItemManager:
             self.templates[item_id] = Item(
                 item_id   = info["item_id"],
                 name      = info["name"],
+                alias     = info.get("alias", None),
                 category  = info["category"],
                 id_value  = info.get("id_value"),
 

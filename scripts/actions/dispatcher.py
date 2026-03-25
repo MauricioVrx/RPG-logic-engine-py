@@ -8,6 +8,7 @@ from scripts.actions.core.inventory import (
     AddItemAction,
     ListItemAction,
     RemoveItemAction,
+    TransferItemAction,
     )
 
 ACTIONS = {
@@ -19,7 +20,8 @@ ACTIONS = {
     # ITEMS
     "add_item"        : AddItemAction,
     "list_items"      : ListItemAction,
-    "remove_item"     : RemoveItemAction
+    "remove_item"     : RemoveItemAction,
+    "transfer_item"   : TransferItemAction,
 }
 
 def execute_action(action_name, state, **kwargs):

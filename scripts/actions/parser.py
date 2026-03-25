@@ -6,18 +6,22 @@ def parse_command(command: str):
         return None, {}
     
     action = parts[0]
+    
     # TIME
     if action == "wait":
-        return "wait", {"hours": int(parts[1] if len(parts)>=1 else 1)}
+        return   "wait", {"hours": int(parts[1] if len(parts)>=1 else 1)}
     
     # INVENTORY
     if action == "add_item":
-        return "add_item", {"entity": parts[1], "item" : parts[2]}
+        return   "add_item", {"entity": parts[1], "item" : parts[2]}
     
     if action == "list_items":
-        return "list_items", {"entity": parts[1]}
+        return   "list_items", {"entity": parts[1]}
     
     if action == "remove_item":
-        return "remove_item", {"entity": parts[1], "item" : parts[2]}
+        return   "remove_item", {"entity": parts[1], "item" : parts[2]}
+    
+    if action == "transfer_item":
+        return   "transfer_item", {"transfer_from": parts[1], "transfer_to": parts[1], "item" : parts[3]}
     
     return action , {}

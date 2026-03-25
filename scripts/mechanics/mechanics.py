@@ -32,13 +32,15 @@ def add_item(inventory, item_instance, force_add = False):
     Add an object to inventory.
     """
     if not isinstance(item_instance, Item) and not isinstance(item_instance, dict):
+        return None, f"Item '{item_instance}' not found."
         raise ItemNotFoundError(item_instance)
 
     if len(inventory.items) < inventory.capacity or force_add == True:
         inventory.items.append(item_instance)
-        return item_instance
+        return item_instance, f"Item {item_instance} added."
     else:
-        raise StorageLimitItemsError(inventory.name, inventory.capacity)
+        return None, f"Capacity reached({len(inventory.items)}/{inventory.capacity}), cannot add '{item_instance}'."
+        raise StorageLimitItemsError("Capacity reached", inventory.capacity)
 
 
 def remove_item(inventory, item_name):
@@ -85,6 +87,7 @@ def attempt_transfer(source, target, item):
     source.get_component("inventory").remove_item(item_instance)
     success = target.get_component("inventory").add_item(item_instance) 
 
+    ################
     if success:
         return True, f"'{item_instance.name}' has been successfully moved."
     else:

@@ -1,4 +1,4 @@
-from scripts.system.files_manager import read_json_files, get_list_files
+from scripts.system.core.files_manager import read_json_files, get_list_files
 
 class CharacterLoader:
     """

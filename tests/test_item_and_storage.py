@@ -76,7 +76,7 @@ def test_storage_items(test_item_factory, simple_dagger, normal_chest):
     """
     Add and remove items in a storage
     """
-    armor = normal_chest.get_component("inventory").add_item(test_item_factory.spawn("padded_armor"))
+    armor = normal_chest.get_component("inventory").add_item(test_item_factory.spawn("padded_armor"))[0]
     normal_chest.get_component("inventory").add_item(simple_dagger)
 
     normal_chest.get_component("inventory").remove_item(simple_dagger)
@@ -88,8 +88,9 @@ def test_bad_storage(simple_dagger, simple_chest):
     Test add and remove wrong items, more items than storage limit.
     """
     # 1. Add wrong item
-    with pytest.raises(ItemNotFoundError):
-        simple_chest.get_component("inventory").add_item("WrongItem")
+    assert simple_chest.get_component("inventory").add_item("WrongItem")[0] == None 
+    # with pytest.raises(ItemNotFoundError): /---/
+    #     simple_chest.get_component("inventory").add_item("WrongItem")
 
     # 2. Remove non-existent item
     with pytest.raises(ItemNotFoundError):
@@ -99,8 +100,9 @@ def test_bad_storage(simple_dagger, simple_chest):
     simple_chest.get_component("inventory").add_item(simple_dagger)
     simple_chest.get_component("inventory").add_item(simple_dagger)
 
-    with pytest.raises(StorageLimitItemsError):
-        simple_chest.get_component("inventory").add_item(simple_dagger)
+    assert simple_chest.get_component("inventory").add_item(simple_dagger)[0] == None 
+    # with pytest.raises(StorageLimitItemsError): /---/
+    #     simple_chest.get_component("inventory").add_item(simple_dagger)
 
     
 def test_transfer_items(simple_entity, simple_char, simple_dagger, simple_chest, normal_chest):

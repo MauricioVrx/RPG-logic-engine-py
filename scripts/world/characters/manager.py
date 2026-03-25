@@ -2,7 +2,7 @@ import copy
 
 from scripts.world.characters.loader    import CharacterLoader, CharacterIdentityLoader
 from scripts.world.characters.character import Character, Ancestry, Background, CharClass
-from scripts.system.loaders_folder_path import CHARACTER_UNIQUE , CHARACTER_TEMPLATE
+from scripts.system.core.loaders_folder_path import CHARACTER_UNIQUE , CHARACTER_TEMPLATE
 
 from scripts.system.exceptions import (
     CharacterNotFoundError,

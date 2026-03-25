@@ -64,7 +64,7 @@ class EquipmentComponent:
             if key == "equipment":
                 for category, equipments in value.items():
                     equipment = []
-                    [equipment.append(self.entity.get_component("inventory").add_item(factory.spawn(equip), force_add = True)) for equip in equipments]
+                    [equipment.append(self.entity.get_component("inventory").add_item(factory.spawn(equip), force_add = True)[0]) for equip in equipments]
                     if category == "armor":
                         [self.equip_armor(equip) for equip in equipment] 
                     elif category == "hands":

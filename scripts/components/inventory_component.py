@@ -60,14 +60,20 @@ class InventoryComponent:
         self.weight_limit = weight_limit
         self.items = []
 
+    def capacity_available(self):
+        if len(self.items) >= self.capacity:
+            return False , 0
+        return True, self.capacity-len(self.items)
+
     def add_item(self, item_instance, force_add = False):
         "Adds an item to the inventory if capacity allows."
-        if len(self.items) >= self.capacity and force_add == False:
-            raise StorageLimitItemsError("Capacity reached", self.capacity)
+        # capacty_available = self.capacty_available()
+        # if capacty_available[0] == False and force_add == False:
+        #     raise StorageLimitItemsError("Capacity reached", self.capacity)
 
-        item = add_it(self, item_instance, force_add)
+        result = add_it(self, item_instance, force_add)
   
-        return item
+        return result
 
 
     def remove_item(self, item_instance):
