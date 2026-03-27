@@ -15,6 +15,17 @@ def resolve_entity(game_state, name):
 
     return None
 
+def instance_entity_validation(state, entity, name):
+    entity_instance = entity
+    if isinstance(entity_instance, str):
+        instance = resolve_entity(state, entity)
+        if not instance:
+            return None, f"Entity '{name}' not found."
+    else:
+        instance = entity
+    return instance, ""
+    
+
 def resolve_entity_have_capacity(entity):
     capacity_available = entity.get_component("inventory").capacity_available()
     if capacity_available[0] == False:

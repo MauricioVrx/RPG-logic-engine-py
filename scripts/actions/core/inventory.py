@@ -1,7 +1,7 @@
 from scripts.actions.base.action import Action
 from scripts.actions.base.action_result import ActionResult
-from scripts.system.resolver.entity_resolver import resolve_entity, resolve_entity_have_capacity
-from scripts.system.resolver.item_resolver   import resolve_item
+from scripts.system.resolver.entity_resolver import instance_entity_validation
+from scripts.system.resolver.item_resolver   import resolve_item, instance_item_validation
 
 
 class AddItemAction(Action):
@@ -10,22 +10,25 @@ class AddItemAction(Action):
     def validate(self):
         # Empty data validaton
         entity_name = self.params.get("entity", None)
-        item_name   = self.params.get("item", None)
 
-        # Entity 
-        entity = resolve_entity(self.state, entity_name)
+        # Entity validation
+        entity, msg = instance_entity_validation(self.state, self.params["entity"], entity_name)
         if not entity:
-            return False, "Entity not found."
-        
-        # Capacity 
-        capacity_available = entity.get_component("inventory").capacity_available()
-        if not capacity_available[0]:
-            return False, capacity_available[1]
+            return False, msg
 
-        # Item 
-        item = resolve_item(item_name, self.state.item_manager.templates)
-        if not item:
-            return False, "Invalid item."
+        # Item validation
+        item, msg = instance_item_validation(entity, self.params, entity.get_component('inventory').items)
+        if item == None:
+            return None, msg
+        
+        # Validation 
+        capacity_available  = entity.get_component("inventory").capacity_available()
+        if not (capacity_available[0]):
+            return False, capacity_available[1]
+        
+        # Info
+        self.context['entity'] = entity
+        self.context['item']   = item
 
         return True, None
 
@@ -35,20 +38,24 @@ class AddItemAction(Action):
         entity_name = self.params.get("entity", None)
         item_name   = self.params.get("item", None)
 
-        # Spawn item 
-        item = self.state.item_manager.spawn(item_name.lower())
+        # Item
+        if self.context['item'] == None:
+            # Spawn item 
+            item = self.state.item_manager.spawn(item_name.lower())
+        else:
+            item = self.context['item']
 
         # Get entity
-        entity = resolve_entity(self.state, entity_name)
+        entity = self.context['entity']
 
         # Add item
         item_added = entity.get_component("inventory").add_item(item)
 
         return ActionResult(
-            message=f"'{item_name}' added to '{entity.get_component('identity').name}'.",
+            message=f"{entity_name}: {item_added[1]}.",
             data={
                 "entity" : entity,
-                "item" : item_added
+                "item"   : item_added[0]
             }
         )
 
@@ -59,19 +66,20 @@ class RemoveItemAction(Action):
     def validate(self):
         # Empty data validaton
         entity_name = self.params.get("entity", None)
-        item_name   = self.params.get("item", None)
 
         # Entity validation
-        entity = resolve_entity(self.state, entity_name)
+        entity, msg = instance_entity_validation(self.state, self.params["entity"], entity_name)
         if not entity:
-            return False, "Entity not found."
-
-        item_list = [item.key_name for item in entity.get_component('inventory').items]
-        # item_list = {item.key_name for item in entity.get_component('inventory').items}
+            return False, msg
 
         # Item validation
-        if item_name is None or item_name not in item_list:
-            return False, f"{item_name} not in {entity_name}'s inventory."
+        item, msg =instance_item_validation(entity, self.params, entity.get_component('inventory').items)
+        if item == None:
+            return None, msg
+        
+        # INFO
+        self.context['entity'] = entity
+        self.context['item']   = item
 
         return True, None
 
@@ -79,26 +87,24 @@ class RemoveItemAction(Action):
     def execute(self):
 
         entity_name = self.params.get("entity", None)
-        item_name   = self.params.get("item", None)
 
         # Get entity
-        entity = resolve_entity(self.state, entity_name)
+        entity = self.context['entity']
 
-        # Item validation
-        item = resolve_item(item_name, entity.get_component('inventory').items)
-        if not item:
-            return False, "Invalid item."
+        # Get Item
+        item = self.context['item']  
 
         # Remove item
         removed_item = entity.get_component('inventory').remove_item(item)
 
         return ActionResult(
-            message=f"{entity_name}: item '{removed_item.name}' removed.",
+            message=f"{entity_name}: {removed_item[1]}.",
             data={
                 "entity" : entity,
-                "item"   : removed_item
+                "item"   : removed_item[0]
             }
         )
+
 
 class ListItemAction(Action):
     name = "list_items"
@@ -108,9 +114,12 @@ class ListItemAction(Action):
         entity_name = self.params.get("entity", None)
 
         # Entity validation
-        entity = resolve_entity(self.state, entity_name)
+        entity, msg = instance_entity_validation(self.state, self.params["entity"], entity_name)
         if not entity:
-            return False, "Entity not found."
+            return False, msg
+        
+        # INFO
+        self.context['entity'] = entity
 
         return True, None
 
@@ -119,7 +128,7 @@ class ListItemAction(Action):
         entity_name = self.params.get("entity", None)
 
         # Get entity
-        entity = resolve_entity(self.state, entity_name)
+        entity = self.context['entity']
 
         # ITEM CATEGORY LIST
         dict_items = {}
@@ -139,16 +148,66 @@ class ListItemAction(Action):
 
         # RETURN
         return ActionResult(
-            message=f"{entity.get_component('identity').name}'s items ({len(item_list)}/{entity.get_component('inventory').capacity}): {item_message}",
+            message=f"{entity_name}'s items ({len(item_list)}/{entity.get_component('inventory').capacity}): {item_message}",
             data={
                 "entity"    : entity,
                 "item_list" : item_list
             }
         )
 
+
 class TransferItemAction(Action):
-    name = "list_items"
+    name = "transfer_item"
+
     def validate(self):
-        pass
+        # Empty data validaton
+        transfer_from_name = self.params.get("transfer_from", None)
+        transfer_to_name   = self.params.get("transfer_to", None)
+
+        # Entity validation
+        transfer_from, msg = instance_entity_validation(self.state, self.params["transfer_from"], transfer_from_name)
+        if not transfer_from:
+            return False, msg
+        
+        transfer_to, msg = instance_entity_validation(self.state, self.params["transfer_to"], transfer_to_name)
+        if not transfer_from:
+            return False, msg
+        
+        # Capacity 
+        capacity_available = transfer_to.get_component("inventory").capacity_available()
+        if not capacity_available[0]:
+            return False, capacity_available[1]
+        
+        # Item validation
+        item, msg =instance_item_validation(transfer_from, self.params, transfer_from.get_component('inventory').items)
+        if item == None:
+            return None, msg
+
+        # INFO
+        self.context['transfer_from'] = transfer_from
+        self.context['transfer_to']   = transfer_to
+        self.context['item']          = item
+        
+        return True, None
+
+
     def execute(self):
-        pass
+        transfer_from_name = self.params.get("transfer_from", None)
+        transfer_to_name   = self.params.get("transfer_to", None)
+        item_name          = self.params.get("item", None)
+
+        # Remove item
+        removed_item = self.context['transfer_from'].get_component('inventory').remove_item(self.context['item'])
+
+        # Add item
+        item_added = self.context['transfer_to'].get_component("inventory").add_item(removed_item[0])
+
+        # RETURN
+        return ActionResult(
+            message=f"{transfer_from_name} -> {transfer_to_name}: {item_name} transfered.",
+            data={
+                "transfer_from"    : self.context['transfer_from'],
+                "transfer_to_name" : self.context['transfer_to'],
+                "item"             : item_added[0]
+            }
+        )

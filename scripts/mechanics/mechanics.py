@@ -27,34 +27,39 @@ def calculate_proficiency_bonus(level: int, rank: int) -> int:
 # INVENTORY - FUNCTIONS
 # ==============================================================
 
+def validate_add_item(inventory, item_instance, force_add = False):
+    if not isinstance(item_instance, Item) and not isinstance(item_instance, dict):
+        raise ItemNotFoundError(item_instance)
+    if not (len(inventory.items) < inventory.capacity or force_add == True):
+        raise StorageLimitItemsError("Capacity reached", len(inventory.items) ,inventory.capacity)
+
+
 def add_item(inventory, item_instance, force_add = False):
     """
     Add an object to inventory.
     """
     if not isinstance(item_instance, Item) and not isinstance(item_instance, dict):
-        return None, f"Item '{item_instance}' not found."
         raise ItemNotFoundError(item_instance)
 
     if len(inventory.items) < inventory.capacity or force_add == True:
         inventory.items.append(item_instance)
-        return item_instance, f"Item {item_instance} added."
+        return item_instance, f"Item '{item_instance.name}' added"
     else:
-        return None, f"Capacity reached({len(inventory.items)}/{inventory.capacity}), cannot add '{item_instance}'."
-        raise StorageLimitItemsError("Capacity reached", inventory.capacity)
+        raise StorageLimitItemsError("Capacity reached", len(inventory.items) ,inventory.capacity)
 
 
-def remove_item(inventory, item_name):
+def remove_item(inventory, item_instance):
     """
     Remove an object from inventory.
     """
-    if  hasattr(item_name, 'status') and item_name.status == 'equiped' :
-        raise ItemNotRemovedError(item_name)
+    if  hasattr(item_instance, 'status') and item_instance.status == 'equiped' :
+        raise ItemNotRemovedError(item_instance)
 
     for i, item in enumerate(inventory.items):
-        # if item.name == item_name:
-        if item == item_name or item.name == item_name:
-            return inventory.items.pop(i)
-    raise ItemNotFoundError(item_name)
+        if item == item_instance or item.name == item_instance:
+            item_removed = inventory.items.pop(i)
+            return item_removed, f"Item '{item_removed.name}' removed"
+    raise ItemNotFoundError(item_instance)
 
 
 def attempt_transfer(source, target, item):
@@ -79,15 +84,16 @@ def attempt_transfer(source, target, item):
     if not item_instance:
         raise ItemNotFoundError(item)
 
+
     # 3. Destination Validations (Example: Weight or Capacity)
     if hasattr(target.get_component("inventory"), 'capacity') and len(target.get_component("inventory").items) >= target.get_component("inventory").capacity:
-        raise StorageLimitItemsError(target.get_component("identity").name, target.get_component("inventory").capacity)
+        raise StorageLimitItemsError(target.get_component("identity").name, len(target.get_component("inventory").items) ,target.get_component("inventory").capacity)
+
 
     # 4. Execution of the movement 
     source.get_component("inventory").remove_item(item_instance)
     success = target.get_component("inventory").add_item(item_instance) 
 
-    ################
     if success:
         return True, f"'{item_instance.name}' has been successfully moved."
     else:
@@ -111,6 +117,7 @@ def critical_roll(dice_result):
     elif dice_result == 1:
         status = "Critical_Failure"
     return status
+
 
 def critical_diff(result, cd):
     """Calculate the difference in value between the entity information with roll and the difficulty class."""

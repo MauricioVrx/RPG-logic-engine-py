@@ -9,7 +9,16 @@ def parse_command(command: str):
     
     # TIME
     if action == "wait":
-        return   "wait", {"hours": int(parts[1] if len(parts)>=1 else 1)}
+        hours = 1
+        if len(parts)>1:
+            hours = int(parts[1]) if parts[1].isdigit() else None
+        return   "wait", {"hours": hours if len(parts)>1 else 1}
+    
+    if action == "sleep":
+        hours = -1
+        if  len(parts)>1:
+            hours = int(parts[1]) if parts[1].isdigit() else None
+        return   "sleep", {"hours": hours}
     
     # INVENTORY
     if action == "add_item":
@@ -22,6 +31,10 @@ def parse_command(command: str):
         return   "remove_item", {"entity": parts[1], "item" : parts[2]}
     
     if action == "transfer_item":
-        return   "transfer_item", {"transfer_from": parts[1], "transfer_to": parts[1], "item" : parts[3]}
+        return   "transfer_item", {"transfer_from": parts[1], "transfer_to": parts[2], "item" : parts[3]}
+    
+    # EQUIPMENT
+    if action == "equip_weapon":
+        return   "equip_weapon", {"entity": parts[1], "weapon" : parts[2]}
     
     return action , {}

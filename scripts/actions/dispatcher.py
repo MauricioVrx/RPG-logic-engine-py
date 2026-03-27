@@ -11,6 +11,10 @@ from scripts.actions.core.inventory import (
     TransferItemAction,
     )
 
+from scripts.actions.core.equipment import (
+    EquipWeaponAction,
+)
+
 ACTIONS = {
     # TIME
     "wait"            : WaitAction,
@@ -22,6 +26,9 @@ ACTIONS = {
     "list_items"      : ListItemAction,
     "remove_item"     : RemoveItemAction,
     "transfer_item"   : TransferItemAction,
+
+    # Equipment
+    "equip_weapon"    :EquipWeaponAction,
 }
 
 def execute_action(action_name, state, **kwargs):
