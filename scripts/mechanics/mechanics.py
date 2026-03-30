@@ -95,7 +95,7 @@ def attempt_transfer(source, target, item):
     success = target.get_component("inventory").add_item(item_instance) 
 
     if success:
-        return True, f"'{item_instance.name}' has been successfully moved."
+        return success, f"'{item_instance.name}' has been successfully moved."
     else:
         source.get_component("inventory").append(item_instance)
         raise StorageLimitItemsError(target.get_component("identity").name, target.get_component("inventory").capacity)

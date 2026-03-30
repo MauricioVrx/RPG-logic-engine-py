@@ -7,7 +7,6 @@ from scripts.mechanics.mechanics import (
     add_item as add_it, 
     validate_add_item as val_add_item,
     remove_item as rem_it
-    
     )
 
 class InventoryComponent:

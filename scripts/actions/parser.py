@@ -35,6 +35,9 @@ def parse_command(command: str):
     
     # EQUIPMENT
     if action == "equip_weapon":
-        return   "equip_weapon", {"entity": parts[1], "weapon" : parts[2]}
+        return   "equip_weapon", {"entity": parts[1], "item" : parts[2]}
+    
+    if action == "unequip_weapon":
+        return   "unequip_weapon", {"entity": parts[1], "item" : parts[2]}
     
     return action , {}

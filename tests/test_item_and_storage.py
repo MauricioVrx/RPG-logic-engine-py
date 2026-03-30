@@ -270,7 +270,9 @@ def test_equip_wrong_weapon(simple_entity, simple_dagger, longspear, imposible_w
 
     # Unequip errrors
     with pytest.raises(WeaponNotFoundInInventoryError):
+        simple_entity.get_component("equipment").validate_unequip_weapon(simple_dagger_copy)
         simple_entity.get_component("equipment").unequip_weapon_on_hand(simple_dagger_copy)
     
     with pytest.raises(WeaponNotEquipedError):
+        simple_entity.get_component("equipment").validate_unequip_weapon(longspear)
         simple_entity.get_component("equipment").unequip_weapon_on_hand(longspear)

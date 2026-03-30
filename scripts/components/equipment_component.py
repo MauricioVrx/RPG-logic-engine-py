@@ -130,6 +130,7 @@ class EquipmentComponent:
 
         return True, ""
 
+
     def hands_available_validation(self, weapon_instance):
         req_hands = 0
         if hasattr(weapon_instance, 'mechanics') and 'hands' in weapon_instance.mechanics :
@@ -178,17 +179,16 @@ class EquipmentComponent:
         """
         Unequip the equiped weapons to entity.
         """
-        # check inventory item,
-        if weapon_instance not in self.entity.get_component("inventory").items:
-            raise WeaponNotFoundInInventoryError(self.entity.get_component("identity").name, weapon_instance)
+        # # check inventory item,
+        # if weapon_instance not in self.entity.get_component("inventory").items:
+        #     raise WeaponNotFoundInInventoryError(self.entity.get_component("identity").name, weapon_instance)
 
-        # Check if a the weapon is already equiped
-        if weapon_instance not in self.entity.get_component("equipment").equipment['hands']:
-            raise WeaponNotEquipedError(self.entity.get_component("identity").name, weapon_instance)
+        # # Check if a the weapon is already equiped
+        # if weapon_instance not in self.entity.get_component("equipment").equipment['hands']:
+        #     raise WeaponNotEquipedError(self.entity.get_component("identity").name, weapon_instance)
 
         # count of hands
-        equipable_slots = ["weapon_unarmed" for _ in range(int(weapon_instance.mechanics['hands']))]
-
+        equipable_slots = [None for _ in range(int(weapon_instance.mechanics['hands']))] 
         # remove weapon and "holding_weapon" to "weapon_unarmed"
         for idx, hand in enumerate(self.equipment['hands']):
             if hand == weapon_instance or hand == "holding_weapon":
@@ -199,4 +199,24 @@ class EquipmentComponent:
         # change status weapon
         weapon_instance.status = None
 
-        return True
+        return weapon_instance, f"'{weapon_instance.name}' unequiped"
+    
+
+    def validate_unequip_weapon(self, weapon_instance):
+        # check inventory item,
+        if weapon_instance not in self.entity.get_component("inventory").items:
+            raise WeaponNotFoundInInventoryError(self.entity.get_component("identity").name, weapon_instance)
+
+        # Check if a the weapon is already equiped
+        if weapon_instance not in self.equipment['hands']:
+            raise WeaponNotEquipedError(self.entity.get_component("identity").name, weapon_instance)
+
+        equipable_slots = ["weapon_unarmed" for _ in range(int(weapon_instance.mechanics['hands']))]
+        
+        if len(equipable_slots) == 0:
+            return False, f"{weapon_instance} no equiped."
+
+        # if len(equipable_slots) == 0:
+        #     return False, "Not available hands"
+
+        return True, ""

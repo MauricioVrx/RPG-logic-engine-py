@@ -75,6 +75,7 @@ class Character(Entity):
         info = {}
         info["name"] = self.get_component('identity').name
         info["hit points"] = f"{self.get_component('combat').hit_points_current}/{self.get_component('combat').hit_points_max}"
+        info["equipment"]  = f"{self.get_component('equipment').equipment}"
         if self.ancestry != None:
             info["ancestry"] = self.ancestry 
         return info 

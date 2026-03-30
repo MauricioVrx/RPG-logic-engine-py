@@ -13,6 +13,7 @@ from scripts.actions.core.inventory import (
 
 from scripts.actions.core.equipment import (
     EquipWeaponAction,
+    UnequipWeaponAction
 )
 
 ACTIONS = {
@@ -28,7 +29,8 @@ ACTIONS = {
     "transfer_item"   : TransferItemAction,
 
     # Equipment
-    "equip_weapon"    :EquipWeaponAction,
+    "equip_weapon"    : EquipWeaponAction,
+    "unequip_weapon"  : UnequipWeaponAction,
 }
 
 def execute_action(action_name, state, **kwargs):

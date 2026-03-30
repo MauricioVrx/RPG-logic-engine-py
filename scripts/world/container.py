@@ -50,10 +50,11 @@ class Container(Entity):
         self.add_component(IdentityComponent(self))
         self.add_component(InventoryComponent(self,capacity=capacity))
         self.add_component(LockComponent(self))
+        
         self.name = name
         self.id = template_id      # IDK
-
         self.category = category    # 'chest', 'wardrobe', 'room_pile'
+
     
     def __str__(self): 
         return f"<{self.name.upper()} - Status :{self.is_locked} , Inventory :{len(self.inventory)}/{self.capacity}>"

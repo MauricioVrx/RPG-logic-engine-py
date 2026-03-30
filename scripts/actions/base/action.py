@@ -49,7 +49,7 @@ class Action:
 
         except Exception as e:
             return ActionResult(
-                message="Unexpected error occurred.",
+                message=f"|| Unexpected error occurred : {e}",
                 data={"detail": str(e)},
                 error=True
             )

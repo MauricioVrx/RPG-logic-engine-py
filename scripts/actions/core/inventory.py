@@ -1,8 +1,7 @@
 from scripts.actions.base.action import Action
 from scripts.actions.base.action_result import ActionResult
 from scripts.system.resolver.entity_resolver import instance_entity_validation
-from scripts.system.resolver.item_resolver   import resolve_item, instance_item_validation
-
+from scripts.system.resolver.item_resolver   import instance_item_validation
 
 class AddItemAction(Action):
     name = "add_item"
@@ -13,22 +12,22 @@ class AddItemAction(Action):
 
         # Entity validation
         entity, msg = instance_entity_validation(self.state, self.params["entity"], entity_name)
-        if not entity:
-            return False, msg
+        if entity is None:
+            return None, msg
 
         # Item validation
-        item, msg = instance_item_validation(entity, self.params, entity.get_component('inventory').items)
-        if item == None:
+        item, msg = instance_item_validation(entity, self.params, self.state.item_manager.templates)
+        if item is None:
             return None, msg
         
         # Validation 
         capacity_available  = entity.get_component("inventory").capacity_available()
         if not (capacity_available[0]):
-            return False, capacity_available[1]
+            return None, capacity_available[1]
         
         # Info
         self.context['entity'] = entity
-        self.context['item']   = item
+        self.context['item']   = item if msg is not None else None
 
         return True, None
 
@@ -37,7 +36,7 @@ class AddItemAction(Action):
 
         entity_name = self.params.get("entity", None)
         item_name   = self.params.get("item", None)
-
+        
         # Item
         if self.context['item'] == None:
             # Spawn item 
@@ -69,12 +68,12 @@ class RemoveItemAction(Action):
 
         # Entity validation
         entity, msg = instance_entity_validation(self.state, self.params["entity"], entity_name)
-        if not entity:
+        if entity is None:
             return False, msg
 
         # Item validation
         item, msg =instance_item_validation(entity, self.params, entity.get_component('inventory').items)
-        if item == None:
+        if item is None:
             return None, msg
         
         # INFO
@@ -115,7 +114,7 @@ class ListItemAction(Action):
 
         # Entity validation
         entity, msg = instance_entity_validation(self.state, self.params["entity"], entity_name)
-        if not entity:
+        if entity is None:
             return False, msg
         
         # INFO
@@ -145,6 +144,7 @@ class ListItemAction(Action):
         for category_name, category_list in dict_items.items():
             if len(category_list) > 0:
                 item_message += f"""\n  {category_name} : {', '.join(category_list)}""" 
+        item_message += f"\n\nEquipment : {str(entity.get_component('equipment').equipment)}"
 
         # RETURN
         return ActionResult(
@@ -166,17 +166,17 @@ class TransferItemAction(Action):
 
         # Entity validation
         transfer_from, msg = instance_entity_validation(self.state, self.params["transfer_from"], transfer_from_name)
-        if not transfer_from:
-            return False, msg
+        if transfer_from is None:
+            return None, msg
         
         transfer_to, msg = instance_entity_validation(self.state, self.params["transfer_to"], transfer_to_name)
-        if not transfer_from:
-            return False, msg
+        if transfer_to is None:
+            return None, msg
         
         # Capacity 
         capacity_available = transfer_to.get_component("inventory").capacity_available()
         if not capacity_available[0]:
-            return False, capacity_available[1]
+            return None, capacity_available[1]
         
         # Item validation
         item, msg =instance_item_validation(transfer_from, self.params, transfer_from.get_component('inventory').items)
@@ -204,7 +204,7 @@ class TransferItemAction(Action):
 
         # RETURN
         return ActionResult(
-            message=f"{transfer_from_name} -> {transfer_to_name}: {item_name} transfered.",
+            message=f"{transfer_from_name} -> {transfer_to_name}: '{item_name}' transfered.",
             data={
                 "transfer_from"    : self.context['transfer_from'],
                 "transfer_to_name" : self.context['transfer_to'],

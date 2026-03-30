@@ -53,8 +53,11 @@ class GameEngine:
         print(self.state.character_manager.characters_template)
         usu1= self.state.character_manager.spawn('template', 'city_civile')
         self.state.active_npcs[usu1.template_id] = usu1
+        
         usu2= self.state.character_manager.spawn('template', 'city_civile')
         self.state.active_npcs[usu2.template_id] = usu2
+
+
         print()
         print(self.state.active_npcs)
         # print(usu1.template_id)

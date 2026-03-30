@@ -601,7 +601,7 @@ class ItemNotRemovedError(ItemError):
     def __init__(self, item_name):
         self.item_name  = item_name
         self.error_code = "ERR_ITEM_NOT_REMOVED"
-        self.message    = f"Item : '{item_name}' could not be deleted."
+        self.message    = f"Item : '{item_name}' could not be removed."
         super().__init__(self.message)
 
     def to_dict(self):
