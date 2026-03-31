@@ -1,7 +1,7 @@
 from scripts.actions.base.action import Action
 from scripts.actions.base.action_result import ActionResult
 from scripts.system.resolver.entity_resolver import instance_entity_validation
-from scripts.system.resolver.item_resolver   import instance_item_validation
+from scripts.system.resolver.inventory_resolver   import instance_item_validation
 
 class AddItemAction(Action):
     name = "add_item"
@@ -117,6 +117,10 @@ class ListItemAction(Action):
         if entity is None:
             return False, msg
         
+        if entity.has_component('lock'):
+            if entity.get_component('lock').is_locked:
+                return None, f"{entity.name}'s inventory is locked."
+        
         # INFO
         self.context['entity'] = entity
 
@@ -144,7 +148,10 @@ class ListItemAction(Action):
         for category_name, category_list in dict_items.items():
             if len(category_list) > 0:
                 item_message += f"""\n  {category_name} : {', '.join(category_list)}""" 
-        item_message += f"\n\nEquipment : {str(entity.get_component('equipment').equipment)}"
+
+
+        if entity.has_component('equipment'):
+            item_message += f"\n\nEquipment : {str(entity.get_component('equipment').equipment)}"
 
         # RETURN
         return ActionResult(

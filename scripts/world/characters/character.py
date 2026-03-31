@@ -70,6 +70,7 @@ class Character(Entity):
 
         self.recalculate_all()
 
+
     def get_info(self):
         """/---/ Temporal"""
         info = {}
@@ -83,6 +84,7 @@ class Character(Entity):
     
     def get_ability_choices(self):
         return self._ability_choices
+
 
     def recalculate_all(self):
         """ Triggers a cascading calculation of all derived parameters.

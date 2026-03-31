@@ -4,6 +4,10 @@ from scripts.world.time.game_time     import GameTime
 from scripts.world.items.manager      import ItemManager
 from scripts.mechanics.time_system    import TimeSystem
 
+# teporal imports
+from scripts.world.containers.container import Container
+
+
 class GameEngine:
 
     def __init__(self):
@@ -49,7 +53,7 @@ class GameEngine:
         self.state.player = player
 
 
-        #Temporal - add instances
+        # Temporal - add instances
         print(self.state.character_manager.characters_template)
         usu1= self.state.character_manager.spawn('template', 'city_civile')
         self.state.active_npcs[usu1.template_id] = usu1
@@ -57,9 +61,17 @@ class GameEngine:
         usu2= self.state.character_manager.spawn('template', 'city_civile')
         self.state.active_npcs[usu2.template_id] = usu2
 
+        # Temporal containers
+        normal_chest = Container("chest1", "Normal Chest 1", capacity=3)
+        second_chest = Container("chest2", "Normal Chest 2", capacity=5, locked=True)
+        containers = {"template" : {}, "uniques" : {"chest1" : normal_chest, "chest2" : second_chest}}
+        self.state.containers  = containers
+        self.state.active_containers['chest1'] = normal_chest
+        self.state.active_containers['chest2'] = second_chest
 
         print()
         print(self.state.active_npcs)
+        print(self.state.active_containers)
         # print(usu1.template_id)
 
 def find_npc_by_name(game_state, name):

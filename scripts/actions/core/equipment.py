@@ -1,7 +1,7 @@
 from scripts.actions.base.action             import Action
 from scripts.actions.base.action_result      import ActionResult
 from scripts.system.resolver.entity_resolver import instance_entity_validation
-from scripts.system.resolver.item_resolver   import resolve_item, instance_item_validation
+from scripts.system.resolver.inventory_resolver   import resolve_item, instance_item_validation
 
 class EquipWeaponAction(Action):
     name = "equip_weapon"

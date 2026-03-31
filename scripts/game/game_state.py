@@ -6,6 +6,10 @@ class GameState:
     def __init__(self):
         self.npcs        = {}  # All the NPCs in the world
         self.active_npcs = {}  # Enabled NPCs in the current scene
+
+        self.containers        = {}
+        self.active_containers = {}
+
         self.time_system = None
 
         self.character_manager = None

@@ -6,7 +6,7 @@ from scripts.world.characters.character import Character #, CharacterIdentityMan
 from scripts.world.characters.manager import CharacterManager, CharacterIdentityManager
 
 from scripts.world.items.manager import ItemManager
-from scripts.world.container import Container
+from scripts.world.containers.container import Container
 
 # ===============================
 # DICE 

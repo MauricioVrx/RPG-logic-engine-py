@@ -1,18 +1,22 @@
 from scripts.world.characters.utils import find_npc_by_name
+from scripts.world.containers.utils import find_container_by_name
 
 def resolve_entity(name, game_state, multiple = False):
 
     if name == "player":
         return game_state.player
 
-    npcs = find_npc_by_name(game_state, name)
+    entities = find_npc_by_name(game_state, name)
 
-    if len(npcs) == 0:
+    if len(entities) == 0:
+        entities = find_container_by_name(game_state, name)
+
+    if len(entities) == 0:
         pass
     elif multiple == False:
-        return npcs[0] 
-    elif len(npcs) >= 1:
-        return npcs
+        return entities[0] 
+    elif len(entities) >= 1:
+        return entities
 
     # if len(npcs) > 1:
     #     raise Exception(f"Ambiguous entity: {name}")
