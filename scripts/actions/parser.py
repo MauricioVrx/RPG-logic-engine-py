@@ -40,4 +40,8 @@ def parse_command(command: str):
     if action == "unequip_weapon":
         return   "unequip_weapon", {"entity": parts[1], "item" : parts[2]}
     
+    # THROWS CHECK
+    if action == "skill" or action == "saving_throw":
+        return   action, {"type": parts[0], "parameter_name": parts[1], "entity": parts[2]}
+    
     return action , {}

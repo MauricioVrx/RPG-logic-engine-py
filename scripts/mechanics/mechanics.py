@@ -169,6 +169,18 @@ def _parameter_checks(entity, parameter_name, parameter_list , parameter_type="p
     return  {"type" : parameter_type , "parameter": parameter_name}| format_return_check(d20_value , result)
 
 
+def validate_ability_parameter(entity, parameter_type, parameter_name):
+    if parameter_type == "skill":
+        skill = entity.get_component("ability").skill
+        if parameter_name in skill:
+            return entity.get_component("ability").get_skill_value(parameter_name.capitalize()), ""
+    elif parameter_type == "saving_throw" :
+        saving_throws = entity.get_component("ability").saving_throws      
+        if parameter_name.lower() in saving_throws:
+            return entity.get_component("ability").get_saving_throws_value(parameter_name.lower()), ""
+    return None, f"have not '{parameter_name}' {parameter_type}"
+    
+
 def skill_checks(entity, parameter_name, extra = 0):
     """
     Calculate the entity's Skill values and roll a 1d20. 

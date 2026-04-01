@@ -3,10 +3,10 @@ from scripts.game.game_state          import GameState
 from scripts.world.time.game_time     import GameTime
 from scripts.world.items.manager      import ItemManager
 from scripts.mechanics.time_system    import TimeSystem
+from scripts.actions                  import load_actions
 
 # teporal imports
 from scripts.world.containers.container import Container
-
 
 class GameEngine:
 
@@ -18,6 +18,10 @@ class GameEngine:
         """
         Load all data and initialize systems
         """
+        # =========================
+        # ACTIONS
+        # =========================
+        load_actions()
 
         # =========================
         # TIME

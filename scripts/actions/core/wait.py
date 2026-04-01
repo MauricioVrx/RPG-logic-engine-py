@@ -1,15 +1,16 @@
 from scripts.actions.base.action import Action
 from scripts.actions.base.action_result import ActionResult
+from scripts.actions.registry import register_action
 
+@register_action("wait")
 class WaitAction(Action):
-    name = "wait"
 
     def validate(self):
 
         hours = self.params.get("hours", 1)
 
         # Validate correct hour
-        if not isinstance(hours, int) or isinstance(hours, None):
+        if not isinstance(hours, int) or hours is None:
             return False, "Invalid number of hours."
 
         return True, None
@@ -33,9 +34,8 @@ class WaitAction(Action):
             }
         )
 
-
+@register_action("sleep")
 class SleepAction(Action):
-    name = "sleep"
 
     def validate(self):
 
@@ -67,9 +67,8 @@ class SleepAction(Action):
             }
         )
     
-    
+@register_action("wait_to_morning")
 class WaitToMorningAction(Action):
-    name = "wait_to_morning"
 
     def execute(self):
 

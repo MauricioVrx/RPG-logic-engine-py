@@ -3,8 +3,10 @@ from scripts.actions.base.action_result import ActionResult
 from scripts.system.resolver.entity_resolver import instance_entity_validation
 from scripts.system.resolver.inventory_resolver   import instance_item_validation
 
+from scripts.actions.registry import register_action
+
+@register_action("add_item")
 class AddItemAction(Action):
-    name = "add_item"
 
     def validate(self):
         # Empty data validaton
@@ -58,9 +60,8 @@ class AddItemAction(Action):
             }
         )
 
-
+@register_action("remove_item")
 class RemoveItemAction(Action):
-    name = "remove_item"
     
     def validate(self):
         # Empty data validaton
@@ -104,9 +105,8 @@ class RemoveItemAction(Action):
             }
         )
 
-
+@register_action("list_items")
 class ListItemAction(Action):
-    name = "list_items"
 
     def validate(self):
         # Empty data validaton
@@ -162,9 +162,8 @@ class ListItemAction(Action):
             }
         )
 
-
+@register_action("transfer_item")
 class TransferItemAction(Action):
-    name = "transfer_item"
 
     def validate(self):
         # Empty data validaton

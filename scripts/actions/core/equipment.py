@@ -1,10 +1,12 @@
-from scripts.actions.base.action             import Action
-from scripts.actions.base.action_result      import ActionResult
-from scripts.system.resolver.entity_resolver import instance_entity_validation
-from scripts.system.resolver.inventory_resolver   import resolve_item, instance_item_validation
+from scripts.actions.base.action                import Action
+from scripts.actions.base.action_result         import ActionResult
+from scripts.system.resolver.entity_resolver    import instance_entity_validation
+from scripts.system.resolver.inventory_resolver import resolve_item, instance_item_validation
 
+from scripts.actions.registry import register_action
+
+@register_action("equip_weapon")
 class EquipWeaponAction(Action):
-    name = "equip_weapon"
 
     def validate(self):
         # Empty data validaton
@@ -40,7 +42,6 @@ class EquipWeaponAction(Action):
 
     def execute(self):
         entity_name = self.params.get("entity", None)
-        weapon_name = self.params.get("item", None)
 
         # Get entity
         entity = self.context['entity']
@@ -60,14 +61,11 @@ class EquipWeaponAction(Action):
             }
         )
 
-
+@register_action("unequip_weapon")
 class UnequipWeaponAction(Action):
-    name = "unequip_weapon"
-
     def validate(self):
         # Empty data validaton
         entity_name = self.params.get("entity", None)
-        weapon_name = self.params.get("item", None)
 
         # Entity validation
         entity, msg = instance_entity_validation(self.state, self.params["entity"], entity_name)
@@ -83,7 +81,6 @@ class UnequipWeaponAction(Action):
         hands, msg = entity.get_component('equipment').validate_unequip_weapon(weapon)
         if hands is None:
             return None, f"{entity_name} : {msg}"
-        
         
         # INFO
         self.context['entity'] = entity
