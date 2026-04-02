@@ -1,4 +1,4 @@
-from scripts.game_system.constants import ABILITY_NAMES
+from scripts.game_config.constants import ABILITY_NAMES
 
 # General basis of the project
 class GameBaseError(Exception): pass
@@ -601,7 +601,7 @@ class ItemNotRemovedError(ItemError):
     def __init__(self, item_name):
         self.item_name  = item_name
         self.error_code = "ERR_ITEM_NOT_REMOVED"
-        self.message    = f"Item : '{item_name}' could not be deleted."
+        self.message    = f"Item : '{item_name}' could not be removed."
         super().__init__(self.message)
 
     def to_dict(self):
@@ -714,7 +714,7 @@ class WeaponNotAvailableHandsError(EquipmentError):
         self.weapon_name    = weapon_name
         self.entity_name    = entity_name
         self.error_code = "ERR_WEAPON_NOT_FOUND_IN_INVENTORY"
-        self.message    = f"'{weapon_name}' is not in '{entity_name}' inventory."
+        self.message    = f"'{entity_name}' can't hold '{weapon_name}'."
         super().__init__(self.message)
 
     def to_dict(self):
@@ -755,11 +755,12 @@ class StorageError(GameBaseError):
 
 class StorageLimitItemsError(StorageError):
     """Raised when the items storage exceed limit"""
-    def __init__(self, name, limit):
-        self.name    = name
-        self.limit   = limit
+    def __init__(self, name, space_occuped, limit):
+        self.name          = name
+        self.limit         = limit
+        self.space_occuped = space_occuped
         self.error_code = "ERR_STORAGE_LIMIT_ITEM"
-        self.message    = f"The storage '{name}' exceed items quantity ({limit})."
+        self.message    = f"The storage '{name}' exceed items quantity({space_occuped}/{limit})."
         super().__init__(self.message)
 
     def to_dict(self):
@@ -767,6 +768,7 @@ class StorageLimitItemsError(StorageError):
             "error"          : self.__class__.__name__,
             "name"           : self.name ,
             "limit"          : self.limit ,
+            "space_occuped"  : self.space_occuped ,
             "code"           : self.error_code
         }
 

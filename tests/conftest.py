@@ -6,7 +6,7 @@ from scripts.world.characters.character import Character #, CharacterIdentityMan
 from scripts.world.characters.manager import CharacterManager, CharacterIdentityManager
 
 from scripts.world.items.manager import ItemManager
-from scripts.world.container import Container
+from scripts.world.containers.container import Container
 
 # ===============================
 # DICE 
@@ -102,7 +102,7 @@ def npc_human():
 factory = ItemManager(base_path = "tests/schemas/data/info")
 factory.load_all(structure = {
     "equipment": ["armor", "weapon", "shield"],
-    "item": ["consumables"]
+    "item": ["consumable"]
 })
 
 @pytest.fixture

@@ -5,7 +5,7 @@ from scripts.system.exceptions import (
     EquipmentError
     )
 
-from scripts.game_system.constants import SAV_THROWS_NAMES
+from scripts.game_config.constants import SAV_THROWS_NAMES
 from scripts.components.equipment_component import EquipmentComponent
 
 from scripts.mechanics.mechanics import (

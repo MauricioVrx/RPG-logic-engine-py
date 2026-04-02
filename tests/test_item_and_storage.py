@@ -44,7 +44,7 @@ def test_format_read_csv_files():
     factory = ItemManager(base_path = "tests/schemas/data/info")
     factory.load_all(structure = {
         "equipment": ["armor", "weapon"],
-        "item": ["consumables"]
+        "item": ["consumable"]
     })
 
 
@@ -76,7 +76,7 @@ def test_storage_items(test_item_factory, simple_dagger, normal_chest):
     """
     Add and remove items in a storage
     """
-    armor = normal_chest.get_component("inventory").add_item(test_item_factory.spawn("padded_armor"))
+    armor = normal_chest.get_component("inventory").add_item(test_item_factory.spawn("padded_armor"))[0]
     normal_chest.get_component("inventory").add_item(simple_dagger)
 
     normal_chest.get_component("inventory").remove_item(simple_dagger)
@@ -89,6 +89,7 @@ def test_bad_storage(simple_dagger, simple_chest):
     """
     # 1. Add wrong item
     with pytest.raises(ItemNotFoundError):
+        simple_chest.get_component("inventory").validate_add_item("WrongItem")
         simple_chest.get_component("inventory").add_item("WrongItem")
 
     # 2. Remove non-existent item
@@ -99,7 +100,8 @@ def test_bad_storage(simple_dagger, simple_chest):
     simple_chest.get_component("inventory").add_item(simple_dagger)
     simple_chest.get_component("inventory").add_item(simple_dagger)
 
-    with pytest.raises(StorageLimitItemsError):
+    with pytest.raises(StorageLimitItemsError): 
+        simple_chest.get_component("inventory").validate_add_item(simple_dagger)
         simple_chest.get_component("inventory").add_item(simple_dagger)
 
     
@@ -207,11 +209,11 @@ def test_equip_weapon(simple_entity, simple_dagger, longspear, simple_shield):
     assert simple_dagger_copy.status        == "equiped"
 
     simple_entity.get_component("equipment").unequip_weapon_on_hand(simple_dagger)
-    assert simple_entity.get_component("equipment").equipment['hands'] == ["weapon_unarmed" or None, simple_dagger_copy]
+    assert simple_entity.get_component("equipment").equipment['hands'] == [None, simple_dagger_copy]
     assert simple_dagger.status             == None
 
     simple_entity.get_component("equipment").unequip_weapon_on_hand(simple_dagger_copy)
-    assert simple_entity.get_component("equipment").equipment['hands'] == ["weapon_unarmed" or None, "weapon_unarmed" or None]
+    assert simple_entity.get_component("equipment").equipment['hands'] == [None, None]
     assert simple_dagger_copy.status        == None
 
     simple_entity.get_component("equipment").equip_weapon_on_hand(longspear)
@@ -221,14 +223,14 @@ def test_equip_weapon(simple_entity, simple_dagger, longspear, simple_shield):
     simple_entity.get_component("equipment").unequip_weapon_on_hand(longspear)
 
      # Check armor and entity status
-    assert simple_entity.get_component("equipment").equipment['hands'] == ["weapon_unarmed" or None, "weapon_unarmed" or None]
+    assert simple_entity.get_component("equipment").equipment['hands'] == [None, None]
     assert simple_dagger.status      == None
     assert simple_dagger_copy.status == None
     assert longspear.status          == None
 
     # Equip shield
     simple_entity.get_component("equipment").equip_weapon_on_hand(simple_shield)
-    assert simple_entity.get_component("equipment").equipment['hands'] == [simple_shield, "weapon_unarmed" or None]
+    assert simple_entity.get_component("equipment").equipment['hands'] == [simple_shield, None]
     assert simple_shield.status             == "equiped"
 
 
@@ -241,7 +243,9 @@ def test_equip_wrong_weapon(simple_entity, simple_dagger, longspear, imposible_w
     equiped_dagger.status = "equiped"
     
     with pytest.raises(WeaponNotFoundInInventoryError):
+        simple_entity.get_component("equipment").validate_weapon_equipment(simple_dagger)
         simple_entity.get_component("equipment").equip_weapon_on_hand(simple_dagger)
+        
 
     # Add and equip weapons to entity
     simple_entity.get_component("inventory").add_item(simple_dagger)
@@ -253,17 +257,22 @@ def test_equip_wrong_weapon(simple_entity, simple_dagger, longspear, imposible_w
 
     # Equip Errors
     with pytest.raises(WeaponNonEquippableItemError):
+        simple_entity.get_component("equipment").validate_weapon_equipment(simple_armor)
         simple_entity.get_component("equipment").equip_weapon_on_hand(simple_armor)
 
     with pytest.raises(EquipmentError):
+        simple_entity.get_component("equipment").validate_weapon_equipment(equiped_dagger)
         simple_entity.get_component("equipment").equip_weapon_on_hand(equiped_dagger)
 
     with pytest.raises(WeaponNotAvailableHandsError):
+        simple_entity.get_component("equipment").validate_weapon_equipment(imposible_weapon)
         simple_entity.get_component("equipment").equip_weapon_on_hand(imposible_weapon)
 
     # Unequip errrors
     with pytest.raises(WeaponNotFoundInInventoryError):
+        simple_entity.get_component("equipment").validate_unequip_weapon(simple_dagger_copy)
         simple_entity.get_component("equipment").unequip_weapon_on_hand(simple_dagger_copy)
     
     with pytest.raises(WeaponNotEquipedError):
+        simple_entity.get_component("equipment").validate_unequip_weapon(longspear)
         simple_entity.get_component("equipment").unequip_weapon_on_hand(longspear)

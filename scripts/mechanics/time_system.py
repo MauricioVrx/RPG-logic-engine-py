@@ -1,4 +1,4 @@
-from scripts.game_system.data_config import MINUTES_PER_HOUR, HOURS_PER_DAY, DAYS_PER_MONTH, MONTHS_PER_YEAR, DAY_PHASES
+from scripts.game_config.data_config import MINUTES_PER_HOUR, HOURS_PER_DAY, DAYS_PER_MONTH, MONTHS_PER_YEAR, DAY_PHASES
 
 from scripts.system.exceptions import (
     TimeFormatError,
@@ -78,6 +78,7 @@ class TimeSystem:
         years, months, days, hours, minutes : int | None
             Target time values. None means "ignore this unit".
         """
+        self.pass_minutes(1)
 
         initial_date = self.game_time.get_date()
 
@@ -214,11 +215,13 @@ class TimeSystem:
         if to_date[0] != None:
             pass_time_list = [to_date[0] - actual_date[0]] # years diff 
 
+        # Time difference in each unit: months, days, hours, minutes
         for time in range(1, range_list):
 
             actual  = actual_date[time]
             to_time = to_date[time]
 
+            # Pass if to_time is None or exist a diff but already a higher unit of time. 
             if (to_time == None) or (sum(pass_time_list) > 0 and actual == to_time):
                 pass_time_list.append(0)
                 continue
@@ -227,6 +230,7 @@ class TimeSystem:
                 n_time = time_range[time-1] - actual + to_time
                 if pass_time_list[time-1] > 0:
                     pass_time_list[time-1] -= 1
+                    
             else:
                 n_time = to_time - actual
             pass_time_list.append(n_time)

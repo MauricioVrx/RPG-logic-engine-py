@@ -1,5 +1,5 @@
 import copy
-from scripts.system.files_manager import read_json_files
+from scripts.system.core.files_manager import read_json_files
 from scripts.world.entities.entity import Entity
 
 class EntityLoader:

@@ -1,5 +1,5 @@
 from scripts.world.time.calendar     import Calendar
-from scripts.game_system.data_config import INIT_YEAR, INIT_MONTH, INIT_DAY, INIT_HOUR
+from scripts.game_config.data_config import INIT_YEAR, INIT_MONTH, INIT_DAY, INIT_HOUR
 
 class GameTime:
     """

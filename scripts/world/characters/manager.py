@@ -2,7 +2,7 @@ import copy
 
 from scripts.world.characters.loader    import CharacterLoader, CharacterIdentityLoader
 from scripts.world.characters.character import Character, Ancestry, Background, CharClass
-from scripts.system.loaders_folder_path import CHARACTER_UNIQUE , CHARACTER_TEMPLATE
+from scripts.system.core.loaders_folder_path import CHARACTER_UNIQUE , CHARACTER_TEMPLATE
 
 from scripts.system.exceptions import (
     CharacterNotFoundError,
@@ -111,8 +111,11 @@ class CharacterManager:
             if info.get('free_ability_points') != None:
                 char.set_free_ability_points(info['free_ability_points'].get('ability_points'))
 
+
             char.recalculate_all()
             char.update_character_ability_points()
+            char.recalculate_hit_points_max()
+            char.get_component("combat").hit_points_current = char.get_component("combat").hit_points_max
 
             char_dict[char_id] = char
 
@@ -143,6 +146,21 @@ class CharacterManager:
             raise CharacterNotFoundError(character_name)
             
         return copy.deepcopy(template) if template else None
+    
+    
+    # /---/ locations system required
+    def update_active_npcs(self, game_state):
+        """
+        /---/
+        """
+        game_state.active_npcs = {}
+
+        for npc in game_state.npcs.values():
+            if npc.location == game_state.current_location:
+                npc.is_active = True
+                game_state.active_npcs[npc.id] = npc
+            else:
+                npc.is_active = False
 
 
 class CharacterIdentityManager:

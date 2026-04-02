@@ -1,4 +1,4 @@
-from scripts.system.files_manager import read_json_files, get_list_files
+from scripts.system.core.files_manager import read_json_files, get_list_files
 
 class CharacterLoader:
     """
@@ -30,7 +30,6 @@ class CharacterIdentityLoader:
         self.base_path = base_path
 
     def load_characters_identity(self, folder ,file_name):
-        print(f"{self.base_path}{folder}{file_name}")
         data = read_json_files(self.base_path, folder, file_name )
         return data
    

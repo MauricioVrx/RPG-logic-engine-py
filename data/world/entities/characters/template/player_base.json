@@ -1,0 +1,39 @@
+{
+  "id": "player_base",
+  "components": {
+    "identity": {
+      "name"   : "Player Base",
+      "alias"  : "Player Base",
+      "type"   : "player",
+      "size"   : 2,
+      "speed"  : 25
+    },
+    "Social": {
+        "language" : ["Common"]
+    },
+    "progression": {
+      "level"      : 1,
+      "experience" : 0
+    },
+    "ability": {
+    },
+    "inventory": { 
+      "capacity": 20,
+      "items" : ["torch", "candle", "healing_potion_minor", "healing_potion_minor"]
+    },
+    "equipment": {
+      "equipment" : {
+        
+      }
+    },
+    "combat" : {
+    },
+    "job" : {
+    }
+  },
+  "ancestry" : {
+      "name" : "human",
+      "extra_abilities" : ["STR", "WIS"],
+      "empty_values" : false
+  }
+}

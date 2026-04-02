@@ -1,4 +1,4 @@
-from scripts.game_system.data_config  import (MINUTES_PER_HOUR, HOURS_PER_DAY, DAYS_PER_MONTH, MONTHS_PER_YEAR, DAYS_PER_YEAR, SEASONS, DAY_PHASES)
+from scripts.game_config.data_config  import (MINUTES_PER_HOUR, HOURS_PER_DAY, DAYS_PER_MONTH, MONTHS_PER_YEAR, DAYS_PER_YEAR, SEASONS, DAY_PHASES)
 
 class Calendar:
     """
@@ -36,10 +36,14 @@ class Calendar:
         list
             [hour_start, phase_name, index]
         """
+
         day_phase = -1
         pos = 0
         for idx in range(len(DAY_PHASES)-1):
-            if DAY_PHASES[idx][0] <= hour < DAY_PHASES[idx+1][0]:
+            lower_limit = DAY_PHASES[idx][0]
+            upper_limit = DAY_PHASES[idx+1][0] if DAY_PHASES[idx+1][0] != 0 else 24
+
+            if lower_limit <= hour < upper_limit:
                 day_phase = DAY_PHASES[idx]
                 pos = idx
                 break

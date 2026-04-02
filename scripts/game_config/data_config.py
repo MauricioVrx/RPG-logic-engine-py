@@ -1,4 +1,4 @@
-from scripts.game_system.constants import PROF_NAMES
+from scripts.game_config.constants import PROF_NAMES
 
 #====================================================================
 # TIME SYSTEM VALUES

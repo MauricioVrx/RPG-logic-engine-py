@@ -13,7 +13,7 @@ class Item:
     - Miscellaneous objects
     """
 
-    def __init__(self, item_id, name, category, id_value = None,
+    def __init__(self, item_id, name, category, alias = None , id_value = None,
                  rarity=None, traits=None,
                  level=None, price=None, bulk=None,
                  mechanics=None, lore=None):
@@ -58,8 +58,10 @@ class Item:
     
         """
 
-        self.id   = item_id
-        self.name = name
+        self.id       = item_id
+        self.key_name = item_id
+        self.name     = name
+        self.alias    = name if alias == None else alias
         self.category = category
         self.id_value = id_value
         self.rarity = rarity

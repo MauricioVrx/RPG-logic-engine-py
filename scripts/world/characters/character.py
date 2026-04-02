@@ -1,8 +1,8 @@
 from collections import Counter
 from scripts.world.entities.entity import Entity
 
-from scripts.game_system.constants import ABILITY_NAMES, ABILITY_SCORE
-from scripts.game_system.constants import FREE_ABILITY_POINTS , BASE_HIT_POINTS
+from scripts.game_config.constants import ABILITY_NAMES, ABILITY_SCORE
+from scripts.game_config.constants import FREE_ABILITY_POINTS , BASE_HIT_POINTS
 
 from scripts.system.exceptions import (
     EntityAbilityNotFoundError,
@@ -70,8 +70,21 @@ class Character(Entity):
 
         self.recalculate_all()
 
+
+    def get_info(self):
+        """/---/ Temporal"""
+        info = {}
+        info["name"] = self.get_component('identity').name
+        info["hit points"] = f"{self.get_component('combat').hit_points_current}/{self.get_component('combat').hit_points_max}"
+        info["equipment"]  = f"{self.get_component('equipment').equipment}"
+        if self.ancestry != None:
+            info["ancestry"] = self.ancestry 
+        return info 
+    
+    
     def get_ability_choices(self):
         return self._ability_choices
+
 
     def recalculate_all(self):
         """ Triggers a cascading calculation of all derived parameters.
