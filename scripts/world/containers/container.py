@@ -59,8 +59,6 @@ class Container(Entity):
     
     def __str__(self): 
         return f"<{self.name.upper()} - Locked :{self.get_component('lock').is_locked} ,  Inventory :{len(self.get_component('inventory').items)}/{self.get_component('inventory').capacity}"
-        # return f"<{self.name.upper()} - Status :{self.get_component('lock').is_locked} , Inventory :{len(self.get_component('inventory').inventory)}/{self.get_component('inventory').capacity}>"
-#  Inventory :{len(self.get_component('inventory').items)}
 
 class Backpack(Item):
     def __init__(self, template_id, name):
