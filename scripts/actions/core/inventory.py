@@ -22,7 +22,7 @@ class AddItemAction(Action):
         if item is None:
             return None, msg
         
-        # Validation 
+        # Capacity validation 
         capacity_available  = entity.get_component("inventory").capacity_available()
         if not (capacity_available[0]):
             return None, capacity_available[1]

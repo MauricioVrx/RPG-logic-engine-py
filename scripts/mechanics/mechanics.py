@@ -121,8 +121,14 @@ def critical_roll(dice_result):
 
 def critical_diff(result, cd):
     """Calculate the difference in value between the entity information with roll and the difficulty class."""
-    value = result - cd
-    return {"result_diff" : value} 
+    value         = result - cd
+    critical_diff = 0
+    if value >= 10:
+        critical_diff = 1
+    elif value <= -10:
+        critical_diff = 1
+
+    return {"result_diff" : value, 'critical_diff' : critical_diff} 
 
 
 def check_CD(rolled_value, cd, cleared = "passed"):

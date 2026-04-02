@@ -24,10 +24,13 @@ def instance_item_validation(entity, params, repository, equiped = False ,multip
         item = None
 
         # Components validation
+        if entity.has_component('inventory'):
+            return None, f"{entity.name} have not an inventory."
+            
         if entity.has_component('lock'):
             if entity.get_component('lock').is_locked:
                 return None, f"{entity.name}'s inventory is locked."
-
+            
         # Item Validation
         if list_items is None:
             return None, f"Item '{item_instance}' not found."

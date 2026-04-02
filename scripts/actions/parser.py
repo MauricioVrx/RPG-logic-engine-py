@@ -42,6 +42,10 @@ def parse_command(command: str):
     
     # THROWS CHECK
     if action == "skill" or action == "saving_throw":
-        return   action, {"type": parts[0], "parameter_name": parts[1], "entity": parts[2]}
+        if len(parts) == 4:
+            cd_value = int(parts[3]) if parts[3].isdigit() else 0
+        else:
+            cd_value = 0
+        return   action, {"type": parts[0], "parameter_name": parts[1], "entity": parts[2], "cd_value": cd_value}
     
     return action , {}

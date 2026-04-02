@@ -1,8 +1,3 @@
-from scripts.system.exceptions import (
-    StorageLimitItemsError,
-    ItemNotFoundError
-    )
-
 from scripts.mechanics.mechanics import (
     add_item as add_it, 
     validate_add_item as val_add_item,
